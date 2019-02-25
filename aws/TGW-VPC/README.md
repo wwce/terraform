@@ -13,7 +13,14 @@
 4.  TGW with attachments and routing to support N/S and E/W traffic through the Firewalls.
 ```
 
- NOTE: there are some things that should be changed in the Variables.tf file.  They are labeled at the top of the file.
+ NOTE: 
+ ``` 
+ 1. There are some things that should be changed in the Variables.tf file.  They are labeled at the top of the file.
+ 2. This assumes that the AWS CLI is installed on the machine doing the deploymnet
+ 3. Here is a link to setting up a creds file to access AWS: 
+       https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+
+ ```
 
  This is a screenshot of the output once the deployment has completed that shows how to connect to the various components:
 
