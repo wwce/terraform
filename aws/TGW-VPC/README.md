@@ -19,6 +19,9 @@
  2. This assumes that the AWS CLI is installed on the machine doing the deploymnet
  3. Here is a link to setting up a creds file to access AWS: 
        https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+ 4. After deployment the firewall username and password are:
+         Username: paloalto
+         Password: Pal0Alt0@123
 
  ```
 
