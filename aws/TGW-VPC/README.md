@@ -1,6 +1,6 @@
 # Transit Gateway Deployment for North/South and East/West Inspection 
 
- This terraform template will deploy a complete Transit Gateway(TGW). The follow diagram shows what will be deployed:
+ This terraform template will deploy a complete Transit Gateway(TGW) solution with Palo Alto Networks VM-Series Firewalls to inspect both N/S and E/W traffic. The follow diagram shows what will be deployed:
 
 ![tgw-vpc](https://user-images.githubusercontent.com/21991161/53307956-ff23d680-3862-11e9-9fd1-49cbacb696ea.jpg)
 
