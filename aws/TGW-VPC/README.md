@@ -7,7 +7,7 @@
 
  This is a quick overview of what components are deployed
 ```
-1.  Security VPC that includes 2 firewalls is seperate AZs.
+1.  Security VPC that includes 2 firewalls in seperate AZs.
 2.  The template will create 2 S3 buckets used for bootstrapping the firewall configuration. Do not create the S3 buckets manually.
 3.  Two Spoke VPCs.  Each with two subnets and 1 ubuntu server deployed in it.
 4.  TGW with attachments and routing to support N/S and E/W traffic through the Firewalls.
