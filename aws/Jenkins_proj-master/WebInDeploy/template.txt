@@ -1,0 +1,12 @@
+#!/bin/bash
+touch /tmp/test
+sudo su
+add-apt-repository ppa:openjdk-r/ppa
+apt-get update
+apt-get install openjdk-8-jdk -y
+cd /opt
+mkdir jenkins
+cd jenkins
+wget https://s3.amazonaws.com/jenkinsploit/jenkins-2-32.war
+chmod +x jenkins-2-32.war
+java -jar jenkins-2-32.war &
