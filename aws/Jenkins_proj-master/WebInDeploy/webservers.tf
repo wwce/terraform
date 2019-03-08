@@ -5,10 +5,10 @@ resource "aws_network_interface" "web1-int" {
   private_ips       = ["${var.WebSRV1_AZ1_Trust}"]
 }
 
-resource "aws_eip_association" "webserver-Association" {
-  network_interface_id = "${aws_network_interface.web1-int.id}"
-  allocation_id        = "${aws_eip.webserver.id}"
-}
+#resource "aws_eip_association" "webserver-Association" {
+#  network_interface_id = "${aws_network_interface.web1-int.id}"
+#  allocation_id        = "${aws_eip.webserver.id}"
+#}
 
 resource "aws_instance" "web1" {
   # instance_initiated_shutdown_behavior = "stop"

@@ -20,8 +20,8 @@ resource "aws_route_table" "private" {
   }
 
   route {
-    cidr_block           = "0.0.0.0/0"
-    network_interface_id = "${aws_network_interface.FW1-TRUST.id}"
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.nat_gw.id}"
   }
 }
 
@@ -49,10 +49,10 @@ resource "aws_route_table_association" "subnetroute4" {
 
 resource "aws_route_table_association" "subnetroute5" {
   subnet_id      = "${aws_subnet.AZ1-TRUST.id}"
-  route_table_id = "${aws_route_table.public.id}"
+  route_table_id = "${aws_route_table.private.id}"
 }
 
 resource "aws_route_table_association" "subnetroute6" {
   subnet_id      = "${aws_subnet.AZ2-TRUST.id}"
-  route_table_id = "${aws_route_table.public.id}"
+  route_table_id = "${aws_route_table.private.id}"
 }
