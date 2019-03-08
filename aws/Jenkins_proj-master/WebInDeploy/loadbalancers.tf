@@ -58,6 +58,66 @@ resource "aws_lb_listener_rule" "static" {
   }
 }
 
+#Native ALB
+
+resource "aws_lb" "native-alb" {
+  name                       = "native-alb"
+  internal                   = false
+  security_groups            = ["${aws_security_group.sgWideOpen.id}"]
+  subnets                    = ["${aws_subnet.AZ1-UNTRUST.id}", "${aws_subnet.AZ2-UNTRUST.id}"]
+  enable_deletion_protection = false
+  load_balancer_type         = "application"
+}
+
+resource "aws_lb_target_group" "native-tg" {
+  name        = "native-tg"
+  port        = 8080
+  protocol    = "HTTP"
+  vpc_id      = "${aws_vpc.main.id}"
+  target_type = "ip"
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    path                = "/login"
+    port                = 8080
+    interval            = 30
+  }
+}
+
+resource "aws_lb_target_group_attachment" "web1a" {
+  target_group_arn = "${aws_lb_target_group.native-tg.arn}"
+  target_id        = "${aws_network_interface.web1-int.private_ips[0]}"
+  port             = 8080
+}
+
+resource "aws_lb_listener" "native-alb" {
+  load_balancer_arn = "${aws_lb.native-alb.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.native-tg.arn}"
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener_rule" "static2" {
+  listener_arn = "${aws_lb_listener.native-alb.arn}"
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.native-tg.arn}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/*"]
+  }
+}
+
 #Internal NLB
 
 resource "aws_lb" "int-nlb" {

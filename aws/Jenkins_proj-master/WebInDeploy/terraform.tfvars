@@ -24,15 +24,15 @@ StackName = "vv-2t"
 
 VPCCIDR = "10.0.0.0/16"
 
-aws_region = "Place Region Here"
+aws_region = "us-west-1"
 
-ServerKeyName = "Place AWs Keypair Here"
+ServerKeyName = "jfranklin3cali"
 
-bootstrap_s3bucket = "Place S3 Bucket Name Here"
+bootstrap_s3bucket = "jff4-auto-bucket"
 
-aws_access_key = "Place AWS API Access Key Here"
+aws_access_key = "AKIAIM562M6SMYAYRXBQ"
 
-aws_secret_key = "Place AWS API Secret Key Here"
+aws_secret_key = "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"
 
 KALICIDR = "10.1.0.0/16"
 
