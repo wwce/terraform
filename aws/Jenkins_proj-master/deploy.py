@@ -39,8 +39,8 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-aws_access_key = 'AWS Key'
-aws_secret_key = 'AWS Secret Key'
+aws_access_key = 'AKIAIM562M6SMYAYRXBQ'
+aws_secret_key = 'G+a93GGLZpnxse+AXJB6IMnzbkP/maC30Dz0Ckuy'
 
 
 
@@ -150,6 +150,8 @@ def getServerStatus(IP) :
         # Not an HTTP-specific error (e.g. connection refused)
         logger.info('Jenkins Server Did not respond to HTTP request: {}'.format(e.reason))
         return ('server_down')
+    except Exception as e:
+                logger.info('Got generic exceptiomn {}'.format(e))
     else:
         # 200
         logger.info('Jenkins Server responded with HTTP 200 code')
