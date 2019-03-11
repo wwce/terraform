@@ -1,4 +1,4 @@
-ame: aws_jenkins_exp
+name: aws_jenkins_exp
 # label used for menu selection
 label: AWS Jenkins Security Framework
 

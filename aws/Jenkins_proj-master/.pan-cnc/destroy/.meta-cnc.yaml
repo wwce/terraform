@@ -1,4 +1,4 @@
-ame: aws_jenkins_exp_teardown
+name: aws_jenkins_exp_teardown
 # label used for menu selection
 label: AWS Jenkins Security Framework - Teardown
 
