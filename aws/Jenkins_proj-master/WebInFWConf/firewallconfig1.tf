@@ -144,7 +144,7 @@ resource "panos_security_policies" "security_policies" {
     applications          = ["web-browsing", "jenkins"]
     services              = ["service-http", "${panos_service_object.so_81.name}"]
     categories            = ["any"]
-    group                 = "Alert-Only"
+    group                 = "Inbound"
     action                = "allow"
   }
 
@@ -159,7 +159,7 @@ resource "panos_security_policies" "security_policies" {
     applications          = ["any"]
     services              = ["application-default"]
     categories            = ["any"]
-    group                 = "Alert-Only"
+    group                 = "Outbound"
     action                = "allow"
   }
 }

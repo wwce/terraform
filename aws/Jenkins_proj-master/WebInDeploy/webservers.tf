@@ -5,17 +5,17 @@ resource "aws_network_interface" "web1-int" {
   private_ips       = ["${var.WebSRV1_AZ1_Trust}"]
 }
 
-resource "aws_eip_association" "webserver-Association" {
-  network_interface_id = "${aws_network_interface.web1-int.id}"
-  allocation_id        = "${aws_eip.webserver.id}"
-}
+#resource "aws_eip_association" "webserver-Association" {
+#  network_interface_id = "${aws_network_interface.web1-int.id}"
+#  allocation_id        = "${aws_eip.webserver.id}"
+#}
 
 resource "aws_instance" "web1" {
-  instance_initiated_shutdown_behavior = "stop"
-  ami                                  = "${var.UbuntuRegionMap[var.aws_region]}"
-  instance_type                        = "m5.large"
-  key_name                             = "${var.ServerKeyName}"
-  monitoring                           = false
+  # instance_initiated_shutdown_behavior = "stop"
+  ami           = "${var.UbuntuRegionMap[var.aws_region]}"
+  instance_type = "t2.micro"
+  key_name      = "${var.ServerKeyName}"
+  monitoring    = false
 
   tags {
     Name = "WEB-AZ1"
@@ -42,4 +42,3 @@ resource "aws_instance" "web1" {
    )))
    }"
 }
-

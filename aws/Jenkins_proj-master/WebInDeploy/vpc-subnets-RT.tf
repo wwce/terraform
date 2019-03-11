@@ -9,7 +9,7 @@ provider "aws" {
 
 resource "aws_vpc" "main" {
   cidr_block       = "${var.VPCCIDR}"
-  instance_tenancy = "dedicated"
+  instance_tenancy = "default"
 
   tags {
     Name = "main"

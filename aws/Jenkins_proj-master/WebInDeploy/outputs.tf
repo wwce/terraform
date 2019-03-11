@@ -9,3 +9,7 @@ output "NLB-DNS" {
 output "ALB-DNS" {
   value = "${aws_lb.ext-alb.dns_name}"
 }
+
+output "NATIVE-DNS" {
+  value = "${aws_lb.native-alb.dns_name}"
+}
