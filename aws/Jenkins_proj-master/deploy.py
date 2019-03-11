@@ -46,7 +46,8 @@ status_output = dict()
 
 
 def getApiKey(hostname, username, password):
-    '''Generate the API key from username / password
+    '''
+    Generate the API key from username / password
     '''
 
     data = {
@@ -156,14 +157,15 @@ def getServerStatus(IP):
                 count = count + 1
                 urllib.request.urlopen(cmd, data=None, timeout=5).read()
 
-            except urllib.error.URLError:
-                logger.info("[INFO]: No response from FW. Wait 60 secs before retry")
-                time.sleep(30)
-                continue
             except urllib.error.HTTPError as e:
                 # Return code error (e.g. 404, 501, ...)
                 logger.info('Jenkins Server Returned HTTPError: {}'.format(e.code))
                 time.sleep(30)
+            except urllib.error.URLError:
+                logger.info("[INFO]: No response from FW. Wait 60 secs before retry")
+                time.sleep(30)
+                continue
+
             except Exception as e:
                 logger.info('Got generic exceptiomn {}'.format(e))
 
@@ -256,7 +258,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         logger.info("WebInDeploy failed")
         update_status('web_in_deploy_status', 'error')
         update_status('web_in_deploy_stderr', stderr)
-        print(update_status)
+        print(json.dumps(status_output))
         exit(1)
     else:
         update_status('web_in_deploy_status', 'success')
@@ -299,6 +301,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         logger.info("waf_conf failed")
         update_status('waf_conf_status', 'error')
         update_status('waf_conf_stderr', stderr)
+        print(json.dumps(status_output))
         exit(1)
     else:
         update_status('waf_conf_status', 'success')
@@ -321,7 +324,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
         elif err == 'no':
             logger.info("FW is not up...yet")
-            print("FW is not up...yet")
+            # print("FW is not up...yet")
             time.sleep(60)
             continue
 
@@ -366,14 +369,15 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     web_in_fw_conf_out = tf.output()
 
     update_status('web_in_fw_conf_output', web_in_fw_conf_out)
-    update_status('web_in_fw_conf_stdout', stdout)
-    update_status('web_in_fw_conf_stderr', stderr)
+    # update_status('web_in_fw_conf_stdout', stdout)
 
     logger.debug('Got Return code for deploy WebInFwConf {}'.format(return_code2))
 
     if return_code2 != 0:
         logger.error("WebFWConfy failed")
         update_status('web_in_fw_conf_status', 'error')
+        update_status('web_in_fw_conf_stderr', stderr)
+        print(json.dumps(status_output))
         exit(1)
     else:
         update_status('web_in_fw_conf_status', 'success')
@@ -427,3 +431,4 @@ if __name__ == '__main__':
     bootstrap_s3bucket = args.s3_bootstrap_bucket
 
     main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_s3bucket)
+

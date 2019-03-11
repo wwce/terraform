@@ -1,4 +1,4 @@
-name: aws_jenkins_exp
+ame: aws_jenkins_exp
 # label used for menu selection
 label: AWS Jenkins Security Framework
 
@@ -55,7 +55,7 @@ variables:
 # in the 'variables' section.
 snippets:
   - name: script
-    file: deploy.py
+    file: ../../deploy.py
 #    output_type:
 #    outputs:
 #      - name: app_threat_version

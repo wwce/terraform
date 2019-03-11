@@ -53,7 +53,7 @@ def main(aws_access_key, aws_secret_key, aws_region):
     # Destroy Infrastructure
     #
     tf = Terraform(working_dir='./waf_conf')
-
+    tf.cmd('init')
     if run_plan:
         print('Calling tf.plan')
         tf.plan(capture_output=False)
@@ -71,7 +71,7 @@ def main(aws_access_key, aws_secret_key, aws_region):
         logger.info("Destroyed WebInDeploy ")
 
     tf = Terraform(working_dir='./WebInDeploy')
-
+    tf.cmd('init')
     if run_plan:
         print('Calling tf.plan')
         tf.plan(capture_output=False)
@@ -83,11 +83,12 @@ def main(aws_access_key, aws_secret_key, aws_region):
     if return_code1 != 0:
         logger.info("WebInDeploy destroyed")
         deployment_status = {'WebInDeploy': 'Fail'}
-
-        exit()
+        print(deployment_status)
+        exit(1)
     else:
         deployment_status = {'WebInDeploy': 'Success'}
-        exit()
+        print(deployment_status)
+        exit(0)
 
 
 if __name__ == '__main__':
@@ -103,3 +104,4 @@ if __name__ == '__main__':
     aws_region = args.aws_region
 
     main(aws_access_key, aws_secret_key, aws_region)
+
