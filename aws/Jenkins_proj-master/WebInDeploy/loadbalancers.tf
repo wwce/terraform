@@ -1,7 +1,7 @@
 #External ALB
 
-resource "aws_lb" "ext-alb" {
-  name                       = "ext-alb"
+resource "aws_lb" "panos-alb" {
+  name                       = "panos-alb"
   internal                   = false
   security_groups            = ["${aws_security_group.sgWideOpen.id}"]
   subnets                    = ["${aws_subnet.AZ1-UNTRUST.id}", "${aws_subnet.AZ2-UNTRUST.id}"]
@@ -32,8 +32,8 @@ resource "aws_lb_target_group_attachment" "fw1" {
   port             = 80
 }
 
-resource "aws_lb_listener" "ext-alb" {
-  load_balancer_arn = "${aws_lb.ext-alb.arn}"
+resource "aws_lb_listener" "panos-alb" {
+  load_balancer_arn = "${aws_lb.panos-alb.arn}"
   port              = "80"
   protocol          = "HTTP"
 
@@ -44,7 +44,7 @@ resource "aws_lb_listener" "ext-alb" {
 }
 
 resource "aws_lb_listener_rule" "static" {
-  listener_arn = "${aws_lb_listener.ext-alb.arn}"
+  listener_arn = "${aws_lb_listener.panos-alb.arn}"
   priority     = 100
 
   action {
