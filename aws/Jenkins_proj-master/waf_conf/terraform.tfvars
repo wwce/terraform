@@ -46,4 +46,4 @@ admin_remote_ipset = [
   },
 ]
 
-alb_arn = "aws_lb.ext-alb.arn"
+alb_arn = "aws_lb.panos-alb.arn"
