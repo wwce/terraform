@@ -9,8 +9,6 @@ Usage
 
 python deploy.py -u <fwusername> -p'<fwpassword> -k <aws_key> -s <aws_secret> -r <aws_region>
 
-Outputs to file deployment_status
-
 Contents of json dict
 
 {"WebInDeploy": "Success", "WebInFWConf": "Success", "waf_conf": "Success"}
@@ -25,6 +23,8 @@ import urllib.error
 import urllib.request
 import urllib.response
 import xml
+import sys
+import subprocess
 import xml.etree.ElementTree as et
 
 from pandevice import firewall
@@ -39,8 +39,7 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
-
+logger.setLevel(logging.ERROR)
 
 # global var to keep status output
 status_output = dict()
@@ -120,34 +119,24 @@ def getFirewallStatus(fwMgtIP, api_key):
                 return 'almost'
 
 
+def update_status(key, value):
+    global status_output
+
+    if type(status_output) is not dict:
+        logger.info('Creating new status_output object')
+        status_output = dict()
+
+    if key is not None and value is not None:
+        status_output[key] = value
+
+    # print(status_output)
+
+
 def write_status_file(message_dict):
     '''
     Writes the deployment state to a dict and outputs to file for status tracking
     '''
-    # abuse global vars :-/
-    global status_output
-
-    # FIXME - make this additive and sprinkle throughout to get all tf outputs
-    status_file_path = './deployment_status.json'
-
-    with open(status_file_path, 'w+') as f:
-        fs = f.read()
-        if fs != '':
-            try:
-                fso = json.loads(fs)
-            except ValueError as ve:
-                logger.error('Could not load status file!')
-                fso = dict()
-        else:
-            fso = dict()
-
-        print('updating fso')
-        print(fso)
-        # update the dict with our new message
-        print(message_dict)
-        fso.update(message_dict)
-        status_output = fso
-        f.write(json.dumps(fso))
+    pass
 
 
 def getServerStatus(IP):
@@ -233,18 +222,17 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     # Set run_plan to TRUE is you wish to run terraform plan before apply
     run_plan = False
-    deployment_status = {}
     kwargs = {"auto-approve": True}
 
     # Class Terraform uses subprocess and setting capture_output to True will capture output
-    # capture_output = kwargs.pop('capture_output', True)
+    capture_output = kwargs.pop('capture_output', True)
 
-    # if capture_output is True:
-    #     stderr = subprocess.PIPE
-    #     stdout = subprocess.PIPE
-    # else:
-    #     stderr = sys.stderr
-    #     stdout = sys.stdou
+    if capture_output is True:
+        stderr = subprocess.PIPE
+        stdout = subprocess.PIPE
+    else:
+        stderr = sys.stderr
+        stdout = sys.stdout
 
     # Build Infrastructure
 
@@ -255,35 +243,34 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         # print('Calling tf.plan')
         tf.plan(capture_output=False, var=WebInDeploy_vars)
 
-    # return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=True, skip_plan=True, **kwargs)
+    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=True, skip_plan=True, **kwargs)
 
     web_in_deploy_output = tf.output()
 
-    print(type(web_in_deploy_output))
+    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code1))
 
-    print('='*80)
-    # write_status_file({'webindeploy_stdout', stdout})
-    # write_status_file({'webindeploy_stderr', stderr})
-    status_out = dict()
-    status_out['webindepoy'] = web_in_deploy_output
-    write_status_file(status_out)
+    # update_status('web_in_deploy_stdout', stdout)
+    update_status('web_in_deploy_output', web_in_deploy_output)
 
-    # return_code1 = 0
-    # logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code1))
-
-    # if return_code1 != 0:
-    #     logger.info("WebInDeploy failed")
-    #     deployment_status = {'WebInDeploy': 'Fail'}
-    #     write_status_file(deployment_status)
-    #     exit()
-    # else:
-    #     deployment_status = {'WebInDeploy': 'Success'}
-    #     write_status_file(deployment_status)
+    if return_code1 != 0:
+        logger.info("WebInDeploy failed")
+        update_status('web_in_deploy_status', 'error')
+        update_status('web_in_deploy_stderr', stderr)
+        print(update_status)
+        exit(1)
+    else:
+        update_status('web_in_deploy_status', 'success')
 
     albDns = tf.output('ALB-DNS')
     fwMgt = tf.output('MGT-IP-FW-1')
     nlbDns = tf.output('NLB-DNS')
     fw_trust_ip = fwMgt
+
+    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
+    WebInFWConf_vars['nlb-dns'] = nlbDns
+
+    WebInDeploy_vars['alb_dns'] = albDns
+    WebInDeploy_vars['nlb-dns'] = nlbDns
 
     #
     # Apply WAF Rules
@@ -293,30 +280,28 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     tf.cmd('init')
     kwargs = {"auto-approve": True}
     logger.info("Applying WAF config to App LB")
-    vars = WebInDeploy_vars.update({'alb_arn': albDns, 'nlb-dns': nlbDns})
+
     if run_plan:
         tf.plan(capture_output=False, var=vars, **kwargs)
-    # return_code3, stdout, stderr = tf.apply(capture_output=True, skip_plan=True,
-    #                                         var=waf_conf_vars, **kwargs)
+
+    return_code3, stdout, stderr = tf.apply(capture_output=True, skip_plan=True,
+                                            var=waf_conf_vars, **kwargs)
 
     waf_conf_out = tf.output()
 
-    # write_status_file({'waf_conf_stdout', stdout})
-    # write_status_file({'waf_conf_stderr', stderr})
-    status_out = dict()
-    status_out['waf_conf_output'] = waf_conf_out
-    write_status_file(status_out)
+    update_status('waf_conf_output', waf_conf_out)
+    # update_status('waf_conf_stdout', stdout)
+    # update_status('waf_conf_stderr', stderr)
 
-    # logger.debug('Got Return code to deploy waf_conf {}'.format(return_code3))
+    logger.debug('Got Return code to deploy waf_conf {}'.format(return_code3))
 
-    # if return_code3 != 0:
-    #     logger.info("waf_conf failed")
-    #     deployment_status.update({'waf_conf': 'Fail'})
-    #     write_status_file(deployment_status)
-    #     exit()
-    # else:
-    #     deployment_status.update({'waf_conf': 'Success'})
-    #     write_status_file(deployment_status)
+    if return_code3 != 0:
+        logger.info("waf_conf failed")
+        update_status('waf_conf_status', 'error')
+        update_status('waf_conf_stderr', stderr)
+        exit(1)
+    else:
+        update_status('waf_conf_status', 'success')
 
     logger.info("Got these values from output of first run\n\n")
     logger.info("ALB address is {}".format(albDns))
@@ -329,25 +314,25 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     api_key = getApiKey(fw_trust_ip, username, password)
 
-    # while True:
-    #     err = getFirewallStatus(fw_trust_ip, api_key)
-    #     if err == 'cmd_error':
-    #         logger.info("Command error from fw ")
-    #
-    #     elif err == 'no':
-    #         logger.info("FW is not up...yet")
-    #         print("FW is not up...yet")
-    #         time.sleep(60)
-    #         continue
-    #
-    #     elif err == 'almost':
-    #         logger.info("MGT up waiting for dataplane")
-    #         time.sleep(20)
-    #         continue
-    #
-    #     elif err == 'yes':
-    #         logger.info("FW is up")
-    #         break
+    while True:
+        err = getFirewallStatus(fw_trust_ip, api_key)
+        if err == 'cmd_error':
+            logger.info("Command error from fw ")
+
+        elif err == 'no':
+            logger.info("FW is not up...yet")
+            print("FW is not up...yet")
+            time.sleep(60)
+            continue
+
+        elif err == 'almost':
+            logger.info("MGT up waiting for dataplane")
+            time.sleep(20)
+            continue
+
+        elif err == 'yes':
+            logger.info("FW is up")
+            break
 
     fw = firewall.Firewall(hostname=fw_trust_ip, api_username=username, api_password=password)
     logger.info("Updating firewall with latest content pack")
@@ -368,32 +353,30 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     logger.info("Applying addtional config to firewall")
 
+    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
+
     if run_plan:
         tf.plan(capture_output=False, var=WebInFWConf_vars)
 
+    # update initial vars with generated fwMgt ip
+
     return_code2, stdout, stderr = tf.apply(capture_output=True, skip_plan=True,
-                                            var={'mgt-ipaddress-fw1': fwMgt, 'nlb-dns': nlbDns}, **kwargs)
+                                            var=WebInFWConf_vars, **kwargs)
 
     web_in_fw_conf_out = tf.output()
 
-    print(web_in_fw_conf_out)
-
-    # write_status_file({'web_in_conf_apply_out', stdout})
-
-    # status_out = dict()
-    # status_out['web_in_conf_outputs'] = web_in_fw_conf_out
-    # write_status_file(status_out)
+    update_status('web_in_fw_conf_output', web_in_fw_conf_out)
+    update_status('web_in_fw_conf_stdout', stdout)
+    update_status('web_in_fw_conf_stderr', stderr)
 
     logger.debug('Got Return code for deploy WebInFwConf {}'.format(return_code2))
 
     if return_code2 != 0:
-        logger.info("WebFWConfy failed")
-        deployment_status.update({'WebFWConfy': 'Fail'})
-        write_status_file(deployment_status)
-        exit()
+        logger.error("WebFWConfy failed")
+        update_status('web_in_fw_conf_status', 'error')
+        exit(1)
     else:
-        deployment_status.update({'WebFWConf': 'Success'})
-        write_status_file(deployment_status)
+        update_status('web_in_fw_conf_status', 'success')
 
     logger.info("Commit changes to firewall")
 
@@ -420,9 +403,8 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         logger.info('Jenkins Server is down')
         logger.info('\n\n   ### Deployment Complete ###')
 
-    # FIXME - add function to dump out status file to stdout (print())
-
-    print(status_output)
+    # dump out status to stdout
+    print(json.dumps(status_output))
 
 
 if __name__ == '__main__':
