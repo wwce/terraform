@@ -39,7 +39,13 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.ERROR)
+
+logger.setLevel(logging.INFO)
+
+# only needed for debugging, cli args will set these
+# aws_access_key = 'AWS API Key Here'
+# aws_secret_key = 'AWS Secret Key'
+
 
 # global var to keep status output
 status_output = dict()
