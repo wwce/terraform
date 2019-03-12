@@ -26,6 +26,7 @@ import xml
 import sys
 import subprocess
 import xml.etree.ElementTree as et
+import time
 
 from pandevice import firewall
 from pandevice import updater
@@ -39,13 +40,7 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-
-logger.setLevel(logging.INFO)
-
-# only needed for debugging, cli args will set these
-# aws_access_key = 'AWS API Key Here'
-# aws_secret_key = 'AWS Secret Key'
-
+logger.setLevel(logging.ERROR)
 
 # global var to keep status output
 status_output = dict()
@@ -67,7 +62,7 @@ def getApiKey(hostname, username, password):
     url = "https://" + hostname + "/api"
     encoded_data = urllib.parse.urlencode(data).encode('utf-8')
     api_key = ""
-    while (True):
+    while True:
         try:
             response = urllib.request.urlopen(url, data=encoded_data, context=ctx).read()
             api_key = xml.etree.ElementTree.XML(response)[0][0].text
@@ -136,14 +131,23 @@ def update_status(key, value):
     if key is not None and value is not None:
         status_output[key] = value
 
-    # print(status_output)
+    # write status to file to future tracking
+    write_status_file(status_output)
 
 
 def write_status_file(message_dict):
-    '''
+    """
     Writes the deployment state to a dict and outputs to file for status tracking
-    '''
-    pass
+    """
+    try:
+        message_json = json.dumps(message_dict)
+        with open('deployment_status.json', 'w+') as dpj:
+            dpj.write(message_json)
+
+    except ValueError as ve:
+        logger.error('Could not write status file!')
+        print('Could not write status file!')
+        sys.exit(1)
 
 
 def getServerStatus(IP):
@@ -177,10 +181,10 @@ def getServerStatus(IP):
 
             else:
                 logger.info('Jenkins Server responded with HTTP 200 code')
-                return ('server_up')
+                return 'server_up'
         else:
             break
-    return ('server_down')
+    return 'server_down'
 
 
 def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_bucket):
@@ -233,14 +237,17 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     kwargs = {"auto-approve": True}
 
     # Class Terraform uses subprocess and setting capture_output to True will capture output
-    capture_output = kwargs.pop('capture_output', True)
+    capture_output = kwargs.pop('capture_output', False)
 
     if capture_output is True:
         stderr = subprocess.PIPE
         stdout = subprocess.PIPE
     else:
+        # if capture output is False, then everything will essentially go to stdout and stderrf
         stderr = sys.stderr
         stdout = sys.stdout
+        start_time = time.asctime()
+        print(f'Starting Deployment at {start_time}\n')
 
     # Build Infrastructure
 
@@ -251,7 +258,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         # print('Calling tf.plan')
         tf.plan(capture_output=False, var=WebInDeploy_vars)
 
-    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=True, skip_plan=True, **kwargs)
+    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True, **kwargs)
 
     web_in_deploy_output = tf.output()
 
@@ -290,9 +297,9 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     logger.info("Applying WAF config to App LB")
 
     if run_plan:
-        tf.plan(capture_output=False, var=vars, **kwargs)
+        tf.plan(capture_output=capture_output, var=vars, **kwargs)
 
-    return_code3, stdout, stderr = tf.apply(capture_output=True, skip_plan=True,
+    return_code3, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,
                                             var=waf_conf_vars, **kwargs)
 
     waf_conf_out = tf.output()
@@ -365,11 +372,11 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
 
     if run_plan:
-        tf.plan(capture_output=False, var=WebInFWConf_vars)
+        tf.plan(capture_output=capture_output, var=WebInFWConf_vars)
 
     # update initial vars with generated fwMgt ip
 
-    return_code2, stdout, stderr = tf.apply(capture_output=True, skip_plan=True,
+    return_code2, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,
                                             var=WebInFWConf_vars, **kwargs)
 
     web_in_fw_conf_out = tf.output()
@@ -437,5 +444,4 @@ if __name__ == '__main__':
     bootstrap_s3bucket = args.s3_bootstrap_bucket
 
     main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_s3bucket)
-
 

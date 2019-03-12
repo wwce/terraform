@@ -56,7 +56,15 @@ variables:
 snippets:
   - name: script
     file: ../../deploy.py
-#    output_type:
+#    output_type: json
 #    outputs:
-#      - name: app_threat_version
-#        capture_pattern: result/content-updates/entry/version
+#      - name: web_in_deploy_status
+#        capture_pattern: web_in_deploy_status
+#      - name: waf_conf_status
+#        capture_pattern: waf_conf_status
+#      - name: web_in_fw_conf_status
+#        capture_pattern: web_in_fw_conf_status
+#      - name: alb-dns
+#        capture_pattern: web_in_deploy_output.ALB-DNS.value
+#      - name: native_dns
+#        capture_pattern: web_in_deploy_output.NATIVE-DNS.value
