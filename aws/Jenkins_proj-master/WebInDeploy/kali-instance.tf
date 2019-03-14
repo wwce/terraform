@@ -37,6 +37,7 @@ resource "aws_instance" "kali" {
           "wget https://jff-jenkins-attack.s3-us-west-2.amazonaws.com/docker-compose.yml\n",
           "wget https://jff-jenkins-attack.s3-us-west-2.amazonaws.com/run.sh\n",
           "wget https://jff-jenkins-attack.s3-us-west-2.amazonaws.com/auto-sploit.sh\n",
+          "wget https://raw.githubusercontent.com/nembery/terraform-1/master/aws/Jenkins_proj-master/exp-server.py\n",
           "docker-compose build\n",
           "docker-compose up -d\n"
     )))
