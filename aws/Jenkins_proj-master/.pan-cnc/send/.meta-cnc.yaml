@@ -36,7 +36,4 @@ snippets:
     path: /send
     content_type: application/json
     accepts_type: '*/*'
-    output_type: json
-    outputs:
-      - name: cli_results
-        capture_pattern: snippets.payload.results
+

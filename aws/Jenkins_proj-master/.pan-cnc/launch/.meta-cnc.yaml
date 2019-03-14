@@ -40,3 +40,4 @@ snippets:
     path: /launch
     content_type: application/json
     accepts_type: '*/*'
+
