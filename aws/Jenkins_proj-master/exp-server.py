@@ -184,11 +184,15 @@ def _launch_listener():
     else:
         listener = app.config['listener']
         if hasattr(listener, 'isalive') and listener.isalive():
-            return True
-        else:
-            listener = pexpect.spawn('nc -lvp 443')
-            found_index = listener.expect(['listening', pexpect.EOF, pexpect.TIMEOUT])
-            if found_index != 0:
+            if listener.terminate(force=True):
+                logger.debug('Removed old listener')
+            else:
+                logger.error('Could not remove old listener!')
                 return False
-            app.config['listener'] = listener
-            return True
+
+        listener = pexpect.spawn('nc -lvp 443')
+        found_index = listener.expect(['listening', pexpect.EOF, pexpect.TIMEOUT])
+        if found_index != 0:
+            return False
+        app.config['listener'] = listener
+        return True
