@@ -1,0 +1,4 @@
+pan-python==0.14.0
+pandevice==0.6.6
+python-terraform==0.10.0
+requests==2.21.0
