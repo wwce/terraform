@@ -40,7 +40,7 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 
 # global var to keep status output
 status_output = dict()
@@ -350,6 +350,8 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
             logger.info("FW is up")
             break
 
+    logger.debug('Giving the FW another 10 seconds to fully come up to avoid race conditions')
+    time.sleep(10)
     fw = firewall.Firewall(hostname=fw_trust_ip, api_username=username, api_password=password)
     logger.info("Updating firewall with latest content pack")
     updateHandle = updater.ContentUpdater(fw)
