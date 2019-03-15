@@ -13,3 +13,7 @@ output "ALB-DNS" {
 output "NATIVE-DNS" {
   value = "${aws_lb.native-alb.dns_name}"
 }
+
+output "ATTACKER_IP" {
+  value = "${aws_eip.kali.public_ip}"
+}
