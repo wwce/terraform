@@ -1,6 +1,6 @@
 name: aws_jenkins_exp
 # label used for menu selection
-label: AWS Jenkins Security Framework Infrastructure Deployment Build
+label: AWS Jenkins Security Framework Step 1 Infrastructure Deployment Build
 
 description: >
   This skillet deploys the Security Framework AWS Jenkins Exploit Protection environment.  The template deploy the Following:
@@ -17,7 +17,7 @@ extends:
 
 # Labels allow grouping and type specific options and are generally only used in advanced cases
 labels:
-  collection: Security Framework
+  collection: Jenkins Security Framework
 
 # variables define the things an operator may customize in this skillet. Things like DNS servers, NTP addresses, etc
 # may be customized for each deployment. Each variable will be rendered as a form field in the panhandler application
