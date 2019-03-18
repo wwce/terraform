@@ -6,7 +6,7 @@ description: |
   Command and Control the Jenkins Exploit
 
 # type of skillet (panos or panorama or template or terraform)
-type: rest
+type: python3
 
 # more complex skillets may express a dependency on another skillet that should be loaded before this one.
 # For example, a set of skillets may build off of a single 'golden config' that contains shared configuration
@@ -22,7 +22,7 @@ labels:
 variables:
   - name: cli
     description: Command to Send
-    default: ls /
+    default: cat /etc/passwd
     type_hint: text
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
@@ -31,9 +31,6 @@ variables:
 # in the 'variables' section.
 snippets:
   - name: payload
-    payload: send_payload.j2
-    operation: post
-    path: /send
-    content_type: application/json
-    accepts_type: '*/*'
+    file: ../../send_command.py
+
 
