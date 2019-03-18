@@ -1,9 +1,11 @@
 name: aws_jenkins_launch
 # label used for menu selection
-label: AWS Jenkins Security Framework - Launch
+label: AWS Jenkins Security Framework Step 2 - Launch exploit
 
-description: |
-  Launch the Jenkins Exploit
+description: >
+  This Skillet will launch the Jenkins exploit.  You can choose to use the native tools or select PANOS enabled
+  Security to run the exploit of Jenkins Web application.
+  
 
 # type of skillet (panos or panorama or template or terraform)
 type: python3
