@@ -177,7 +177,7 @@ def getServerStatus(IP):
                 continue
 
             except Exception as e:
-                logger.info('Got generic exceptiomn {}'.format(e))
+                logger.info('Got generic exception {}'.format(e))
 
             else:
                 logger.info('Jenkins Server responded with HTTP 200 code')
