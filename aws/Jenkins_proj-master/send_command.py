@@ -21,7 +21,7 @@ def get_terraform_outputs() -> dict:
 
 def main(cli: str) -> None:
 
-    print('Attempting to launch expliot...\n')
+    print('Attempting to launch exploit...\n')
     outputs = get_terraform_outputs()
 
     attacker = outputs['ATTACKER_IP']['value']
