@@ -78,7 +78,7 @@ resource "aws_wafregional_web_acl" "wafregional_acl" {
 
   rule {
     action {
-      type = "ALLOW"
+      type = "BLOCK"
     }
 
     priority = 8
