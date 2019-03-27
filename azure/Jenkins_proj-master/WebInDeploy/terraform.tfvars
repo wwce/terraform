@@ -6,7 +6,7 @@ azure_region = "<Azure_Region>"
 
 Admin_Username = "admin"
 
-Admin_Password = "<Admin_Password"
+Admin_Password = "<Admin_Password>"
 
 Bootstrap_Storage_Account = "<Bootstrap_Storage_Account>"
 
