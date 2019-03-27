@@ -1,0 +1,16 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+            "iam:UpdateAccountPasswordPolicy",
+            "ec2:ModifyImageAttribute",
+            "rds:ModifyDBSnapshotAttribute",
+            "s3:PutBucketAcl",
+            "ec2:RevokeSecurityGroupIngress"
+          ],
+        "Effect": "Allow",
+        "Resource": "*"
+      }
+    ]
+   }

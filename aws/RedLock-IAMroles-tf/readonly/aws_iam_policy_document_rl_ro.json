@@ -1,0 +1,47 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+            "acm:List*",
+            "apigateway:GET",
+            "appstream:Describe*",
+            "cloudtrail:GetEventSelectors",
+            "cloudtrail:LookupEvents",
+            "cloudsearch:Describe*",
+            "dynamodb:DescribeTable",
+            "ds:Describe*",
+            "elasticache:List*",
+            "eks:List*",
+            "eks:Describe*",
+            "elasticfilesystem:Describe*",
+            "elasticmapreduce:Describe*",
+            "elasticmapreduce:List*",
+            "inspector:Describe*",
+            "inspector:List*",
+            "glacier:List*",
+            "glacier:Get*",
+            "guardduty:List*",
+            "guardduty:Get*",
+            "iam:SimulatePrincipalPolicy",
+            "iam:SimulateCustomPolicy",
+            "kinesis:Describe*",
+            "kinesis:List*",
+            "rds:ListTagsForResource",
+            "sns:List*",
+            "sns:Get*",
+            "sqs:SendMessage",
+            "logs:FilterLogEvents",
+            "logs:Get*",
+            "logs:Describe*",
+            "secretsmanager:List*",
+            "secretsmanager:Describe*",
+            "lambda:List*",
+            "s3:GetAccountPublicAccessBlock",
+            "s3:GetBucketPublicAccessBlock"
+          ],
+        "Effect": "Allow",
+        "Resource": "*"
+      }
+    ]
+   }
