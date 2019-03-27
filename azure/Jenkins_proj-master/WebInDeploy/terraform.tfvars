@@ -4,7 +4,7 @@ KaliRGName = "<Attacker_RG_Name>"
 
 azure_region = "<Azure_Region>"
 
-Admin_Username = "paloalto"
+Admin_Username = "admin"
 
 Admin_Password = "<Admin_Password"
 
