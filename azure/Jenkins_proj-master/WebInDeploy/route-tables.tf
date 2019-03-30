@@ -2,8 +2,8 @@
 
 resource "azurerm_route_table" "management" {
   name                = "management"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   route {
     name           = "internet"
     address_prefix = "0.0.0.0/0"
@@ -12,8 +12,8 @@ resource "azurerm_route_table" "management" {
 }
 resource "azurerm_route_table" "untrust" {
   name                = "untrust"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   route {
     name           = "internet"
     address_prefix = "0.0.0.0/0"
@@ -23,8 +23,8 @@ resource "azurerm_route_table" "untrust" {
 
 resource "azurerm_route_table" "webservers" {
   name                = "webservers"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   route {
     name           = "internet"
     address_prefix = "0.0.0.0/0"

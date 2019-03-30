@@ -1,8 +1,15 @@
-username = "admin"
+Admin_Username = "<Admin Username>"
 
-password = "<Admin_Password>"
+Admin_Password = "<Admin Password>"
 
-untrust-ipaddress-fw1 = "10.0.1.10"
+FW_Untrust_IP = "10.0.1.10"
 
-WebSrv1_IP = "10.0.2.50"
+LB_IP = "10.0.4.10"
 
+Web_IP = "10.0.4.50"
+
+FW_Default_GW = "10.0.1.1"
+
+Web_Subnet_CIDR = "10.0.4.0/24"
+
+FW_Internal_GW = "10.0.2.1"

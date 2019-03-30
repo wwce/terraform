@@ -2,8 +2,8 @@
 
 resource "azurerm_virtual_machine" "firewall" {
 	name								= "firewall"
-	location						= "${azurerm_resource_group.resourcegroup.location}"
-	resource_group_name	= "${azurerm_resource_group.resourcegroup.name}"
+	location						= "${data.azurerm_resource_group.resourcegroup.location}"
+	resource_group_name	= "${data.azurerm_resource_group.resourcegroup.name}"
 	network_interface_ids =
 	[
 		"${azurerm_network_interface.fwmanagement.id}",

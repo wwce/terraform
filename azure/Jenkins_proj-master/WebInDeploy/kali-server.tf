@@ -1,6 +1,6 @@
 data "template_file" "attacker" {
   
-  template = "${file("${path.root}${var.KaliinitscriptPath}")}"
+  template = "${file("${path.root}${var.Attack_Initscript_Path}")}"
 }
 data "template_cloudinit_config" "attacker" {
   gzip          = true

@@ -4,8 +4,8 @@
 
 resource "azurerm_application_gateway" "appgw1" {
   name                = "appgw1"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   sku {
     name = "WAF_Medium"
     tier = "WAF"
@@ -31,7 +31,7 @@ resource "azurerm_application_gateway" "appgw1" {
   }
   backend_address_pool {
     name = "webservers"
-    ip_addresses = ["${var.Web1_IP}"]
+    ip_addresses = ["${var.Web_IP}"]
   }
   http_listener {
     name                           = "http"
@@ -59,8 +59,8 @@ resource "azurerm_application_gateway" "appgw1" {
 
 resource "azurerm_application_gateway" "appgw2" {
   name                = "appgw2"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   sku {
     name = "WAF_Medium"
     tier = "WAF"
@@ -114,8 +114,8 @@ resource "azurerm_application_gateway" "appgw2" {
 
 resource "azurerm_lb" "weblb" {
   name                = "weblb"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  location            = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   frontend_ip_configuration {
     name                          = "weblbip"
 		subnet_id                     = "${azurerm_subnet.webservers.id}"
@@ -124,7 +124,7 @@ resource "azurerm_lb" "weblb" {
   }
 }
 resource "azurerm_lb_backend_address_pool" "webservers" {
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   loadbalancer_id     = "${azurerm_lb.weblb.id}"
   name                = "webservers"
 }
@@ -134,14 +134,14 @@ resource "azurerm_network_interface_backend_address_pool_association" "webserver
   backend_address_pool_id = "${azurerm_lb_backend_address_pool.webservers.id}"
 }
 resource "azurerm_lb_probe" "webservers" {
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
+  resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   loadbalancer_id     = "${azurerm_lb.weblb.id}"
   name                = "http-running-probe"
   port                = 8080
 }
 
 resource "azurerm_lb_rule" "webservers" {
-  resource_group_name            = "${azurerm_resource_group.resourcegroup.name}"
+  resource_group_name            = "${data.azurerm_resource_group.resourcegroup.name}"
   loadbalancer_id                = "${azurerm_lb.weblb.id}"
   name                           = "WebRule"
   protocol                       = "Tcp"

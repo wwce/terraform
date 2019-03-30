@@ -1,7 +1,7 @@
 resource "azurerm_network_security_group" "PAN_FW_NSG" {
   name                = "DefaultNSG"
-  resource_group_name      = "${azurerm_resource_group.resourcegroup.name}"
-  location                 = "${azurerm_resource_group.resourcegroup.location}"
+  resource_group_name      = "${data.azurerm_resource_group.resourcegroup.name}"
+  location                 = "${data.azurerm_resource_group.resourcegroup.location}"
 
   security_rule {
     name                       = "Allow-22"
@@ -12,7 +12,7 @@ resource "azurerm_network_security_group" "PAN_FW_NSG" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
-    destination_address_prefix = "${var.FW_mgmt_IP}"
+    destination_address_prefix = "${var.FW_Mgmt_IP}"
   }
   security_rule {
     name                       = "Allow-443"
@@ -23,7 +23,7 @@ resource "azurerm_network_security_group" "PAN_FW_NSG" {
     source_port_range          = "*"
     destination_port_range     = "443"
     source_address_prefix      = "*"
-    destination_address_prefix = "${var.FW_mgmt_IP}"
+    destination_address_prefix = "${var.FW_Mgmt_IP}"
   }
   
   security_rule {
@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "PAN_FW_NSG" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "80"
-    source_address_prefix      = "${var.VNetCIDR}"
+    source_address_prefix      = "${var.Victim_CIDR}"
     destination_address_prefix = "*"
   }
 
@@ -58,7 +58,7 @@ resource "azurerm_network_security_group" "PAN_FW_NSG" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "8080"
-    source_address_prefix      = "${var.VNetCIDR}"
+    source_address_prefix      = "${var.Victim_CIDR}"
     destination_address_prefix = "*"
   }
 }

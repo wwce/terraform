@@ -1,6 +1,6 @@
 data "template_file" "cloudconfig" {
   
-  template = "${file("${path.root}${var.CloudinitscriptPath}")}"
+  template = "${file("${path.root}${var.Web_Initscript_Path}")}"
 }
 data "template_cloudinit_config" "config" {
   gzip          = true
@@ -13,8 +13,8 @@ data "template_cloudinit_config" "config" {
 
 resource "azurerm_virtual_machine" "webserver" {
   name                  = "webserver"
-  location              = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name   = "${azurerm_resource_group.resourcegroup.name}"
+  location              = "${data.azurerm_resource_group.resourcegroup.location}"
+  resource_group_name   = "${data.azurerm_resource_group.resourcegroup.name}"
   vm_size               = "Standard_A3"
 
   storage_image_reference {
