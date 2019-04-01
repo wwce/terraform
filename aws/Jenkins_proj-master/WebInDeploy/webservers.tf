@@ -34,9 +34,9 @@ resource "aws_instance" "web1" {
           "apt install docker.io python3-pip -y --force-yes\n",
           "pip3 install docker-compose\n",
           "cd /var/tmp\n",
-          "wget https://github.com/wwce/terraform/tree/master/aws/Jenkins_proj-master/jenkins/Dockerfile\n",
-          "wget https://github.com/wwce/terraform/tree/master/aws/Jenkins_proj-master/jenkins/docker-compose.yml\n",
-          "wget https://github.com/wwce/terraform/tree/master/aws/Jenkins_proj-master/jenkins/jenkins.sh\n",
+          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/Dockerfile\n",
+          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/docker-compose.yml\n",
+          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/jenkins.sh\n",
           "docker-compose build\n",
           "docker-compose up -d\n"
    )))
