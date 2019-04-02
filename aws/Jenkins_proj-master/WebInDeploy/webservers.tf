@@ -31,7 +31,7 @@ resource "aws_instance" "web1" {
           "sudo su\n",
           "apt-get update\n",
           "apt-get update\n",
-          "apt install docker.io python3-pip -y --force-yes\n",
+          "apt install docker.io python3-pip build-essential libssl-dev libffi-dev -y --force-yes\n",
           "pip3 install docker-compose\n",
           "cd /var/tmp\n",
           "wget https://jenkins-test-vuln.s3-us-west-2.amazonaws.com/Dockerfile\n",
