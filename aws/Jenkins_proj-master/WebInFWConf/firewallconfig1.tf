@@ -164,7 +164,7 @@ resource "panos_security_policies" "security_policies" {
   }
 }
 
-resource "panos_nat_rule_group" "nat1" {
+resource "panos_nat_rule" "nat1" {
   name                  = "Web1 SSH"
   source_zones          = ["${panos_zone.zone_untrust.name}"]
   destination_zone      = "${panos_zone.zone_untrust.name}"
@@ -179,7 +179,7 @@ resource "panos_nat_rule_group" "nat1" {
   dat_port              = "22"
 }
 
-resource "panos_nat_rule_group" "nat3" {
+resource "panos_nat_rule" "nat3" {
   name                  = "Webserver NAT"
   source_zones          = ["${panos_zone.zone_untrust.name}"]
   destination_zone      = "${panos_zone.zone_untrust.name}"
