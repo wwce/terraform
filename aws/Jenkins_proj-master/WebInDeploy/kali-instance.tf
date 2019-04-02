@@ -30,7 +30,7 @@ resource "aws_instance" "kali" {
       "#! /bin/bash\n",
           "sudo su\n",
           "apt-get update\n",
-          "apt install docker.io python3-pip -y --force-yes\n",
+          "apt install docker.io python3-pip build-essential libssl-dev libffi-dev -y --force-yes\n",
           "pip3 install docker-compose\n",
           "cd /var/tmp\n",
           "wget https://raw.githubusercontent.com/nembery/terraform-1/master/aws/Jenkins_proj-master/.temp/Dockerfile\n",
