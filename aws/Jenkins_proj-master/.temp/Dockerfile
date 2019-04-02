@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y git curl wget netcat nmap net-tools sud
 RUN echo 'root:paloalto' | chpasswd
 
 ENV TINI_VERSION v0.14.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /bin/tini
+ADD https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/tini /bin/tini
 RUN chmod +x /bin/tini
 
 RUN set -ex \
