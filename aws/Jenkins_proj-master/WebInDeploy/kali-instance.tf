@@ -35,7 +35,7 @@ resource "aws_instance" "kali" {
           "cd /var/tmp\n",
           "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/.temp/Dockerfile\n",
           "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/.temp/docker-compose.yml\n",
-          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/attaker/run.sh\n",
+          "wget https://github.com/wwce/terraform/blob/master/aws/Jenkins_proj-master/attacker/run.sh\n",
           "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/attacker/auto-sploit.sh\n",
           "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/exp-server.py\n",
           "docker-compose build\n",
