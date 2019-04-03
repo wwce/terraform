@@ -18,15 +18,18 @@ import argparse
 import json
 import logging
 import ssl
-import time
+import urllib.parse
 import urllib.error
 import urllib.request
 import urllib.response
 import xml
 import sys
 import subprocess
-import xml.etree.ElementTree as et
 import time
+import xml.etree.ElementTree as ET
+import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from pandevice import firewall
 from pandevice import updater
@@ -44,6 +47,118 @@ logger.setLevel(logging.INFO)
 
 # global var to keep status output
 status_output = dict()
+
+def send_request(call):
+    try:
+        r = requests.get(call, verify=False)
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as errh:
+        print("Http Error:", errh)
+        sys.exit(1)
+    except requests.exceptions.ConnectionError as errc:
+        print("Error Connecting:", errc)
+        sys.exit(1)
+    except requests.exceptions.Timeout as errt:
+        print("Timeout Error:", errt)
+        sys.exit(1)
+    except requests.exceptions.RequestException as err:
+        print("OOps: Something Else", err)
+        sys.exit(1)
+    return r
+
+def updateFw(fwMgtIP, api_key):
+
+    # Download latest applications and threats
+    type = "op"
+    cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    r = send_request(call)
+    tree = ET.fromstring(r.text)
+    jobid = tree[0][1].text
+    logger.info("Download latest Applications and Threats update - {}".format(str(jobid)))
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(5)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        if (tree[0][0][5].text == 'FIN'):
+            logger.debug("APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+            completed = 1
+        else:
+            status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+            logger.info('{0}\r'.format(status))
+
+
+    # Install latest applications and threats without committing
+    type = "op"
+    cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    r = send_request(call)
+    tree = ET.fromstring(r.text)
+    jobid = tree[0][1].text
+    print("Install latest Applications and Threats update - " + str(jobid))
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(5)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        if (tree[0][0][5].text == 'FIN'):
+            logger.debug("APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+            completed = 1
+        else:
+            status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+            print('{0}\r'.format(status))
+
+    # download latest anti-virus update
+    type = "op"
+    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    r = send_request(call)
+    #r = requests.get(call, verify=False)
+    tree = ET.fromstring(r.text)
+    jobid = tree[0][1].text
+    logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(5)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        if (tree[0][0][5].text == 'FIN'):
+            logger.debug("AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+            completed = 1
+        else:
+            status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+            print('{0}\r'.format(status))
+
+    # install latest anti-virus update without committing
+    type = "op"
+    cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    r = send_request(call)
+    tree = ET.fromstring(r.text)
+    jobid = tree[0][1].text
+    print("Install latest Anti-Virus update - " + str(jobid))
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(5)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        if (tree[0][0][5].text == 'FIN'):
+            logger.debug("AV install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+            completed = 1
+        else:
+            status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+            print('{0}\r'.format(status))
+
+
 
 
 def getApiKey(hostname, username, password):
@@ -98,7 +213,7 @@ def getFirewallStatus(fwMgtIP, api_key):
     else:
         logger.debug("Got response to 'show chassis status' {}".format(response))
 
-    resp_header = et.fromstring(response)
+    resp_header = ET.fromstring(response)
     logger.debug('Response header is {}'.format(resp_header))
 
     if resp_header.tag != 'response':
@@ -279,7 +394,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     albDns = tf.output('ALB-DNS')
     fwMgt = tf.output('MGT-IP-FW-1')
     nlbDns = tf.output('NLB-DNS')
-    fw_trust_ip = fwMgt
+    fwMgtIP = fwMgt
 
     WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
     WebInFWConf_vars['nlb-dns'] = nlbDns
@@ -328,10 +443,10 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     # Check firewall is up and running
     # #
 
-    api_key = getApiKey(fw_trust_ip, username, password)
+    api_key = getApiKey(fwMgtIP, username, password)
 
     while True:
-        err = getFirewallStatus(fw_trust_ip, api_key)
+        err = getFirewallStatus(fwMgtIP, api_key)
         if err == 'cmd_error':
             logger.info("Command error from fw ")
 
@@ -352,14 +467,16 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     logger.debug('Giving the FW another 10 seconds to fully come up to avoid race conditions')
     time.sleep(10)
-    fw = firewall.Firewall(hostname=fw_trust_ip, api_username=username, api_password=password)
+    fw = firewall.Firewall(hostname=fwMgtIP, api_username=username, api_password=password)
     logger.info("Updating firewall with latest content pack")
+
+    updateFw(fwMgtIP, api_key)
     updateHandle = updater.ContentUpdater(fw)
 
-    updateHandle.download(fw)
-    logger.info("Waiting 3 minutes for content update to download")
-    time.sleep(210)
-    updateHandle.install()
+    # updateHandle.download(fw)
+    # logger.info("Waiting 3 minutes for content update to download")
+    # time.sleep(210)
+    # updateHandle.install()
 
     #
     # Configure Firewall
@@ -446,4 +563,3 @@ if __name__ == '__main__':
     bootstrap_s3bucket = args.s3_bootstrap_bucket
 
     main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_s3bucket)
-
