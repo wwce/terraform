@@ -23,7 +23,17 @@ variables:
   - name: cli
     description: Command to Send
     default: cat /etc/passwd
-    type_hint: text
+    type_hint: dropdown
+    dd_list:
+      - key: "whoami & ps -ef"
+      - value: "whoami && ps -ef"
+      - key: "cat etc passwd"
+      - value: "cat /etc/passwd"
+      - key: "netstat -a"
+      - value: "netstat -a"
+      - key: "netstat -tn 2>/dev/null |grep :8080"
+      - value: "netstat -tn 2>/dev/null |grep :8080"
+      
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
 # determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
