@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-''''
+"""
 Paloaltonetworks deploy.py
 
 This software is provided without support, warranty, or guarantee.
@@ -12,23 +12,20 @@ python deploy.py -u <fwusername> -p'<fwpassword> -k <aws_key> -s <aws_secret> -r
 Contents of json dict
 
 {"WebInDeploy": "Success", "WebInFWConf": "Success", "waf_conf": "Success"}
-'''
+`"""
 
 import argparse
 import json
 import logging
 import ssl
-import urllib.parse
-import urllib.error
-import urllib.request
-import urllib.response
-import xml
-import sys
 import subprocess
+import sys
 import time
 import xml.etree.ElementTree as ET
+
 import requests
 import urllib3
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from pandevice import firewall
@@ -37,7 +34,7 @@ from python_terraform import Terraform
 
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
@@ -48,89 +45,137 @@ logger.setLevel(logging.INFO)
 # global var to keep status output
 status_output = dict()
 
+
 def send_request(call):
     try:
-        r = requests.get(call, verify=False)
+        r = requests.get(call, verify=False, timeout=5)
         r.raise_for_status()
     except requests.exceptions.HTTPError as errh:
-        print("Http Error:", errh)
-        sys.exit(1)
+        '''
+        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response 
+        '''
+        logger.debug("DeployRequestException Http Error:")
+        raise DeployRequestException("Http Error:")
     except requests.exceptions.ConnectionError as errc:
-        print("Error Connecting:", errc)
-        sys.exit(1)
+        logger.debug("DeployRequestException Connection Error:")
+        raise DeployRequestException("Connection Error")
     except requests.exceptions.Timeout as errt:
-        print("Timeout Error:", errt)
-        sys.exit(1)
+        logger.debug("DeployRequestException Timeout Error:")
+        raise DeployRequestException("Timeout Error")
     except requests.exceptions.RequestException as err:
-        print("OOps: Something Else", err)
-        sys.exit(1)
-    return r
+        logger.debug("DeployRequestException RequestException Error:")
+        raise DeployRequestException("Request Error")
+    else:
+        return r
 
-def updateFw(fwMgtIP, api_key):
 
-    # Download latest applications and threats
+class DeployRequestException(Exception):
+    pass
+
+
+def update_fw(fwMgtIP, api_key):
+    # # Download latest applications and threats
     type = "op"
     cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    tree = ET.fromstring(r.text)
-    jobid = tree[0][1].text
-    logger.info("Download latest Applications and Threats update - {}".format(str(jobid)))
-
+    try:
+        r = send_request(call)
+    except:
+        DeployRequestException
+        logger.debug("failed to get jobid this time.  Try again")
+    else:
+        tree = ET.fromstring(r.text)
+        jobid = tree[0][1].text
+        print("Download latest Applications and Threats update - " + str(jobid))
     completed = 0
     while (completed == 0):
-        time.sleep(5)
+        time.sleep(10)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
-        r = send_request(call)
-        tree = ET.fromstring(r.text)
-        if (tree[0][0][5].text == 'FIN'):
-            logger.debug("APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-            completed = 1
+        try:
+            r = send_request(call)
+        except:
+            DeployRequestException
+            logger.debug("failed to get jobid this time.  Try again")
         else:
-            status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-            logger.info('{0}\r'.format(status))
+            tree = ET.fromstring(r.text)
 
+            if (tree[0][0][5].text == 'FIN'):
+                logger.debug("APP+TP download Status - " + str(tree[0][0][5].text))
+                completed = 1
+            else:
+                print("Download latest Applications and Threats update")
+                status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
+                    tree[0][0][12].text) + "% complete"
+                print('{0}\r'.format(status))
 
     # Install latest applications and threats without committing
+    time.sleep(1)
     type = "op"
     cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    tree = ET.fromstring(r.text)
-    jobid = tree[0][1].text
-    print("Install latest Applications and Threats update - " + str(jobid))
-
-    completed = 0
-    while (completed == 0):
-        time.sleep(5)
-        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+    try:
         r = send_request(call)
+    except:
+        DeployRequestException
+        logger.debug("Requested content install but got response{}".format(r))
+    else:
+        print("request for content upgrade response was {}".format(r.text))
         tree = ET.fromstring(r.text)
-        if (tree[0][0][5].text == 'FIN'):
-            logger.debug("APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-            completed = 1
+        if tree.attrib['status'] == 'success':
+            '''
+            Check that we were able to schedule the install
+            Valid response would contain
+            <response status="success">
+            Invalid response would contain
+            <response status="error">
+            '''
+            jobid = tree[0][1].text
+            print("Install latest Applications and Threats update - " + str(jobid))
+
+            completed = 0
+            while (completed == 0):
+                time.sleep(10)
+                call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
+                    fwMgtIP, jobid, api_key)
+                r = send_request(call)
+                tree = ET.fromstring(r.text)
+
+                if (tree[0][0][5].text == 'FIN'):
+                    logger.debug("APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete")
+                    completed = 1
+                else:
+                    print("tree value {}".format(tree[0][0][5].text))
+                    status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
         else:
-            status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-            print('{0}\r'.format(status))
+            logger.debug("Unable to schedule install")
 
     # download latest anti-virus update
     type = "op"
     cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    #r = requests.get(call, verify=False)
-    tree = ET.fromstring(r.text)
-    jobid = tree[0][1].text
-    logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
+    try:
+        r = send_request(call)
+    except:
+        DeployRequestException
+        logger.debug("Requested AV download but got response{}".format(DeployRequestException))
+    else:
+        tree = ET.fromstring(r.text)
+        jobid = tree[0][1].text
+        logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
 
     completed = 0
     while (completed == 0):
-        time.sleep(5)
+        time.sleep(10)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         r = send_request(call)
+
         tree = ET.fromstring(r.text)
         if (tree[0][0][5].text == 'FIN'):
-            logger.debug("AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+            logger.debug(
+                "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
             completed = 1
         else:
             status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
@@ -142,23 +187,34 @@ def updateFw(fwMgtIP, api_key):
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
     r = send_request(call)
     tree = ET.fromstring(r.text)
-    jobid = tree[0][1].text
-    print("Install latest Anti-Virus update - " + str(jobid))
+    if tree.attrib['status'] == 'success':
+        '''
+        Check that we were able to schedule the install
+        Valid response would contain
+        <response status="success">
+        Invalid response would contain
+        <response status="error">
+        '''
+        jobid = tree[0][1].text
+        print("Install latest Anti-Virus update - " + str(jobid))
 
-    completed = 0
-    while (completed == 0):
-        time.sleep(5)
-        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
-        r = send_request(call)
-        tree = ET.fromstring(r.text)
-        if (tree[0][0][5].text == 'FIN'):
-            logger.debug("AV install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-            completed = 1
-        else:
-            status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-            print('{0}\r'.format(status))
+        completed = 0
+        while (completed == 0):
+            time.sleep(10)
+            call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
+                fwMgtIP, jobid, api_key)
+            r = send_request(call)
+            tree = ET.fromstring(r.text)
 
-
+            if (tree[0][0][5].text == 'FIN'):
+                logger.debug(
+                    "AV install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
+                completed = 1
+            else:
+                status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                print('{0}\r'.format(status))
+    else:
+        logger.debug("Unable to schedule install")
 
 
 def getApiKey(hostname, username, password):
@@ -166,32 +222,74 @@ def getApiKey(hostname, username, password):
     Generate the API key from username / password
     '''
 
-    data = {
-        'type': 'keygen',
-        'user': username,
-        'password': password
-    }
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    url = "https://" + hostname + "/api"
-    encoded_data = urllib.parse.urlencode(data).encode('utf-8')
+    call = "https://%s/api/?type=keygen&user=%s&password=%s" % (hostname, username, password)
+
     api_key = ""
     while True:
         try:
-            response = urllib.request.urlopen(url, data=encoded_data, context=ctx).read()
-            api_key = xml.etree.ElementTree.XML(response)[0][0].text
-        except urllib.error.URLError:
+            # response = urllib.request.urlopen(url, data=encoded_data, context=ctx).read()
+            response = send_request(call)
+
+
+        except DeployRequestException as updateerr:
             logger.info("No response from FW. Wait 20 secs before retry")
-            time.sleep(20)
+            time.sleep(10)
             continue
+
         else:
+            api_key = ET.XML(response.content)[0][0].text
             logger.info("FW Management plane is Responding so checking if Dataplane is ready")
             logger.debug("Response to get_api is {}".format(response))
             return api_key
 
 
-def getFirewallStatus(fwMgtIP, api_key):
+# def getFirewallStatus(fwMgtIP, api_key):
+#     """
+#     Gets the firewall status by sending the API request show chassis status.
+#     :param fwMgtIP:  IP Address of firewall interface to be probed
+#     :param api_key:  Panos API key
+#     """
+#     global gcontext
+#
+#     cmd = urllib.request.Request(
+#         "https://" + fwMgtIP + "/api/?type=op&cmd=<show><chassis-ready></chassis-ready></show>&key=" + api_key)
+#     # Send command to fw and see if it times out or we get a response
+#     logger.info("Sending command 'show chassis status' to firewall")
+#     try:
+#         response = urllib.request.urlopen(cmd, data=None, context=gcontext, timeout=5).read()
+#
+#     except urllib.error.URLError:
+#         logger.debug("No response from FW. So maybe not up!")
+#         return 'no'
+#         # sleep and check again?
+#     else:
+#         logger.debug("Got response to 'show chassis status' {}".format(response))
+#
+#     resp_header = ET.fromstring(response)
+#     logger.debug('Response header is {}'.format(resp_header))
+#
+#     if resp_header.tag != 'response':
+#         logger.debug("Did not get a valid 'response' string...maybe a timeout")
+#         return 'cmd_error'
+#
+#     if resp_header.attrib['status'] == 'error':
+#         logger.debug("Got an error for the command")
+#         return 'cmd_error'
+#
+#     if resp_header.attrib['status'] == 'success':
+#         # The fw responded with a successful command execution. So is it ready?
+#         for element in resp_header:
+#             if element.text.rstrip() == 'yes':
+#                 logger.info("FW Chassis is ready to accept configuration and connections")
+#                 return 'yes'
+#             else:
+#                 logger.info("FW Chassis not ready, still waiting for dataplane")
+#                 time.sleep(10)
+#                 return 'almost'
+
+def getFirewallStatus(fwIP, api_key):
+    fwip = fwIP
+
     """
     Gets the firewall status by sending the API request show chassis status.
     :param fwMgtIP:  IP Address of firewall interface to be probed
@@ -199,41 +297,50 @@ def getFirewallStatus(fwMgtIP, api_key):
     """
     global gcontext
 
-    cmd = urllib.request.Request(
-        "https://" + fwMgtIP + "/api/?type=op&cmd=<show><chassis-ready></chassis-ready></show>&key=" + api_key)
+    url = "https://%s/api/?type=op&cmd=<show><chassis-ready></chassis-ready></show>&key=%s" % (fwip, api_key)
     # Send command to fw and see if it times out or we get a response
     logger.info("Sending command 'show chassis status' to firewall")
     try:
-        response = urllib.request.urlopen(cmd, data=None, context=gcontext, timeout=5).read()
-
-    except urllib.error.URLError:
+        response = requests.get(url, verify=False, timeout=10)
+        response.raise_for_status()
+    except requests.exceptions.Timeout as fwdownerr:
         logger.debug("No response from FW. So maybe not up!")
         return 'no'
         # sleep and check again?
+    except requests.exceptions.HTTPError as fwstartgerr:
+        '''
+        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
+        raise_for_status() throws HTTPError for error responses 
+        '''
+        logger.infor("Http Error: {}: ".format(fwstartgerr))
+        return 'cmd_error'
+    except requests.exceptions.RequestException as err:
+        logger.debug("Got RequestException response from FW. So maybe not up!")
+        return 'cmd_error'
     else:
         logger.debug("Got response to 'show chassis status' {}".format(response))
 
-    resp_header = ET.fromstring(response)
-    logger.debug('Response header is {}'.format(resp_header))
+        resp_header = ET.fromstring(response.content)
+        logger.debug('Response header is {}'.format(resp_header))
 
-    if resp_header.tag != 'response':
-        logger.debug("Did not get a valid 'response' string...maybe a timeout")
-        return 'cmd_error'
+        if resp_header.tag != 'response':
+            logger.debug("Did not get a valid 'response' string...maybe a timeout")
+            return 'cmd_error'
 
-    if resp_header.attrib['status'] == 'error':
-        logger.debug("Got an error for the command")
-        return 'cmd_error'
+        if resp_header.attrib['status'] == 'error':
+            logger.debug("Got an error for the command")
+            return 'cmd_error'
 
-    if resp_header.attrib['status'] == 'success':
-        # The fw responded with a successful command execution. So is it ready?
-        for element in resp_header:
-            if element.text.rstrip() == 'yes':
-                logger.info("FW Chassis is ready to accept configuration and connections")
-                return 'yes'
-            else:
-                logger.info("FW Chassis not ready, still waiting for dataplane")
-                time.sleep(10)
-                return 'almost'
+        if resp_header.attrib['status'] == 'success':
+            # The fw responded with a successful command execution. So is it ready?
+            for element in resp_header:
+                if element.text.rstrip() == 'yes':
+                    logger.info("FW Chassis is ready to accept configuration and connections")
+                    return 'yes'
+                else:
+                    logger.info("FW Chassis not ready, still waiting for dataplane")
+                    time.sleep(10)
+                    return 'almost'
 
 
 def update_status(key, value):
@@ -271,8 +378,8 @@ def getServerStatus(IP):
     """
     global gcontext
 
-    cmd = urllib.request.Request("http://" + IP + "/")
-    logger.info('URL request is {}'.format(cmd))
+    call = ("http://" + IP + "/")
+    logger.info('URL request is {}'.format(call))
     # Send command to fw and see if it times out or we get a response
     count = 0
     max_count = 15
@@ -280,20 +387,9 @@ def getServerStatus(IP):
         if count < max_count:
             try:
                 count = count + 1
-                urllib.request.urlopen(cmd, data=None, timeout=5).read()
-
-            except urllib.error.HTTPError as e:
-                # Return code error (e.g. 404, 501, ...)
-                logger.info('Jenkins Server Returned HTTPError: {}'.format(e.code))
-                time.sleep(30)
-            except urllib.error.URLError:
-                logger.info("[INFO]: No response from FW. Wait 60 secs before retry")
-                time.sleep(30)
-                continue
-
-            except Exception as e:
-                logger.info('Got generic exception {}'.format(e))
-
+                r = send_request(call)
+            except DeployRequestException as e:
+                logger.debug("Got Invalid response".format(e))
             else:
                 logger.info('Jenkins Server responded with HTTP 200 code')
                 return 'server_up'
@@ -373,7 +469,8 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         # print('Calling tf.plan')
         tf.plan(capture_output=False, var=WebInDeploy_vars)
 
-    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True, **kwargs)
+    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True,
+                                            **kwargs)
 
     web_in_deploy_output = tf.output()
 
@@ -470,7 +567,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     fw = firewall.Firewall(hostname=fwMgtIP, api_username=username, api_password=password)
     logger.info("Updating firewall with latest content pack")
 
-    updateFw(fwMgtIP, api_key)
+    update_fw(fwMgtIP, api_key)
     updateHandle = updater.ContentUpdater(fw)
 
     # updateHandle.download(fw)
