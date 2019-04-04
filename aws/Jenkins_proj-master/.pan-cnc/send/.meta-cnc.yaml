@@ -25,13 +25,13 @@ variables:
     default: cat /etc/passwd
     type_hint: dropdown
     dd_list:
-      - key: "whoami & ps -ef"
+      - key: whoami & ps -ef
       - value: "whoami && ps -ef"
-      - key: "cat etc passwd"
+      - key: cat /etc/passwd
       - value: "cat /etc/passwd"
-      - key: "netstat -a"
+      - key: netstat -a
       - value: "netstat -a"
-      - key: "netstat -tn 2>/dev/null |grep :8080"
+      - key: netstat -tn 2>/dev/null |grep :8080
       - value: "netstat -tn 2>/dev/null |grep :8080"
       
 
