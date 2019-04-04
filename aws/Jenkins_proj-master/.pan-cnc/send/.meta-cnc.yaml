@@ -25,13 +25,13 @@ variables:
     default: cat /etc/passwd
     type_hint: dropdown
     dd_list:
-      - key: "whoami & ps -ef"
+      - key: "whoami & ps -ef--- Show who you are logged in as and running processes"
         value: "whoami && ps -ef"
-      - key: "cat /etc/passwd"
+      - key: "cat /etc/passwd--- show the contents of the passwd file"
         value: "cat /etc/passwd"
-      - key: "netstat -a"
+      - key: "netstat -a---- showing active tcp sessions"
         value: "netstat -a"
-      - key: "netstat -tn 2>/dev/null |grep :8080"
+      - key: "netstat -tn 2>/dev/null |grep :443--- Show active tcp session on port 443"
         value: "netstat -tn 2>/dev/null |grep :8080"
       
 
