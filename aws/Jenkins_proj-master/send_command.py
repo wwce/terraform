@@ -50,9 +50,14 @@ def main(cli: str) -> None:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Send Jenkins Attack Command')
     parser.add_argument('-c', '--cli', help='Attack Command', required=True)
+    parser.add_argument('-m', '--manual_cli', help='Manual Attack Command', required=False)
 
     args = parser.parse_args()
     cli = args.cli
+    mcli = args.manual_cli
 
-    main(cli)
+    if mcli is not None and mcli != '':
+        main(mcli)
+    else:
+        main(cli)
 
