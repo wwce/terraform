@@ -33,7 +33,10 @@ variables:
         value: "netstat -a"
       - key: "netstat -tn 2>/dev/null |grep :443--- Show active tcp session on port 443"
         value: "netstat -tn 2>/dev/null |grep :443"
-
+  - name: manual_cli
+    description: Manual Command to Send
+    default: ''
+    type_hint: text
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
 # determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
 # to load and parse. Jinja2 style variables will be variable interpolated using the values of the 'variables' defined
