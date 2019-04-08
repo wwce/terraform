@@ -37,7 +37,7 @@ from python_terraform import Terraform
 _archive_dir = './WebInDeploy/bootstrap'
 _content_update_dir = './WebInDeploy/content_updates/'
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
@@ -96,20 +96,22 @@ def update_fw(fwMgtIP, api_key):
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
+            logger.info('Response to show jobs was {}'.format(r.text))
         except:
             DeployRequestException
             logger.debug("failed to get jobid this time.  Try again")
         else:
             tree = ET.fromstring(r.text)
+            if tree.attrib['status'] == 'success':
 
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug("APP+TP download Status - " + str(tree[0][0][5].text))
-                completed = 1
-            else:
-                print("Download latest Applications and Threats update")
-                status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
-                    tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
+                if (tree[0][0][5].text == 'FIN'):
+                    logger.debug("APP+TP download Complete " )
+                    completed = 1
+                else:
+                    print("Download latest Applications and Threats update")
+                    status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
 
     # Install latest applications and threats without committing
     time.sleep(1)
@@ -142,16 +144,16 @@ def update_fw(fwMgtIP, api_key):
                     fwMgtIP, jobid, api_key)
                 r = send_request(call)
                 tree = ET.fromstring(r.text)
+                if tree.attrib['status'] == 'success':
 
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                        tree[0][0][12].text) + "% complete")
-                    completed = 1
-                else:
-                    print("tree value {}".format(tree[0][0][5].text))
-                    status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                        tree[0][0][12].text) + "% complete"
-                    print('{0}\r'.format(status))
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP install Complete ")
+                        completed = 1
+                    else:
+                        print("tree value {}".format(tree[0][0][5].text))
+                        status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
+                            tree[0][0][12].text) + "% complete"
+                        print('{0}\r'.format(status))
         else:
             logger.debug("Unable to schedule install")
 
@@ -176,13 +178,16 @@ def update_fw(fwMgtIP, api_key):
         r = send_request(call)
 
         tree = ET.fromstring(r.text)
-        if (tree[0][0][5].text == 'FIN'):
-            logger.debug(
-                "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-            completed = 1
-        else:
-            status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-            print('{0}\r'.format(status))
+        logger.debug('Got response for show job {}'.format(r.text))
+        if tree.attrib['status'] == 'success':
+
+            if (tree[0][0][5].text == 'FIN'):
+                logger.debug(
+                    "AV download Complete - ")
+                completed = 1
+            else:
+                status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                print('{0}\r'.format(status))
 
     # install latest anti-virus update without committing
     type = "op"
@@ -190,6 +195,7 @@ def update_fw(fwMgtIP, api_key):
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
     r = send_request(call)
     tree = ET.fromstring(r.text)
+    logger.debug('Got response for show job {}'.format(r.text))
     if tree.attrib['status'] == 'success':
         '''
         Check that we were able to schedule the install
@@ -209,13 +215,15 @@ def update_fw(fwMgtIP, api_key):
             r = send_request(call)
             tree = ET.fromstring(r.text)
 
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug(
-                    "AV install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-                completed = 1
-            else:
-                status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
+            logger.debug('Got response for show job {}'.format(r.text))
+            if tree.attrib['status'] == 'success':
+
+                if (tree[0][0][5].text == 'FIN'):
+                    logger.debug("AV install Status Complete ")
+                    completed = 1
+                else:
+                    status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
     else:
         logger.debug("Unable to schedule install")
 
@@ -620,7 +628,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
-
+  
 
     args = parser.parse_args()
     username = args.username
