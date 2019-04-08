@@ -17,3 +17,11 @@ output "NATIVE-DNS" {
 output "ATTACKER_IP" {
   value = "${azurerm_public_ip.attacker.ip_address}"
 }
+
+output "RG_Name" {
+  value = "${data.azurerm_resource_group.resourcegroup.name}"
+}
+
+output "Attacker_RG_Name" {
+  value = "${azurerm_resource_group.attackgroup.name}"
+}
