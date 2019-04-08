@@ -37,16 +37,14 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-def main(username, password, attack_rg_name, rg_name):
+def main(username, password):
 
     username = username
     password = password
 
     WebInDeploy_vars = {
         'Admin_Username': username,
-        'Admin_Password': password,
-        'Attack_RG_Name': attack_rg_name,
-        'RG_Name': rg_name
+        'Admin_Password': password
     }
 
     WebInBootstrap_vars = {
@@ -67,6 +65,14 @@ def main(username, password, attack_rg_name, rg_name):
     # Destroy Infrastructure
     #
     tf = Terraform(working_dir='./WebInDeploy')
+    rg_name = tf.output('RG_Name')
+
+    attack_rg_name = tf.output('Attacker_RG_Name')
+    logger.info('Got RG_Name {} and Attacker_RG_Name {}'.format(rg_name, attack_rg_name))
+
+    WebInDeploy_vars.update({'RG_Name' : rg_name})
+    WebInDeploy_vars.update({'Attack_RG_Name': attack_rg_name})
+
 
     if run_plan:
         print('Calling tf.plan')
@@ -85,9 +91,8 @@ def main(username, password, attack_rg_name, rg_name):
 
         logger.info("Destroyed WebInDeploy ")
 
-
-
-
+    WebInBootstrap_vars.update({'RG_Name': rg_name})
+    WebInBootstrap_vars.update({'Attack_RG_Name': attack_rg_name})
 
 
     tf = Terraform(working_dir='./WebInBootstrap')
@@ -114,13 +119,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
-    parser.add_argument('-a', '--attack_rg_name', help='Attack RG Name', required=True)
-    parser.add_argument('-g', '--rg_name', help='RG Name', required=True)
+
 
     args = parser.parse_args()
     username = args.username
     password = args.password
-    attack_rg_name = args.attack_rg_name
-    rg_name = args.rg_name
 
-    main(username, password, attack_rg_name, rg_name)
+
+    main(username, password)
