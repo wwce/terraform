@@ -1,4 +1,4 @@
-name: aws_jenkins_exp_teardown
+name: azure_jenkins_exp_teardown
 # label used for menu selection
 label: Azure Jenkins Security Framework Step 4 Teardown
 

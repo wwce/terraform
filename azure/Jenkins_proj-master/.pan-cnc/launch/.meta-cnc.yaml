@@ -1,4 +1,4 @@
-name: aws_jenkins_launch
+name: azure_jenkins_launch
 # label used for menu selection
 label: Azure Jenkins Security Framework Step 2 Launch exploit
 

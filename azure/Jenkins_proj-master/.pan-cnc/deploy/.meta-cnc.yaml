@@ -1,4 +1,4 @@
-name: aws_jenkins_exp
+name: azure_jenkins_exp
 # label used for menu selection
 label: Azure Jenkins Security Framework Step 1 Infrastructure Deployment Build
 

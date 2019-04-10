@@ -1,4 +1,4 @@
-name: aws_jenkins_send
+name: azure_jenkins_send
 # label used for menu selection
 label: Azure Jenkins Security Framework Step 3 Send Command
 
