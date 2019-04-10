@@ -15,30 +15,17 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 # Author: Justin Harris jharris@paloaltonetworks.com
+
+Usage:
+
+python destroy.py
+
 """
 
-'''
-Destroys resources post testing
-
-Usage
-
-python deploy.py -u <fwusername> -p <fwpassword>
-
-'''
-
-import logging
-import ssl
-import urllib
-import xml.etree.ElementTree as et
-import xml
-import time
 import argparse
-import json
-import sys
+import logging
 
-from pandevice import firewall
-from pandevice import updater
-from  python_terraform import Terraform
+from python_terraform import Terraform
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -49,7 +36,6 @@ logger.setLevel(logging.INFO)
 
 
 def main(username, password):
-
     username = username
     password = password
 
@@ -81,21 +67,19 @@ def main(username, password):
     attack_rg_name = tf.output('Attacker_RG_Name')
     logger.info('Got RG_Name {} and Attacker_RG_Name {}'.format(rg_name, attack_rg_name))
 
-    WebInDeploy_vars.update({'RG_Name' : rg_name})
+    WebInDeploy_vars.update({'RG_Name': rg_name})
     WebInDeploy_vars.update({'Attack_RG_Name': attack_rg_name})
-
 
     if run_plan:
         print('Calling tf.plan')
         tf.plan(capture_output=False)
 
-    return_code1, stdout, stderr = tf.cmd('destroy',var = WebInDeploy_vars, capture_output=False,**kwargs)
-    #return_code1 =0
+    return_code1, stdout, stderr = tf.cmd('destroy', var=WebInDeploy_vars, capture_output=False, **kwargs)
+    # return_code1 =0
     print('Got return code {}'.format(return_code1))
 
     if return_code1 != 0:
         logger.info("Failed to destroy build ")
-
 
         exit()
     else:
@@ -105,15 +89,14 @@ def main(username, password):
     WebInBootstrap_vars.update({'RG_Name': rg_name})
     WebInBootstrap_vars.update({'Attack_RG_Name': attack_rg_name})
 
-
     tf = Terraform(working_dir='./WebInBootstrap')
 
     if run_plan:
         print('Calling tf.plan')
         tf.plan(capture_output=False)
 
-    return_code1, stdout, stderr = tf.cmd('destroy',var = WebInBootstrap_vars,capture_output=False,**kwargs)
-    #return_code1 =0
+    return_code1, stdout, stderr = tf.cmd('destroy', var=WebInBootstrap_vars, capture_output=False, **kwargs)
+    # return_code1 =0
     print('Got return code {}'.format(return_code1))
 
     if return_code1 != 0:
@@ -122,7 +105,7 @@ def main(username, password):
 
         exit()
     else:
-        deployment_status = {'WebInDeploy':'Success'}
+        deployment_status = {'WebInDeploy': 'Success'}
         exit()
 
 
@@ -131,10 +114,8 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
 
-
     args = parser.parse_args()
     username = args.username
     password = args.password
-
 
     main(username, password)
