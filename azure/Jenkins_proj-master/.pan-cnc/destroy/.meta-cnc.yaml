@@ -20,18 +20,14 @@ labels:
 # variables define the things an operator may customize in this skillet. Things like DNS servers, NTP addresses, etc
 # may be customized for each deployment. Each variable will be rendered as a form field in the panhandler application
 variables:
-#  - name: aws_access_key
-#    description: Azure Access Key
-#    default: abc123
-#    type_hint: text
-#  - name: aws_secret_key
-#    description: Azure Secret Key
-#    default:
-#    type_hint: password
-#  - name: aws_region
-#    description: Azure Region
-#    default: us-east-2
-#    type_hint: text
+  - name: username
+    description: FW Username
+    default: admin
+    type_hint: text
+  - name: password
+    description: FW Password
+    default:
+    type_hint: password
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
 # determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
