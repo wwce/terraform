@@ -17,7 +17,7 @@
 # Author: Justin Harris jharris@paloaltonetworks.com
 
 Usage:
-
+git
 python destroy.py
 
 """

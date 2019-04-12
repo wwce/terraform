@@ -424,13 +424,17 @@ def getServerStatus(IP):
     return 'server_down'
 
 
-def main(username, password):
+def main(username, password, rg_name):
     username = username
     password = password
 
+    WebInBootstrap_vars = {
+        'RG_Name': rg_name
+    }
+
     WebInDeploy_vars = {
         'Admin_Username': username,
-        'Admin_Password': password,
+        'Admin_Password': password
     }
 
     WebInFWConf_vars = {
@@ -463,7 +467,8 @@ def main(username, password):
     if run_plan:
         # print('Calling tf.plan')
         tf.plan(capture_output=False)
-    return_code1, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True, **kwargs)
+    return_code1, stdout, stderr = tf.apply(vars=WebInBootstrap_vars, capture_output=capture_output,
+                                            skip_plan=True, **kwargs)
 
     resource_group = tf.output('Resource_Group')
     bootstrap_bucket = tf.output('Bootstrap_Bucket')
@@ -633,9 +638,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
+    parser.add_argument('-r', '--resource_group', help='Resource Group', required=True)
 
     args = parser.parse_args()
     username = args.username
     password = args.password
+    resource_group = args.resource_group
 
     main(username, password)

@@ -30,6 +30,10 @@ variables:
     description: FW Password
     default:
     type_hint: password
+  - name: resource_group
+    description: Azure Resource Group
+    default: cloud-security-framework-changeme
+    type_hint: text
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
 # determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
