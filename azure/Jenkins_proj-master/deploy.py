@@ -645,4 +645,4 @@ if __name__ == '__main__':
     password = args.password
     resource_group = args.resource_group
 
-    main(username, password)
+    main(username, password, resource_group)
