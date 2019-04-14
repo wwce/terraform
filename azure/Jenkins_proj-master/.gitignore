@@ -1,0 +1,5 @@
+.venv
+terraform.tfstate
+.terraform
+Pipfile*
+.pipenv_init_done

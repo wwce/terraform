@@ -63,7 +63,7 @@ def send_request(call):
         r.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         '''
-        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response 
+        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
         '''
         logger.debug("DeployRequestException Http Error:")
         raise DeployRequestException("Http Error:")
@@ -286,7 +286,7 @@ def getFirewallStatus(fwIP, api_key):
     except requests.exceptions.HTTPError as fwstartgerr:
         '''
         Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
-        raise_for_status() throws HTTPError for error responses 
+        raise_for_status() throws HTTPError for error responses
         '''
         logger.infor("Http Error: {}: ".format(fwstartgerr))
         return 'cmd_error'
