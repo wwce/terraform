@@ -502,7 +502,7 @@ def main(username, password, rg_name):
     # Build Infrastructure
 
     tf = Terraform(working_dir='./WebInDeploy')
-    print("vars {}".format(WebInDeploy_vars))
+    # print("vars {}".format(WebInDeploy_vars))
     tf.cmd('init')
     if run_plan:
         # print('Calling tf.plan')
