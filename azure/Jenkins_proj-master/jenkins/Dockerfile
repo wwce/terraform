@@ -14,7 +14,7 @@ RUN groupadd -g 1000 jenkins \
     && echo 'jenkins:jenkins' | chpasswd
     
 ENV TINI_VERSION v0.14.0
-ADD https://github.com/wwce/terraform/blob/master/aws/Jenkins_proj-master/jenkins/tini?raw=true /bin/tini
+ADD https://github.com/wwce/terraform/blob/master/azure/Jenkins_proj-master/jenkins/tini?raw=true /bin/tini
 RUN chmod +x /bin/tini
 
 ENV JENKINS_VERSION 2.32.1
