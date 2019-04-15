@@ -1,6 +1,7 @@
 resource "random_id" "storage_account" {
   byte_length = 8
 }
+
 resource "azurerm_storage_account" "jenkins" {
   name                     = "${lower(random_id.storage_account.hex)}"
   resource_group_name      = "${azurerm_resource_group.resourcegroup.name}"
