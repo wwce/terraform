@@ -24,7 +24,7 @@ labels:
 variables:
   - name: username
     description: FW Username
-    default: admin
+    default: panadmin
     type_hint: text
   - name: password
     description: FW Password
