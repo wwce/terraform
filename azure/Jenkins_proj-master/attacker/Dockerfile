@@ -39,4 +39,4 @@ ENTRYPOINT ["/bin/tini", "--"]
 ENV FLASK_APP=/root/exp-server.py
 
 # CMD ["/usr/local/bin/run.sh"]
-CMD ["flask", "run"' "--host=0.0.0.0"]
+CMD ["/usr/local/bin/flask", "run", "--host=0.0.0.0"]
