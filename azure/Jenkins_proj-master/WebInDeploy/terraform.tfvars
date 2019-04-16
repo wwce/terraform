@@ -1,6 +1,6 @@
 Attack_RG_Name = "<Attacker RG Name>"
 
-Azure_Region = "central us"
+Azure_Region = "<Azure Region>"
 
 Admin_Username = "<Admin Username>"
 
