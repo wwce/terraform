@@ -91,22 +91,23 @@ def update_fw(fwMgtIP, api_key):
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
     try:
         r = send_request(call)
-    except:
-        DeployRequestException
+    except DeployRequestException:
         logger.debug("failed to get jobid this time.  Try again")
     else:
         tree = ET.fromstring(r.text)
         jobid = tree[0][1].text
         print("Download latest Applications and Threats update - " + str(jobid))
     completed = 0
-    while (completed == 0):
+    while completed == 0:
         time.sleep(10)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
             logger.info('Response to show jobs was {}'.format(r.text))
-        except:
-            DeployRequestException
+            if 'not found' in r.text:
+                raise DeployRequestException(r.text)
+
+        except DeployRequestException:
             logger.debug("failed to get jobid this time.  Try again")
         else:
             tree = ET.fromstring(r.text)
