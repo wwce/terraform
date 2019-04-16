@@ -134,7 +134,7 @@ resource "panos_security_policies" "security_policies" {
     hip_profiles          = ["any"]
     destination_zones     = ["${panos_zone.zone_trust.name}", "${panos_zone.zone_untrust.name}"]
     destination_addresses = ["any"]
-    applications          = ["web-browsing", "jenkins"]
+    applications          = ["web-browsing", "jenkins", "windows-azure-base"]
     services              = ["service-http", "${panos_service_object.so_81.name}"]
     categories            = ["any"]
     group                 = "Inbound"
