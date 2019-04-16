@@ -5,3 +5,4 @@ services:
     container_name: attacker
     ports:
       - "443:443"
+      - "5000:5000"
