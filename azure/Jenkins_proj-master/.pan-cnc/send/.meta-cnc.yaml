@@ -4,7 +4,6 @@ label: Azure Jenkins Security Framework Step 3 Send Command
 
 description: >
   This Skillet will allow you to interact and send commands to the exploited Jenkins system.
-
 # type of skillet (panos or panorama or template or terraform)
 type: python3
 
