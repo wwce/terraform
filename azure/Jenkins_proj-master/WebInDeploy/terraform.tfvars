@@ -16,7 +16,7 @@ Storage_Account_Fileshare_Directory = "None"
 
 Web_Initscript_Path = "/scripts/initialize_webserver1.sh"
 
-Attack_Initscript_Path = "/scripts/initialize_attacker1.sh"
+Attack_Initscript_Path = "/scripts/initialize_attacker.sh"
 
 Victim_CIDR = "10.0.0.0/16"
 
