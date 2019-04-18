@@ -53,6 +53,7 @@ resource "azurerm_application_gateway" "appgw1" {
     backend_address_pool_name  = "webservers"
     backend_http_settings_name = "http"
   }
+  depends_on = ["data.azurerm_resource_group.resourcegroup"]
 }
 
 #### AppGW2 ####
@@ -108,6 +109,7 @@ resource "azurerm_application_gateway" "appgw2" {
     backend_address_pool_name  = "firewalls"
     backend_http_settings_name = "http"
   }
+  depends_on = ["data.azurerm_resource_group.resourcegroup"]
 }
 
 #### INTERNAL APP FACING LOAD BALANCER ####
