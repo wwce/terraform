@@ -598,16 +598,19 @@ def main(username, password):
 
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
+    parser.add_argument('-r', '--resource_group', help='Resource Group', required=True)
+    parser.add_argument('-j', '--azure_region', help='Azure Region', required=True)
 
     args = parser.parse_args()
     username = args.username
     password = args.password
+    resource_group = args.resource_group
+    azure_region = args.azure_region
 
-    main(username, password)
+    main(username, password, resource_group, azure_region)
 
 
 
