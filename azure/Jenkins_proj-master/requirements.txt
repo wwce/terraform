@@ -181,3 +181,4 @@ vsts-cd-manager
 wcwidth
 websocket-client
 xmltodict
+collections
