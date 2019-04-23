@@ -1,46 +1,40 @@
 #!/usr/bin/env python3
 """
-# Copyright (c) 2018, Palo Alto Networks
-#
-# Permission to use, copy, modify, and/or distribute this software for any
-# purpose with or without fee is hereby granted, provided that the above
-# copyright notice and this permission notice appear in all copies.
-#
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+Paloaltonetworks deploy.py
 
-# Author: Justin Harris jharris@paloaltonetworks.com
+This software is provided without support, warranty, or guarantee.
+Use at your own risk.
 
 Usage
 
 python deploy.py -u <fwusername> -p'<fwpassword>
 
-"""
+Contents of json dict
+
+{"WebInDeploy": "Success", "WebInFWConf": "Success", "waf_conf": "Success"}
+`"""
 
 import argparse
 import json
 import logging
-import os
+import ssl
 import subprocess
 import sys
 import time
-import uuid
 import xml.etree.ElementTree as ET
-
+import os
+import uuid
 import requests
 import urllib3
+import xmltodict
 from azure.common import AzureException
 from azure.storage.file import FileService
-from pandevice import firewall
-from python_terraform import Terraform
-
 # from . import cache_utils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+from pandevice import firewall
+from python_terraform import Terraform
+from collections import OrderedDict
 
 _archive_dir = './WebInDeploy/bootstrap'
 _content_update_dir = './WebInDeploy/content_updates/'
@@ -58,12 +52,17 @@ status_output = dict()
 
 
 def send_request(call):
+
+    headers = {'Accept-Encoding' : 'None',
+               'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
     try:
-        r = requests.get(call, verify=False, timeout=5)
+        r = requests.get(call, headers = headers, verify=False, timeout=5)
         r.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         '''
-        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
+        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response 
         '''
         logger.debug("DeployRequestException Http Error:")
         raise DeployRequestException("Http Error:")
@@ -83,142 +82,104 @@ def send_request(call):
 class DeployRequestException(Exception):
     pass
 
+def listRecursive (d, key):
+    for k, v in d.items ():
+        if isinstance (v, OrderedDict):
+            for found in listRecursive (v, key):
+                yield found
+        if k == key:
+            yield v
 
 def update_fw(fwMgtIP, api_key):
     # # Download latest applications and threats
+
     type = "op"
     cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("failed to get jobid this time.  Try again")
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        print("Download latest Applications and Threats update - " + str(jobid))
+    getupdate =0
+    jobid = ''
+    key ='job'
+    while getupdate == 0:
+        try:
+            r = send_request(call)
+            logger.info('Got response {} to request for content upgrade '.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    for found in listRecursive(dict, 'job'):
+                        jobid = found
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getupdate = 1
+
+
     completed = 0
     while (completed == 0):
-        time.sleep(10)
+        time.sleep(30)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
-            logger.info('Response to show jobs was {}'.format(r.text))
+            logger.info('Got Response {} to show jobs '.format(r.text))
         except:
             DeployRequestException
             logger.debug("failed to get jobid this time.  Try again")
         else:
             tree = ET.fromstring(r.text)
             if tree.attrib['status'] == 'success':
-
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("APP+TP download Complete ")
-                    completed = 1
-                else:
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP download Complete " )
+                        completed = 1
                     print("Download latest Applications and Threats update")
                     status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
                         tree[0][0][12].text) + "% complete"
                     print('{0}\r'.format(status))
-
-    # Install latest applications and threats without committing
-    time.sleep(1)
-    type = "op"
-    cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested content install but got response{}".format(r))
-    else:
-        print("request for content upgrade response was {}".format(r.text))
-        tree = ET.fromstring(r.text)
-        if tree.attrib['status'] == 'success':
-            '''
-            Check that we were able to schedule the install
-            Valid response would contain
-            <response status="success">
-            Invalid response would contain
-            <response status="error">
-            '''
-            jobid = tree[0][1].text
-            print("Install latest Applications and Threats update - " + str(jobid))
-
-            completed = 0
-            while (completed == 0):
-                time.sleep(10)
-                call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
-                    fwMgtIP, jobid, api_key)
-                r = send_request(call)
-                tree = ET.fromstring(r.text)
-                if tree.attrib['status'] == 'success':
-
-                    if (tree[0][0][5].text == 'FIN'):
-                        logger.debug("APP+TP install Complete ")
-                        completed = 1
-                    else:
-                        print("tree value {}".format(tree[0][0][5].text))
-                        status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                            tree[0][0][12].text) + "% complete"
-                        print('{0}\r'.format(status))
-        else:
-            logger.debug("Unable to schedule install")
-
-    # download latest anti-virus update
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested AV download but got response{}".format(DeployRequestException))
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
-
-    completed = 0
-    while (completed == 0):
-        time.sleep(10)
-        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
-        r = send_request(call)
-
-        tree = ET.fromstring(r.text)
-        logger.debug('Got response for show job {}'.format(r.text))
-        if tree.attrib['status'] == 'success':
-
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug(
-                    "AV download Complete - ")
-                completed = 1
+                except:
+                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
             else:
-                status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(
-                    tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
+                logger.info('Unable to determine job status')
+
 
     # install latest anti-virus update without committing
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    tree = ET.fromstring(r.text)
-    logger.debug('Got response for show job {}'.format(r.text))
-    if tree.attrib['status'] == 'success':
-        '''
-        Check that we were able to schedule the install
-        Valid response would contain
-        <response status="success">
-        Invalid response would contain
-        <response status="error">
-        '''
-        jobid = tree[0][1].text
-        print("Install latest Anti-Virus update - " + str(jobid))
+    getjobid =0
+    jobid = ''
+    key ='job'
+    while getjobid == 0:
+        try:
+
+            type = "op"
+            cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
+            call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+            r = send_request(call)
+            logger.info('Got response to request AV install {}'.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    for found in listRecursive(dict, 'job'):
+                        jobid = found
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
 
         completed = 0
         while (completed == 0):
-            time.sleep(10)
+            time.sleep(30)
             call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
                 fwMgtIP, jobid, api_key)
             r = send_request(call)
@@ -226,15 +187,18 @@ def update_fw(fwMgtIP, api_key):
 
             logger.debug('Got response for show job {}'.format(r.text))
             if tree.attrib['status'] == 'success':
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("AV install Status Complete ")
+                        completed = 1
+                    else:
+                        status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                        print('{0}\r'.format(status))
+                except:
+                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
 
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("AV install Status Complete ")
-                    completed = 1
-                else:
-                    status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-                    print('{0}\r'.format(status))
-    else:
-        logger.debug("Unable to schedule install")
+            else:
+                logger.info('Unable to determine job status')
 
 
 def getApiKey(hostname, username, password):
@@ -263,6 +227,7 @@ def getApiKey(hostname, username, password):
             return api_key
 
 
+
 def getFirewallStatus(fwIP, api_key):
     fwip = fwIP
 
@@ -286,7 +251,7 @@ def getFirewallStatus(fwIP, api_key):
     except requests.exceptions.HTTPError as fwstartgerr:
         '''
         Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
-        raise_for_status() throws HTTPError for error responses
+        raise_for_status() throws HTTPError for error responses 
         '''
         logger.infor("Http Error: {}: ".format(fwstartgerr))
         return 'cmd_error'
@@ -397,7 +362,6 @@ def create_azure_fileshare(share_prefix, account_name, account_key):
     print('all done')
     return share_name
 
-
 def getServerStatus(IP):
     """
     Gets the server status by sending an HTTP request and checking for a 200 response code
@@ -424,19 +388,14 @@ def getServerStatus(IP):
     return 'server_down'
 
 
-def main(username, password, rg_name, azure_region):
+def main(username, password):
+
     username = username
     password = password
-
-    WebInBootstrap_vars = {
-        'RG_Name': rg_name,
-        'Azure_Region': azure_region
-    }
 
     WebInDeploy_vars = {
         'Admin_Username': username,
         'Admin_Password': password,
-        'Azure_Region': azure_region
     }
 
     WebInFWConf_vars = {
@@ -469,8 +428,7 @@ def main(username, password, rg_name, azure_region):
     if run_plan:
         # print('Calling tf.plan')
         tf.plan(capture_output=False)
-    return_code1, stdout, stderr = tf.apply(vars=WebInBootstrap_vars, capture_output=capture_output,
-                                            skip_plan=True, **kwargs)
+    return_code1, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,**kwargs)
 
     resource_group = tf.output('Resource_Group')
     bootstrap_bucket = tf.output('Bootstrap_Bucket')
@@ -504,14 +462,13 @@ def main(username, password, rg_name, azure_region):
     # Build Infrastructure
 
     tf = Terraform(working_dir='./WebInDeploy')
-    # print("vars {}".format(WebInDeploy_vars))
+    print("vars {}".format(WebInDeploy_vars))
     tf.cmd('init')
     if run_plan:
         # print('Calling tf.plan')
         tf.plan(capture_output=False, var=WebInDeploy_vars)
 
-    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True,
-                                            **kwargs)
+    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True, **kwargs)
 
     web_in_deploy_output = tf.output()
 
@@ -533,10 +490,13 @@ def main(username, password, rg_name, azure_region):
     nlbDns = tf.output('NLB-DNS')
     fwMgtIP = tf.output('MGT-IP-FW-1')
 
+
     logger.info("Got these values from output \n\n")
     logger.info("AppGateway address is {}".format(albDns))
     logger.info("Internal loadbalancer address is {}".format(nlbDns))
     logger.info("Firewall Mgt address is {}".format(fwMgt))
+
+
 
     #
     # Check firewall is up and running
@@ -570,6 +530,7 @@ def main(username, password, rg_name, azure_region):
     logger.info("Updating firewall with latest content pack")
 
     update_fw(fwMgtIP, api_key)
+
 
     #
     # Configure Firewall
@@ -637,16 +598,17 @@ def main(username, password, rg_name, azure_region):
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
-    parser.add_argument('-r', '--resource_group', help='Resource Group', required=True)
-    parser.add_argument('-j', '--azure_region', help='Azure Region', required=True)
 
     args = parser.parse_args()
     username = args.username
     password = args.password
-    resource_group = args.resource_group
-    azure_region = args.azure_region
 
-    main(username, password, resource_group, azure_region)
+    main(username, password)
+
+
+
+
