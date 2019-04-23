@@ -31,6 +31,7 @@ import sys
 import time
 import uuid
 import xml.etree.ElementTree as ET
+import xmltodict
 
 import requests
 import urllib3
@@ -38,6 +39,7 @@ from azure.common import AzureException
 from azure.storage.file import FileService
 from pandevice import firewall
 from python_terraform import Terraform
+from collections2 import OrderedDict
 
 # from . import cache_utils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -58,12 +60,17 @@ status_output = dict()
 
 
 def send_request(call):
+    
+    headers = {'Accept-Encoding' : 'None',
+               'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
     try:
-        r = requests.get(call, verify=False, timeout=5)
+        r = requests.get(call, headers = headers, verify=False, timeout=5)
         r.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         '''
-        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response
+        Firewall may return 5xx error when rebooting.  Need to handle a 5xx response 
         '''
         logger.debug("DeployRequestException Http Error:")
         raise DeployRequestException("Http Error:")
@@ -84,141 +91,108 @@ class DeployRequestException(Exception):
     pass
 
 
+def listRecursive (d, key):
+    for k, v in d.items ():
+        if isinstance (v, OrderedDict):
+            for found in listRecursive (v, key):
+                yield found
+        if k == key:
+            yield v
+
 def update_fw(fwMgtIP, api_key):
     # # Download latest applications and threats
+
     type = "op"
     cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("failed to get jobid this time.  Try again")
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        print("Download latest Applications and Threats update - " + str(jobid))
+    getjobid =0
+    jobid = ''
+    key ='job'
+
+    # FIXME - Remove Duplicate code for parsing jobid
+
+    while getjobid == 0:
+        try:
+            r = send_request(call)
+            logger.info('Got response {} to request for content upgrade '.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    for found in listRecursive(dict, 'job'):
+                        jobid = found
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
+
+    # FIXME - Remove Duplicate code for showing job status
+
     completed = 0
     while (completed == 0):
-        time.sleep(10)
+        time.sleep(30)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
-            logger.info('Response to show jobs was {}'.format(r.text))
+            logger.info('Got Response {} to show jobs '.format(r.text))
         except:
             DeployRequestException
             logger.debug("failed to get jobid this time.  Try again")
         else:
             tree = ET.fromstring(r.text)
             if tree.attrib['status'] == 'success':
-
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("APP+TP download Complete ")
-                    completed = 1
-                else:
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP download Complete " )
+                        completed = 1
                     print("Download latest Applications and Threats update")
                     status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
                         tree[0][0][12].text) + "% complete"
                     print('{0}\r'.format(status))
-
-    # Install latest applications and threats without committing
-    time.sleep(1)
-    type = "op"
-    cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested content install but got response{}".format(r))
-    else:
-        print("request for content upgrade response was {}".format(r.text))
-        tree = ET.fromstring(r.text)
-        if tree.attrib['status'] == 'success':
-            '''
-            Check that we were able to schedule the install
-            Valid response would contain
-            <response status="success">
-            Invalid response would contain
-            <response status="error">
-            '''
-            jobid = tree[0][1].text
-            print("Install latest Applications and Threats update - " + str(jobid))
-
-            completed = 0
-            while (completed == 0):
-                time.sleep(10)
-                call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
-                    fwMgtIP, jobid, api_key)
-                r = send_request(call)
-                tree = ET.fromstring(r.text)
-                if tree.attrib['status'] == 'success':
-
-                    if (tree[0][0][5].text == 'FIN'):
-                        logger.debug("APP+TP install Complete ")
-                        completed = 1
-                    else:
-                        print("tree value {}".format(tree[0][0][5].text))
-                        status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                            tree[0][0][12].text) + "% complete"
-                        print('{0}\r'.format(status))
-        else:
-            logger.debug("Unable to schedule install")
-
-    # download latest anti-virus update
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested AV download but got response{}".format(DeployRequestException))
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
-
-    completed = 0
-    while (completed == 0):
-        time.sleep(10)
-        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
-        r = send_request(call)
-
-        tree = ET.fromstring(r.text)
-        logger.debug('Got response for show job {}'.format(r.text))
-        if tree.attrib['status'] == 'success':
-
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug(
-                    "AV download Complete - ")
-                completed = 1
+                except:
+                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
             else:
-                status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(
-                    tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
+                logger.info('Unable to determine job status')
+
 
     # install latest anti-virus update without committing
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    tree = ET.fromstring(r.text)
-    logger.debug('Got response for show job {}'.format(r.text))
-    if tree.attrib['status'] == 'success':
-        '''
-        Check that we were able to schedule the install
-        Valid response would contain
-        <response status="success">
-        Invalid response would contain
-        <response status="error">
-        '''
-        jobid = tree[0][1].text
-        print("Install latest Anti-Virus update - " + str(jobid))
+    getjobid =0
+    jobid = ''
+    key ='job'
+    while getjobid == 0:
+        try:
+
+            type = "op"
+            cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
+            call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+            r = send_request(call)
+            logger.info('Got response to request AV install {}'.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    for found in listRecursive(dict, 'job'):
+                        jobid = found
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
 
         completed = 0
         while (completed == 0):
-            time.sleep(10)
+            time.sleep(30)
             call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
                 fwMgtIP, jobid, api_key)
             r = send_request(call)
@@ -226,15 +200,18 @@ def update_fw(fwMgtIP, api_key):
 
             logger.debug('Got response for show job {}'.format(r.text))
             if tree.attrib['status'] == 'success':
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("AV install Status Complete ")
+                        completed = 1
+                    else:
+                        status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                        print('{0}\r'.format(status))
+                except:
+                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
 
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("AV install Status Complete ")
-                    completed = 1
-                else:
-                    status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-                    print('{0}\r'.format(status))
-    else:
-        logger.debug("Unable to schedule install")
+            else:
+                logger.info('Unable to determine job status')
 
 
 def getApiKey(hostname, username, password):
@@ -271,7 +248,6 @@ def getFirewallStatus(fwIP, api_key):
     :param fwMgtIP:  IP Address of firewall interface to be probed
     :param api_key:  Panos API key
     """
-    global gcontext
 
     url = "https://%s/api/?type=op&cmd=<show><chassis-ready></chassis-ready></show>&key=%s" % (fwip, api_key)
     # Send command to fw and see if it times out or we get a response
