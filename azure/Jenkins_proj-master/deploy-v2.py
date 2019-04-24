@@ -203,8 +203,7 @@ def update_fw(fwMgtIP, api_key):
             try:
                 dict = xmltodict.parse(r.text)
                 if isinstance(dict, OrderedDict):
-                    for found in listRecursive(dict, 'job'):
-                        jobid = found
+                    jobid = walkdict(dict, 'job')
             except Exception as err:
                 logger.info("Got exception {} trying to parse jobid from Dict".format(err))
             if not jobid:
