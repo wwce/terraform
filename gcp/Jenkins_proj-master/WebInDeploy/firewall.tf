@@ -6,10 +6,12 @@ resource "google_compute_instance" "firewall" {
   min_cpu_platform          = "Intel Skylake"
   can_ip_forward            = true
   allow_stopping_for_update = true
-  depends_on = ["google_storage_bucket_object.config_file_init_cfg",
-                "google_storage_bucket_object.content_file_null",
-                "google_storage_bucket_object.bucket-software",
-                "google_storage_bucket_object.bucket-license"
+  depends_on = ["google_storage_bucket_object.init_cfg",
+                "google_storage_bucket_object.bootstrap",
+                "google_storage_bucket_object.content",
+                "google_storage_bucket_object.software",
+                "google_storage_bucket_object.license",
+                "google_project_service.victim_project"
   ]
   // Adding METADATA Key Value pairs to VM-Series GCE instance
   metadata {

@@ -844,6 +844,42 @@
               <technology>browser-based</technology>
               <risk>1</risk>
             </entry>
+            <entry name="google-health-check">
+              <default>
+                <port>
+                  <member>tcp/80</member>
+                </port>
+              </default>
+              <signature>
+                <entry name="google-health-check">
+                  <and-condition>
+                    <entry name="And Condition 1">
+                      <or-condition>
+                        <entry name="Or Condition 1">
+                          <operator>
+                            <pattern-match>
+                              <qualifier>
+                                <entry name="http-method">
+                                  <value>GET</value>
+                                </entry>
+                              </qualifier>
+                              <pattern>GoogleHC/</pattern>
+                              <context>http-req-headers</context>
+                            </pattern-match>
+                          </operator>
+                        </entry>
+                      </or-condition>
+                    </entry>
+                  </and-condition>
+                  <scope>session</scope>
+                  <order-free>no</order-free>
+                </entry>
+              </signature>
+              <subcategory>ip-protocol</subcategory>
+              <category>networking</category>
+              <technology>client-server</technology>
+              <risk>1</risk>
+            </entry>
           </application>
           <application-group/>
           <zone/>

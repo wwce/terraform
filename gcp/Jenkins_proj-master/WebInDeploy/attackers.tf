@@ -5,7 +5,8 @@ resource "google_compute_instance" "attacker" {
   machine_type = "n1-standard-1"
   allow_stopping_for_update = true
   depends_on = [
-                "google_storage_bucket_object.config_file_attacker"
+                "google_storage_bucket_object.config_file_attacker",
+                "google_project_service.attacker_project"
   ]
   metadata {
     startup-script-url      = "gs://${google_storage_bucket.attacker_bucket.name}/initialize_attacker.sh"

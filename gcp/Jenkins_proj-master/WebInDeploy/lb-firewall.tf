@@ -24,14 +24,6 @@ resource "google_compute_target_pool" "firewalls" {
     "${google_compute_http_health_check.health.name}",
   ]
 }
-#resource "google_compute_http_health_check" "health" {
-#  name               = "armor-healthcheck"
-#  project            = "${google_project.victim_project.id}"
-#  port               = 8080
-#  request_path       = "/"
-#  check_interval_sec = 1
-#  timeout_sec        = 1
-#}
 resource "google_compute_backend_service" "firewalls" {
   name        = "armor-backend-firewalls"
   description = "With FW"
@@ -112,4 +104,44 @@ resource "google_compute_url_map" "firewalls" {
       service = "${google_compute_backend_service.firewalls.self_link}"
     }
   }
+}
+resource "google_compute_health_check" "tcp-8080" {
+  name               = "tcp-8080"
+  project = "${google_project.victim_project.id}"
+  check_interval_sec = 1
+  timeout_sec        = 1
+
+  tcp_health_check {
+    port = "8080"
+  }
+}
+resource "google_compute_instance_group" "ilb-webservers" {
+  name        = "ilb-webserver-instance-group"
+  description = "An instance group for the webserver"
+  project     = "${google_project.victim_project.id}"
+  zone        = "${var.GCP_Zone}"
+
+  instances = [
+    "${google_compute_instance.jenkins2.self_link}",
+  ]
+}
+resource "google_compute_region_backend_service" "ilb-webserver" {
+  name          = "ilb-webserver"
+  project       = "${google_project.victim_project.id}"
+  region        = "${var.GCP_Region}"
+  health_checks = ["${google_compute_health_check.tcp-8080.self_link}"]
+
+  backend {
+    group = "${google_compute_instance_group.ilb-webservers.self_link}"
+  }
+}
+resource "google_compute_forwarding_rule" "ilb-webserver-forwarding-rule" {
+  name                  = "ilb-webserver-forwarding-rule"
+  project               = "${google_project.victim_project.id}"
+  load_balancing_scheme = "INTERNAL"
+  ip_address            = "${var.WebLB_IP}"
+  ports                 = ["8080"]
+  network               = "${google_compute_network.trust_network.self_link}"
+  subnetwork            = "${google_compute_subnetwork.trust_subnet.self_link}"
+  backend_service       = "${google_compute_region_backend_service.ilb-webserver.self_link}"
 }

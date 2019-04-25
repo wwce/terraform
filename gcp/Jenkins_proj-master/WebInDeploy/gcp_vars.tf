@@ -3,10 +3,6 @@ variable "Victim_Project_Name" {}
 variable "Attacker_Project_Name" {}
 variable "GCP_Region" {}
 variable "GCP_Zone" {}
-variable "Admin_Username" {}
-variable "Admin_Password" {}
-variable "Victim_CIDR" {}
-variable "Attack_CIDR" {}
 variable "Management_Subnet_CIDR" {}
 variable "Untrust_Subnet_CIDR" {}
 variable "Trust_Subnet_CIDR" {}
@@ -15,5 +11,6 @@ variable "FW_Mgmt_IP" {}
 variable "FW_Untrust_IP" {}
 variable "FW_Trust_IP" {}
 variable "WebLB_IP" {}
-variable "Webserver_IP" {}
+variable "Webserver_IP1" {}
+variable "Webserver_IP2" {}
 variable "Attacker_IP" {}

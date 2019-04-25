@@ -5,7 +5,7 @@ resource "google_compute_instance_group" "webservers" {
   zone        = "${var.GCP_Zone}"
 
   instances = [
-    "${google_compute_instance.jenkins.self_link}",
+    "${google_compute_instance.jenkins1.self_link}",
   ]
   named_port {
     name = "http-8080"
@@ -17,7 +17,7 @@ resource "google_compute_target_pool" "webservers" {
   project = "${google_project.victim_project.id}"
 
   instances = [
-    "${google_compute_instance.jenkins.self_link}",
+    "${google_compute_instance.jenkins1.self_link}",
   ]
 
   health_checks = [
