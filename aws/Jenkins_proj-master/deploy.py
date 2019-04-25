@@ -485,32 +485,32 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
         WebInDeploy_vars['alb_dns'] = albDns
         WebInDeploy_vars['nlb-dns'] = nlbDns
-        #
-        # Apply WAF Rules
-        #
-        return_code, waf_conf_out = apply_tf('./waf_conf', waf_conf_vars, 'Waf_conf')
-        logger.debug('Got Return code for deploy waf_conf {}'.format(return_code))
-        update_status('waf_conf_output', waf_conf_out)
-        # update_status('waf_conf_stdout', stdout)
-        # update_status('waf_conf_stderr', stderr
-        logger.debug('Got Return code to deploy waf_conf {}'.format(return_code))
+    #
+    # Apply WAF Rules
+    #
+    return_code, waf_conf_out = apply_tf('./waf_conf', waf_conf_vars, 'Waf_conf')
 
-        if return_code == 0:
-            update_status('waf_conf_status', 'success')
-            logger.info("Got these values after deploy waf_conf\n\n")
-            logger.info("ALB address is {}".format(albDns))
-            logger.info("nlb address is {}".format(nlbDns))
-            logger.info("Firewall Mgt address is {}".format(fwMgtIP))
-        else:
-            logger.info("waf_conf failed")
-            update_status('waf_conf_status', 'error')
-            print(json.dumps(status_output))
-            exit(1)
+    logger.debug('Got Return code for deploy waf_conf {}'.format(return_code))
+    
+    update_status('waf_conf_output', waf_conf_out)
+    # update_status('waf_conf_stdout', stdout)
+    # update_status('waf_conf_stderr', stderr
+    logger.debug('Got Return code to deploy waf_conf {}'.format(return_code))
+    if return_code == 0:
+        update_status('waf_conf_status', 'success')
+        logger.info("Got these values after deploy waf_conf\n\n")
+        logger.info("ALB address is {}".format(albDns))
+        logger.info("nlb address is {}".format(nlbDns))
+        logger.info("Firewall Mgt address is {}".format(fwMgtIP))
+    else:
+        logger.info("waf_conf failed")
+        update_status('waf_conf_status', 'error')
+        print(json.dumps(status_output))
+        exit(1)
 
-        # Check firewall is up and running
-        # #
-
-
+    #
+    # Check firewall is up and running
+    # #
     api_key = getApiKey(fwMgtIP, username, password)
 
     while True:
