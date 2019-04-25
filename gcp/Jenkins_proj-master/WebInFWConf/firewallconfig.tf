@@ -15,7 +15,7 @@ resource "panos_ethernet_interface" "eth1_1" {
   mode                      = "layer3"
   comment                   = "External interface"
   enable_dhcp               = true
-
+  create_dhcp_default_route = true
   management_profile = "${panos_management_profile.imp_allow_ping.name}"
 }
 
@@ -57,16 +57,10 @@ resource "panos_service_object" "so_222" {
   destination_port = "222"
 }
 
-resource "panos_service_object" "so_81" {
-  name             = "service-http-81"
-  protocol         = "tcp"
-  destination_port = "81"
-}
-
 resource "panos_address_object" "intLB" {
-  name        = "Azure-Int-LB"
-  value       = "${var.LB_IP}"
-  description = "Azure Int LB Address"
+  name        = "GCP-Int-LB"
+  value       = "${var.WebLB_IP}"
+  description = "GCP Int LB Address"
 }
 
 resource "panos_security_policies" "security_policies" {
@@ -120,8 +114,8 @@ resource "panos_security_policies" "security_policies" {
     hip_profiles          = ["any"]
     destination_zones     = ["${panos_zone.zone_trust.name}"]
     destination_addresses = ["any"]
-    applications          = ["elb-healthchecker"]
-    services              = ["application-default"]
+    applications          = ["google-health-check"]
+    services              = ["service-http"]
     categories            = ["any"]
     action                = "allow"
   }
@@ -135,7 +129,7 @@ resource "panos_security_policies" "security_policies" {
     destination_zones     = ["${panos_zone.zone_trust.name}", "${panos_zone.zone_untrust.name}"]
     destination_addresses = ["any"]
     applications          = ["web-browsing", "jenkins"]
-    services              = ["service-http", "${panos_service_object.so_81.name}"]
+    services              = ["service-http"]
     categories            = ["any"]
     group                 = "Inbound"
     action                = "allow"
@@ -157,53 +151,83 @@ resource "panos_security_policies" "security_policies" {
   }
 }
 
-resource "panos_nat_policy" "nat1" {
-  name                  = "Web1 SSH"
-  source_zones          = ["${panos_zone.zone_untrust.name}"]
-  destination_zone      = "${panos_zone.zone_untrust.name}"
-  service               = "${panos_service_object.so_221.name}"
-  source_addresses      = ["any"]
-  destination_addresses = ["${var.FW_Untrust_IP}"]
-  sat_type              = "dynamic-ip-and-port"
-  sat_address_type      = "interface-address"
-  sat_interface         = "${panos_ethernet_interface.eth1_2.name}"
-  dat_type              = "static"
-  dat_address           = "${var.Web_IP}"
-  dat_port              = "22"
+resource "panos_nat_rule_group" "nat" {
+  rule {
+    name = "Web1 SSH"
+    original_packet {
+      source_zones          = ["${panos_zone.zone_untrust.name}"]
+      destination_zone      = "${panos_zone.zone_untrust.name}"
+      source_addresses      = ["any"]
+      destination_addresses = ["${var.FW_Untrust_IP}"]
+      service               = "${panos_service_object.so_221.name}"
+    }
+    translated_packet {
+      source {
+        dynamic_ip_and_port {
+          interface_address {
+            interface = "${panos_ethernet_interface.eth1_2.name}"
+          }
+        }
+      }
+      destination {
+        static {
+          address = "${var.Webserver_IP1}"
+          port = 22
+        }
+      }
+    }
+  }
+  rule {
+    name = "Web2 SSH"
+    original_packet {
+      source_zones          = ["${panos_zone.zone_untrust.name}"]
+      destination_zone      = "${panos_zone.zone_untrust.name}"
+      source_addresses      = ["any"]
+      destination_addresses = ["${var.FW_Untrust_IP}"]
+      service               = "${panos_service_object.so_222.name}"
+    }
+    translated_packet {
+      source {
+        dynamic_ip_and_port {
+          interface_address {
+            interface = "${panos_ethernet_interface.eth1_2.name}"
+          }
+        }
+      }
+      destination {
+        static {
+          address = "${var.Webserver_IP2}"
+          port = 22
+        }
+      }
+    }
+  }
+  rule {
+    name = "Webserver NAT"
+    original_packet {
+      source_zones          = ["${panos_zone.zone_untrust.name}"]
+      destination_zone      = "${panos_zone.zone_untrust.name}"
+      source_addresses      = ["any"]
+      destination_addresses = ["${var.FW_Untrust_IP}"]
+      service               = "service-http"
+    }
+    translated_packet {
+      source {
+        dynamic_ip_and_port {
+          interface_address {
+            interface = "${panos_ethernet_interface.eth1_2.name}"
+          }
+        }
+      }
+      destination {
+        static {
+          address = "GCP-Int-LB"
+        }
+      }
+    }
+  }
 }
-
-resource "panos_nat_policy" "nat3" {
-  name                  = "Webserver NAT"
-  source_zones          = ["${panos_zone.zone_untrust.name}"]
-  destination_zone      = "${panos_zone.zone_untrust.name}"
-  service               = "service-http"
-  source_addresses      = ["any"]
-  destination_addresses = ["${var.FW_Untrust_IP}"]
-  sat_type              = "dynamic-ip-and-port"
-  sat_address_type      = "interface-address"
-  sat_interface         = "${panos_ethernet_interface.eth1_2.name}"
-  dat_type              = "dynamic"
-  dat_address           = "Azure-Int-LB"
-  dat_port              = "8080"
-}
-
 resource "panos_virtual_router" "vr1" {
   name       = "default"
   interfaces = ["${panos_ethernet_interface.eth1_1.name}", "${panos_ethernet_interface.eth1_2.name}"]
-}
-
-resource "panos_static_route_ipv4" "default" {
-    name = "default"
-    virtual_router = "${panos_virtual_router.vr1.name}"
-    interface = "${panos_ethernet_interface.eth1_1.name}"
-    destination = "0.0.0.0/0"
-    next_hop = "${var.FW_Default_GW}"
-}
-
-resource "panos_static_route_ipv4" "internal" {
-    name = "internal"
-    virtual_router = "${panos_virtual_router.vr1.name}"
-    interface = "${panos_ethernet_interface.eth1_2.name}"
-    destination = "${var.Web_Subnet_CIDR}"
-    next_hop = "${var.FW_Internal_GW}"
 }
