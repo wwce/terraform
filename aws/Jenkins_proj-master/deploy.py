@@ -108,6 +108,36 @@ def walkdict(d, key):
                 return value
 
 
+
+def check_pending_jobs(fwMgtIP, api_key):
+    type = "op"
+    cmd = "<show><jobs><all></all></jobs></show>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    key = 'result'
+    jobs = ''
+    try:
+        r = send_request(call)
+        logger.info('Got response {} to request for content upgrade '.format(r.text))
+        dict = xmltodict.parse(r.text)
+        if isinstance(dict, OrderedDict):
+            jobs = walkdict(dict, key)
+        else:
+            logger.info('Didnt get a dict')
+        if not jobs:
+            # No jobs pending
+            return False
+        else:
+            # Jobs pending
+            return True
+
+    except:
+        logger.info('Didnt get response to check pending jobs')
+        return False
+
+
+
+
+
 def update_fw(fwMgtIP, api_key):
     """
     Applies latest AppID, Threat and AV updates to firewall after launch
@@ -150,7 +180,7 @@ def update_fw(fwMgtIP, api_key):
 
     completed = 0
     while (completed == 0):
-        time.sleep(30)
+        time.sleep(45)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
@@ -170,9 +200,11 @@ def update_fw(fwMgtIP, api_key):
                         tree[0][0][12].text) + "% complete"
                     print('{0}\r'.format(status))
                 except:
-                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+                    logger.info('Checking job is complete')
+                    completed = 1
             else:
                 logger.info('Unable to determine job status')
+                completed = 1
 
     # install latest anti-virus update without committing
     getjobid = 0
@@ -204,7 +236,7 @@ def update_fw(fwMgtIP, api_key):
 
         completed = 0
         while (completed == 0):
-            time.sleep(30)
+            time.sleep(45)
             call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
                 fwMgtIP, jobid, api_key)
             r = send_request(call)
@@ -221,9 +253,11 @@ def update_fw(fwMgtIP, api_key):
                         print('{0}\r'.format(status))
                 except:
                     logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+                    completed = 1
 
             else:
                 logger.info('Unable to determine job status')
+                completed = 1
 
 
 def getApiKey(hostname, username, password):
@@ -241,8 +275,8 @@ def getApiKey(hostname, username, password):
 
 
         except DeployRequestException as updateerr:
-            logger.info("No response from FW. Wait 20 secs before retry")
-            time.sleep(10)
+            logger.info("No response from FW. Wait 30 secs before retry")
+            time.sleep(30)
             continue
 
         else:
@@ -480,11 +514,11 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         print(json.dumps(status_output))
         exit(1)
 
-        WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgtIP
-        WebInFWConf_vars['nlb-dns'] = nlbDns
+    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgtIP
+    WebInFWConf_vars['nlb-dns'] = nlbDns
 
-        WebInDeploy_vars['alb_dns'] = albDns
-        WebInDeploy_vars['nlb-dns'] = nlbDns
+    WebInDeploy_vars['alb_dns'] = albDns
+    WebInDeploy_vars['nlb-dns'] = nlbDns
     #
     # Apply WAF Rules
     #
@@ -498,10 +532,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     logger.debug('Got Return code to deploy waf_conf {}'.format(return_code))
     if return_code == 0:
         update_status('waf_conf_status', 'success')
-        logger.info("Got these values after deploy waf_conf\n\n")
-        logger.info("ALB address is {}".format(albDns))
-        logger.info("nlb address is {}".format(nlbDns))
-        logger.info("Firewall Mgt address is {}".format(fwMgtIP))
     else:
         logger.info("waf_conf failed")
         update_status('waf_conf_status', 'error')
@@ -545,8 +575,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     # Configure Firewall
     #
 
-    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgtIP
-
     return_code, web_in_fw_conf_out = apply_tf('./WebInFWConf', WebInFWConf_vars, 'WebInFWConf')
 
     if return_code == 0:
@@ -562,7 +590,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     logger.info("Commit changes to firewall")
 
     fw.commit()
-    logger.info("waiting for commit")
     time.sleep(60)
     logger.info("waiting for commit")
 
@@ -571,8 +598,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     #
 
     logger.info('Checking if Jenkins Server is ready')
-
-    # FIXME - add outputs for all 3 dirs
 
     res = getServerStatus(albDns)
 
@@ -584,8 +609,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         logger.info('Jenkins Server is down')
         logger.info('\n\n   ### Deployment Complete ###')
 
-    # dump out status to stdout
-    print(json.dumps(status_output))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
