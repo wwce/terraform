@@ -33,10 +33,6 @@ variables:
     description: GCP Region
     default: us-central1
     type_hint: text
-  - name: GCP_Zone
-    description: GCP Zone
-    default: us-central1a
-    type_hint: text
   - name: Billing_Account
     description: GCP Billing Account
     default: 
