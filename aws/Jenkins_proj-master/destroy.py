@@ -79,7 +79,7 @@ def main(aws_access_key, aws_secret_key, aws_region):
         exit()
     else:
 
-        logger.info("Destroyed WebInDeploy ")
+        logger.info("Destroyed waf_conf Successfully")
 
     tf = Terraform(working_dir='./WebInDeploy')
     tf.cmd('init')
@@ -93,12 +93,12 @@ def main(aws_access_key, aws_secret_key, aws_region):
 
     if return_code1 != 0:
         logger.info("WebInDeploy destroyed")
-        deployment_status = {'WebInDeploy': 'Fail'}
-        print(deployment_status)
+        print ('Failed to Destroy WebInDeploy')
+        
         exit(1)
     else:
-        deployment_status = {'WebInDeploy': 'Success'}
-        print(deployment_status)
+        print ('Destroyed WebInDeploy Successfully')
+        
         exit(0)
 
 
