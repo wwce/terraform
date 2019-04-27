@@ -589,7 +589,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     if return_code == 0:
         update_status('web_in_fw_conf', 'success')
-        logger.info("WebInFWConf failed")
+        logger.info("WebInFWConf success")
 
     else:
         logger.info("WebInFWConf failed")
