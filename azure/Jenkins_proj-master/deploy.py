@@ -424,9 +424,10 @@ def getServerStatus(IP):
     logger.info('URL request is {}'.format(call))
     # Send command to fw and see if it times out or we get a response
     count = 0
-    max_count = 15
+    max_count = 12
     while True:
         if count < max_count:
+            time.sleep(10)
             try:
                 count = count + 1
                 r = send_request(call)
