@@ -60,9 +60,7 @@ def send_request(call):
     :return: Retruns result of call. Will return response for codes between 200 and 400.
              If 200 response code is required check value in response
     """
-    headers = {'Accept-Encoding': 'None',
-               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
-                             'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    headers = {'Accept-Encoding': 'None', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
     try:
         r = requests.get(call, headers=headers, verify=False, timeout=5)
@@ -90,22 +88,38 @@ class DeployRequestException(Exception):
     pass
 
 
-def walkdict(d, key):
+# def walkdict(d, key):
+#     """
+#     Finds a key in a dict or nested dict and returns the value associated with it
+#     :param d: dict or nested dict
+#     :param key: key value
+#     :return: value associated with key
+#     """
+#     stack = d.items()
+#     while stack:
+#         k, v = stack.pop()
+#         if isinstance(v, OrderedDict):
+#             stack.extend(v.iteritems())
+#         else:
+#             if k == key:
+#                 value = v
+#                 return value
+
+def walkdict(dict, match):
     """
     Finds a key in a dict or nested dict and returns the value associated with it
     :param d: dict or nested dict
     :param key: key value
     :return: value associated with key
     """
-    stack = d.items()
-    while stack:
-        k, v = stack.pop()
-        if isinstance(v, OrderedDict):
-            stack.extend(v.iteritems())
-        else:
-            if k == key:
-                value = v
-                return value
+    for key, v in dict.items():
+        if key == match:
+            jobid = v
+            return jobid
+        elif isinstance(v, OrderedDict):
+            found = walkdict(v, match)
+            if found is not None:
+                return found
 
 
 
@@ -133,9 +147,6 @@ def check_pending_jobs(fwMgtIP, api_key):
     except:
         logger.info('Didnt get response to check pending jobs')
         return False
-
-
-
 
 
 def update_fw(fwMgtIP, api_key):
@@ -486,10 +497,9 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     run_plan = False
 
-
     kwargs = {"auto-approve": True}
 
-#
+    #
     return_code, web_in_deploy_output = apply_tf('./WebInDeploy', WebInDeploy_vars, 'WebInDeploy')
 
     logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code))
@@ -525,7 +535,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     return_code, waf_conf_out = apply_tf('./waf_conf', waf_conf_vars, 'Waf_conf')
 
     logger.debug('Got Return code for deploy waf_conf {}'.format(return_code))
-    
+
     update_status('waf_conf_output', waf_conf_out)
     # update_status('waf_conf_stdout', stdout)
     # update_status('waf_conf_stderr', stderr
@@ -608,7 +618,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     else:
         logger.info('Jenkins Server is down')
         logger.info('\n\n   ### Deployment Complete ###')
-
 
 
 if __name__ == '__main__':
