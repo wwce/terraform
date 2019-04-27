@@ -98,22 +98,21 @@ def send_request(call):
 class DeployRequestException(Exception):
     pass
 
-def walkdict(d, key):
+def walkdict(dict, match):
     """
     Finds a key in a dict or nested dict and returns the value associated with it
     :param d: dict or nested dict
     :param key: key value
     :return: value associated with key
     """
-    stack = d.items()
-    while stack:
-        k, v = stack.pop()
-        if isinstance (v, OrderedDict):
-            stack.extend(v.iteritems())
-        else:
-            if k == key:
-                value = v
-                return value
+    for key, v in dict.items():
+        if key == match:
+            jobid = v
+            return jobid
+        elif isinstance(v, OrderedDict):
+            found = walkdict(v, match)
+            if found is not None:
+                return found
 
 
 
