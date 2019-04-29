@@ -32,16 +32,16 @@ import time
 import uuid
 import xml.etree.ElementTree as ET
 import xmltodict
-
 import requests
 import urllib3
-from azure.common import AzureException
-from azure.storage.file import FileService
+
+
+
 from pandevice import firewall
 from python_terraform import Terraform
 from collections import OrderedDict
 
-# from . import cache_utils
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _archive_dir = './WebInDeploy/bootstrap'
@@ -53,14 +53,20 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+
 
 # global var to keep status output
 status_output = dict()
 
 
 def send_request(call):
-    
+
+    """
+    Handles sending requests to API
+    :param call: url
+    :return: Retruns result of call. Will return response for codes between 200 and 400.
+             If 200 response code is required check value in response
+    """
     headers = {'Accept-Encoding' : 'None',
                'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
                               'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
@@ -90,16 +96,31 @@ def send_request(call):
 class DeployRequestException(Exception):
     pass
 
+def walkdict(dict, match):
+    """
+    Finds a key in a dict or nested dict and returns the value associated with it
+    :param d: dict or nested dict
+    :param key: key value
+    :return: value associated with key
+    """
+    for key, v in dict.items():
+        if key == match:
+            jobid = v
+            return jobid
+        elif isinstance(v, OrderedDict):
+            found = walkdict(v, match)
+            if found is not None:
+                return found
 
-def listRecursive (d, key):
-    for k, v in d.items ():
-        if isinstance (v, OrderedDict):
-            for found in listRecursive (v, key):
-                yield found
-        if k == key:
-            yield v
+
 
 def update_fw(fwMgtIP, api_key):
+    """
+    Applies latest AppID, Threat and AV updates to firewall after launch
+    :param fwMgtIP: Firewall management IP
+    :param api_key: API key
+
+    """
     # # Download latest applications and threats
 
     type = "op"
@@ -122,8 +143,7 @@ def update_fw(fwMgtIP, api_key):
             try:
                 dict = xmltodict.parse(r.text)
                 if isinstance(dict, OrderedDict):
-                    for found in listRecursive(dict, 'job'):
-                        jobid = found
+                    jobid = walkdict(dict, key)
             except Exception as err:
                 logger.info("Got exception {} trying to parse jobid from Dict".format(err))
             if not jobid:
@@ -180,8 +200,7 @@ def update_fw(fwMgtIP, api_key):
             try:
                 dict = xmltodict.parse(r.text)
                 if isinstance(dict, OrderedDict):
-                    for found in listRecursive(dict, 'job'):
-                        jobid = found
+                    jobid = walkdict(dict, 'job')
             except Exception as err:
                 logger.info("Got exception {} trying to parse jobid from Dict".format(err))
             if not jobid:
@@ -215,9 +234,15 @@ def update_fw(fwMgtIP, api_key):
 
 
 def getApiKey(hostname, username, password):
-    '''
-    Generate the API key from username / password
-    '''
+
+    """
+    Generates a Paloaltonetworks api key from username and password credentials
+    :param hostname: Ip address of firewall
+    :param username:
+    :param password:
+    :return: api_key API key for firewall
+    """
+
 
     call = "https://%s/api/?type=keygen&user=%s&password=%s" % (hostname, username, password)
 
@@ -296,6 +321,12 @@ def getFirewallStatus(fwIP, api_key):
 
 
 def update_status(key, value):
+    """
+    For tracking purposes.  Write responses to file.
+    :param key:
+    :param value:
+    :return:
+    """
     global status_output
 
     if type(status_output) is not dict:
@@ -324,59 +355,12 @@ def write_status_file(message_dict):
         sys.exit(1)
 
 
-def create_azure_fileshare(share_prefix, account_name, account_key):
-    # generate a unique share name to avoid overlaps in shared infra
-
-    # FIXME - Need to remove hardcoded directoty link below
-
-    d_dir = './WebInDeploy/bootstrap'
-    share_name = "{0}-{1}".format(share_prefix.lower(), str(uuid.uuid4()))
-    print('using share_name of: {}'.format(share_name))
-
-    # archive_file_path = _create_archive_directory(files, share_prefix)
-
-    try:
-        # ignore SSL warnings - bad form, but SSL Decrypt causes issues with this
-        s = requests.Session()
-        s.verify = False
-
-        file_service = FileService(account_name=account_name, account_key=account_key, request_session=s)
-
-        # print(file_service)
-        if not file_service.exists(share_name):
-            file_service.create_share(share_name)
-
-        for d in ['config', 'content', 'software', 'license']:
-            print('creating directory of type: {}'.format(d))
-            if not file_service.exists(share_name, directory_name=d):
-                file_service.create_directory(share_name, d)
-
-            # FIXME - We only handle bootstrap files.  May need to handle other dirs
-
-            if d == 'config':
-                for filename in os.listdir(d_dir):
-                    print('creating file: {0}'.format(filename))
-                    file_service.create_file_from_path(share_name, d, filename, os.path.join(d_dir, filename))
-
-    except AttributeError as ae:
-        # this can be returned on bad auth information
-        print(ae)
-        return "Authentication or other error creating bootstrap file_share in Azure"
-
-    except AzureException as ahe:
-        print(ahe)
-        return str(ahe)
-    except ValueError as ve:
-        print(ve)
-        return str(ve)
-
-    print('all done')
-    return share_name
 
 
 def getServerStatus(IP):
     """
     Gets the server status by sending an HTTP request and checking for a 200 response code
+
     """
     global gcontext
 
@@ -384,9 +368,10 @@ def getServerStatus(IP):
     logger.info('URL request is {}'.format(call))
     # Send command to fw and see if it times out or we get a response
     count = 0
-    max_count = 15
+    max_count = 12
     while True:
         if count < max_count:
+            time.sleep(10)
             try:
                 count = count + 1
                 r = send_request(call)
@@ -399,10 +384,69 @@ def getServerStatus(IP):
             break
     return 'server_down'
 
-#main(username, password, GCP_Region, GCP_Zone, Billing_Account)
-def main(username, password, GCP_Region, GCP_Zone, Billing_Account):
-    # username = username
-    # password = password
+
+def apply_tf(working_dir, vars, description):
+
+    """
+    Handles terraform operations and returns variables in outputs.tf as a dict.
+    :param working_dir: Directory that contains the tf files
+    :param vars: Additional variables passed in to override defaults equivalent to -var
+    :param description: Description of the deployment for logging purposes
+    :return:    return_code - 0 for success or other for failure
+                outputs - Dictionary of the terraform outputs defined in the outputs.tf file
+
+    """
+    # Set run_plan to TRUE is you wish to run terraform plan before apply
+    run_plan = False
+    kwargs = {"auto-approve": True}
+
+    # Class Terraform uses subprocess and setting capture_output to True will capture output
+    capture_output = kwargs.pop('capture_output', False)
+
+    if capture_output is True:
+        stderr = subprocess.PIPE
+        stdout = subprocess.PIPE
+    else:
+        # if capture output is False, then everything will essentially go to stdout and stderrf
+        stderr = sys.stderr
+        stdout = sys.stdout
+
+    start_time = time.asctime()
+    print('Starting Deployment at {}\n'.format(start_time))
+
+    # Create Bootstrap
+
+    tf = Terraform(working_dir=working_dir)
+
+    tf.cmd('init')
+    if run_plan:
+
+        # print('Calling tf.plan')
+        tf.plan(capture_output=False)
+
+    return_code, stdout, stderr = tf.apply(vars = vars, capture_output = capture_output,
+                                            skip_plan = True, **kwargs)
+    outputs = tf.output()
+
+    logger.debug('Got Return code {} for deployment of  {}'.format(return_code, description))
+
+    return (return_code, outputs)
+
+
+def main(username, password, rg_name, azure_region):
+
+    """
+    Main function
+    :param username:
+    :param password:
+    :param rg_name: Resource group name prefix
+    :param azure_region: Region
+    :return:
+    """
+    username = username
+    password = password
+
+
 
     WebInDeploy_vars = {
         'GCP_Zone': GCP_Zone,
@@ -421,99 +465,36 @@ def main(username, password, GCP_Region, GCP_Zone, Billing_Account):
     run_plan = False
     kwargs = {"auto-approve": True}
 
-    # Class Terraform uses subprocess and setting capture_output to True will capture output
-    capture_output = kwargs.pop('capture_output', False)
-
-    if capture_output is True:
-        stderr = subprocess.PIPE
-        stdout = subprocess.PIPE
-    else:
-        # if capture output is False, then everything will essentially go to stdout and stderrf
-        stderr = sys.stderr
-        stdout = sys.stdout
-        start_time = time.asctime()
-        print(f'Starting Deployment at {start_time}\n')
-
-    # Create Bootstrap
-
-    tf = Terraform(working_dir='./WebInBootstrap')
-
-    tf.cmd('init')
-    if run_plan:
-        # print('Calling tf.plan')
-        tf.plan(capture_output=False)
-    return_code1, stdout, stderr = tf.apply(vars=WebInBootstrap_vars, capture_output=capture_output,
-                                            skip_plan=True, **kwargs)
-
-    resource_group = tf.output('Resource_Group')
-    bootstrap_bucket = tf.output('Bootstrap_Bucket')
-    storage_account_access_key = tf.output('Storage_Account_Access_Key')
-    web_in_bootstrap_output = tf.output()
-
-    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code1))
-
-    update_status('web_in_deploy_stdout', stdout)
-    update_status('web_in_bootstrap_output', web_in_bootstrap_output)
-
-    if return_code1 != 0:
-        logger.info("WebInBootstrap failed")
-        update_status('web_in_bootstap_status', 'error')
-        update_status('web_in_bootstrap_stderr', stderr)
-        print(json.dumps(status_output))
-        exit(1)
-    else:
-        update_status('web_in_bootstrap_status', 'success')
-
-    share_prefix = 'jenkins-demo'
-
-    share_name = create_azure_fileshare(share_prefix, bootstrap_bucket, storage_account_access_key)
-
-    WebInDeploy_vars.update({'Storage_Account_Access_Key': storage_account_access_key})
-    WebInDeploy_vars.update({'Bootstrap_Storage_Account': bootstrap_bucket})
-    WebInDeploy_vars.update({'RG_Name': resource_group})
-    WebInDeploy_vars.update({'Attack_RG_Name': resource_group})
-    WebInDeploy_vars.update({'Storage_Account_Fileshare': share_name})
-
+    #
     # Build Infrastructure
+    #
+    #
 
-    tf = Terraform(working_dir='./WebInDeploy')
-    # print("vars {}".format(WebInDeploy_vars))
-    tf.cmd('init')
-    if run_plan:
-        # print('Calling tf.plan')
-        tf.plan(capture_output=False, var=WebInDeploy_vars)
+    return_code, web_in_deploy_output = apply_tf('./WebInDeploy', WebInDeploy_vars, 'WebInDeploy')
 
-    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True,
-                                            **kwargs)
+    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code))
 
-    web_in_deploy_output = tf.output()
 
-    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code1))
-
-    update_status('web_in_deploy_stdout', stdout)
     update_status('web_in_deploy_output', web_in_deploy_output)
-    if return_code1 != 0:
+    if return_code == 0:
+        update_status('web_in_deploy_status', 'success')
+        albDns = web_in_deploy_output['ALB-DNS']['value']
+        fwMgtIP = web_in_deploy_output['FW_Mgmt_IP']['value']
+
+        logger.info("Got these values from output of WebInDeploy \n\n")
+        logger.info("AppGateway address is {}".format(albDns))
+        logger.info("Firewall Mgt address is {}".format(fwMgt))
+
+    else:
         logger.info("WebInDeploy failed")
         update_status('web_in_deploy_status', 'error')
-        update_status('web_in_deploy_stderr', stderr)
         print(json.dumps(status_output))
         exit(1)
-    else:
-        update_status('web_in_deploy_status', 'success')
-
-    albDns = tf.output('ALB-DNS')
-    fwMgt = tf.output('MGT-IP-FW-1')
-    nlbDns = tf.output('NLB-DNS')
-    fwMgtIP = tf.output('MGT-IP-FW-1')
-
-    logger.info("Got these values from output \n\n")
-    logger.info("AppGateway address is {}".format(albDns))
-    logger.info("Internal loadbalancer address is {}".format(nlbDns))
-    logger.info("Firewall Mgt address is {}".format(fwMgt))
 
     #
     # Check firewall is up and running
-    # #
+    #
+    #
 
     api_key = getApiKey(fwMgtIP, username, password)
 
@@ -540,45 +521,29 @@ def main(username, password, GCP_Region, GCP_Zone, Billing_Account):
     logger.debug('Giving the FW another 10 seconds to fully come up to avoid race conditions')
     time.sleep(10)
     fw = firewall.Firewall(hostname=fwMgtIP, api_username=username, api_password=password)
-    logger.info("Updating firewall with latest content pack")
 
+
+    logger.info("Updating firewall with latest content pack")
     update_fw(fwMgtIP, api_key)
 
     #
     # Configure Firewall
     #
     WebInFWConf_vars.update({'FW_Mgmt_IP': fwMgtIP})
-    tf = Terraform(working_dir='./WebInFWConf')
-    tf.cmd('init')
-    kwargs = {"auto-approve": True}
 
     logger.info("Applying addtional config to firewall")
 
-    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
+    return_code, web_in_fw_conf_out = apply_tf('./WebInFWConf', WebInFWConf_vars, 'WebInFWConf')
 
-    if run_plan:
-        tf.plan(capture_output=capture_output, var=WebInFWConf_vars)
+    if return_code == 0:
+        update_status('web_in_fw_conf', 'success')
+        logger.info("WebInFWConf failed")
 
-    # update initial vars with generated fwMgt ip
-
-    return_code2, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,
-                                            var=WebInFWConf_vars, **kwargs)
-
-    web_in_fw_conf_out = tf.output()
-
-    update_status('web_in_fw_conf_output', web_in_fw_conf_out)
-    # update_status('web_in_fw_conf_stdout', stdout)
-
-    logger.debug('Got Return code for deploy WebInFwConf {}'.format(return_code2))
-
-    if return_code2 != 0:
-        logger.error("WebInFWConf failed")
-        update_status('web_in_fw_conf_status', 'error')
-        update_status('web_in_fw_conf_stderr', stderr)
+    else:
+        logger.info("WebInFWConf failed")
+        update_status('web_in_deploy_status', 'error')
         print(json.dumps(status_output))
         exit(1)
-    else:
-        update_status('web_in_fw_conf_status', 'success')
 
     logger.info("Commit changes to firewall")
 
@@ -592,8 +557,6 @@ def main(username, password, GCP_Region, GCP_Zone, Billing_Account):
     #
 
     logger.info('Checking if Jenkins Server is ready')
-
-    # FIXME - add outputs for all 3 dirs
 
     res = getServerStatus(albDns)
 

@@ -230,7 +230,7 @@ def update_fw(fwMgtIP, api_key):
                         logger.debug("APP+TP Install Complete ")
                         completed = 1
                     print("Install latest Applications and Threats update")
-                    status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
+                    status = "APP+TP Install Status - " + str(tree[0][0][5].text) + " " + str(
                         tree[0][0][12].text) + "% complete"
                     print('{0}\r'.format(status))
                 except:
