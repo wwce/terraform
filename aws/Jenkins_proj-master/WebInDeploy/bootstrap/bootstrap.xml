@@ -743,9 +743,9 @@
             </anti-virus>
             <wildfire>
               <recurring>
-                <every-min>
-                  <action>download-and-install</action>
-                </every-min>
+                <hourly>
+                  <action>download-only</action>
+                </hourly>
               </recurring>
             </wildfire>
           </update-schedule>
