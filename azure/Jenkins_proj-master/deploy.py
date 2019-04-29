@@ -55,7 +55,7 @@ handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+
 
 # global var to keep status output
 status_output = dict()
@@ -128,9 +128,9 @@ def update_fw(fwMgtIP, api_key):
     type = "op"
     cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    getjobid =0
+    getjobid = 0
     jobid = ''
-    key ='job'
+    key = 'job'
 
     # FIXME - Remove Duplicate code for parsing jobid
 
@@ -158,7 +158,7 @@ def update_fw(fwMgtIP, api_key):
 
     completed = 0
     while (completed == 0):
-        time.sleep(30)
+        time.sleep(45)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
@@ -171,22 +171,80 @@ def update_fw(fwMgtIP, api_key):
             if tree.attrib['status'] == 'success':
                 try:
                     if (tree[0][0][5].text == 'FIN'):
-                        logger.debug("APP+TP download Complete " )
+                        logger.debug("APP+TP download Complete ")
                         completed = 1
                     print("Download latest Applications and Threats update")
                     status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
                         tree[0][0][12].text) + "% complete"
                     print('{0}\r'.format(status))
                 except:
-                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+                    logger.info('Checking job is complete')
+                    completed = 1
             else:
                 logger.info('Unable to determine job status')
+                completed = 1
+
+    # Install latest content update
+    type = "op"
+    cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    getjobid = 0
+    jobid = ''
+    key = 'job'
+
+    while getjobid == 0:
+        try:
+            r = send_request(call)
+            logger.info('Got response {} to request for content upgrade '.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    jobid = walkdict(dict, key)
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(45)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
+        try:
+            r = send_request(call)
+            logger.info('Got Response {} to show jobs '.format(r.text))
+        except:
+            DeployRequestException
+            logger.debug("failed to get jobid this time.  Try again")
+        else:
+            tree = ET.fromstring(r.text)
+            if tree.attrib['status'] == 'success':
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP Install Complete ")
+                        completed = 1
+                    print("Install latest Applications and Threats update")
+                    status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
+                except:
+                    logger.info('Checking job is complete')
+                    completed = 1
+            else:
+                logger.info('Unable to determine job status')
+                completed = 1
 
 
     # install latest anti-virus update without committing
-    getjobid =0
+    getjobid = 0
     jobid = ''
-    key ='job'
+    key = 'job'
     while getjobid == 0:
         try:
 
@@ -202,7 +260,7 @@ def update_fw(fwMgtIP, api_key):
             try:
                 dict = xmltodict.parse(r.text)
                 if isinstance(dict, OrderedDict):
-                    jobid = walkdict(dict, 'job')
+                    jobid = walkdict(dict, key)
             except Exception as err:
                 logger.info("Got exception {} trying to parse jobid from Dict".format(err))
             if not jobid:
@@ -213,7 +271,7 @@ def update_fw(fwMgtIP, api_key):
 
         completed = 0
         while (completed == 0):
-            time.sleep(30)
+            time.sleep(45)
             call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
                 fwMgtIP, jobid, api_key)
             r = send_request(call)
@@ -223,16 +281,18 @@ def update_fw(fwMgtIP, api_key):
             if tree.attrib['status'] == 'success':
                 try:
                     if (tree[0][0][5].text == 'FIN'):
-                        logger.debug("AV install Status Complete ")
+                        logger.info("AV install Status Complete ")
                         completed = 1
                     else:
                         status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
                         print('{0}\r'.format(status))
                 except:
                     logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+                    completed = 1
 
             else:
                 logger.info('Unable to determine job status')
+                completed = 1
 
 
 def getApiKey(hostname, username, password):
