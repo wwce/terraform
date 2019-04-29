@@ -744,7 +744,7 @@
             <wildfire>
               <recurring>
                 <hourly>
-                  <action>download-and-install</action>
+                  <action>download-only</action>
                 </hourly>
               </recurring>
             </wildfire>
