@@ -741,14 +741,6 @@
                 </hourly>
               </recurring>
             </anti-virus>
-            <wildfire>
-              <recurring>
-                <hourly>
-                  <at>5</at>
-                  <action>download-only</action>
-                </hourly>
-              </recurring>
-            </wildfire>
           </update-schedule>
         </system>
         <setting>
