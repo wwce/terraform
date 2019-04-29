@@ -241,15 +241,14 @@ def update_fw(fwMgtIP, api_key):
                 completed = 1
 
 
-    # install latest anti-virus update without committing
+    # Download latest anti-virus update without committing
     getjobid = 0
     jobid = ''
+    type = "op"
+    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
     key = 'job'
     while getjobid == 0:
         try:
-
-            type = "op"
-            cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
             call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
             r = send_request(call)
             logger.info('Got response to request AV install {}'.format(r.text))
@@ -269,30 +268,28 @@ def update_fw(fwMgtIP, api_key):
             else:
                 getjobid = 1
 
-        completed = 0
-        while (completed == 0):
-            time.sleep(45)
-            call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
-                fwMgtIP, jobid, api_key)
-            r = send_request(call)
-            tree = ET.fromstring(r.text)
-
-            logger.debug('Got response for show job {}'.format(r.text))
-            if tree.attrib['status'] == 'success':
-                try:
-                    if (tree[0][0][5].text == 'FIN'):
-                        logger.info("AV install Status Complete ")
-                        completed = 1
-                    else:
-                        status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-                        print('{0}\r'.format(status))
-                except:
-                    logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+    completed = 0
+    while (completed == 0):
+        time.sleep(45)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
+            fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        logger.debug('Got response for show job {}'.format(r.text))
+        if tree.attrib['status'] == 'success':
+            try:
+                if (tree[0][0][5].text == 'FIN'):
+                    logger.info("AV install Status Complete ")
                     completed = 1
-
-            else:
-                logger.info('Unable to determine job status')
+                else:
+                    status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
+            except:
+                logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
                 completed = 1
+        else:
+            logger.info('Unable to determine job status')
+            completed = 1
 
 
 def getApiKey(hostname, username, password):
