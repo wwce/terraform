@@ -744,6 +744,7 @@
             <wildfire>
               <recurring>
                 <hourly>
+                  <at>35</at>
                   <action>download-only</action>
                 </hourly>
               </recurring>
