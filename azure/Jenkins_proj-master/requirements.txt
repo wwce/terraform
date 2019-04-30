@@ -134,6 +134,7 @@ bcrypt
 certifi
 cffi
 chardet
+collections2
 colorama
 cryptography
 fabric
@@ -181,4 +182,3 @@ vsts-cd-manager
 wcwidth
 websocket-client
 xmltodict
-collections2
