@@ -134,7 +134,6 @@ bcrypt
 certifi
 cffi
 chardet
-collections2
 colorama
 cryptography
 fabric
