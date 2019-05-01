@@ -1,7 +1,7 @@
 adal==1.2.1
 amqp==2.4.2
 antlr4-python3-runtime==4.7.2
-applicationinsights==0.11.8
+applicationinsights==0.11.9
 argcomplete==1.9.5
 asgiref==3.0.0
 asn1crypto==0.24.0
@@ -181,8 +181,8 @@ passlib==1.7.1
 pbr==5.2.0
 pluggy==0.9.0
 ply==3.11
-portalocker==1.4.0
-prompt-toolkit==2.0.9
+portalocker==1.2.1
+prompt-toolkit==1.0.15
 psutil==5.6.2
 py==1.8.0
 pyAesCrypt==0.4.2
