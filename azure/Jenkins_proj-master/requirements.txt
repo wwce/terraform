@@ -1,7 +1,7 @@
 adal==1.2.1
 amqp==2.4.2
 antlr4-python3-runtime==4.7.2
-applicationinsights==0.11.9
+applicationinsights==0.11.7
 argcomplete==1.9.5
 asgiref==3.0.0
 asn1crypto==0.24.0
