@@ -1,4 +1,4 @@
-esource "random_id" "bootstraprole" {
+resource "random_id" "bootstraprole" {
   byte_length = 3
 }
 
