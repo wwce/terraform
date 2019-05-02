@@ -31,8 +31,8 @@ This build is an iteration of [djspears build](https://github.com/wwce/terraform
     *  `Line 17`:  Uncomment either 'byol', 'payg1', or 'payg2'.  This sets the licensing for both VM-Series firewalls (bring-your-own-license, bundle1, or bundle2).  
 3. (Optional) If you are using BYOL and would like to license the VM-Series via bootstrapping, paste your authcode in  `bootstrap_files/fw1/authcodes` and `bootstrap_files/fw2/authcodes`.  (Note: The authcode must be registered prior to deployment).
 4. After deployment the firewall username and password are:
-         **Username:** paloalto
-         **Password:** PanPassword123!
+     * **Username:** paloalto
+     * **Password:** PanPassword123!
 
  ```
 
