@@ -5,8 +5,6 @@ This build is an iteration of [djspears build](https://github.com/wwce/terraform
 3. Creation of dedicated route tables for each subnet (main route table is not used).
 
 ## Overview
-This Terraform build deploys the following architecture:
-</br>
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/aws/tgw_2fw_vpc_insertion/diagram.png">
 </p>
