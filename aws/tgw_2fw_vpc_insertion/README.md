@@ -21,21 +21,22 @@ This Terraform build deploys the following architecture:
 * 2 x S3 Buckets are deployed & configured to bootstrap the firewalls with a fully working configuration.
 * The buckets names have a random 30 string added to its name for global uniqueness `tgw-fw#-bootstrap-<randomString>`
 
-## How to Deploy
-1.  Download the tgw_2fw_vpc_insertion directory.
-2.  In an editor, open 'variables.tf'
-    *  Line 10:  Set your existing AWS EC2 Key 
-    *  Line 14:  Enter a source address to access the VM-Series management interface.  This address will be added to the management interface's Network Security Group.
-    *  Line 17:  Uncomment either 'byol', 'payg1', or 'payg2'.  This sets the licensing for both VM-Series firewalls (bring-your-own-license, bundle1, or bundle2).  
+## Prerequistes 
+1. This Terraform build assumes the AWS CLI is installed on the machine doing the deploymnet [(Install AWS CLI)](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) .
+2. If you do not want to use the AWS CLI, the `providers.tf` must be modified to include your AWS Access Key and Secret Key [(more info)](https://www.terraform.io/docs/providers/aws/index.html).
 
- NOTE: 
- ``` 
- 1. This assumes that the AWS CLI is installed on the machine doing the deploymnet.  If AWS CLI is not installed, the providers.tf must be changed to include your AWS Access Key and Secret Key [(more info)](https://www.terraform.io/docs/providers/aws/index.html).
- 3. Here is a link to setting up a creds file to access AWS: 
-       https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
- 4. After deployment the firewall username and password are:
-         Username: paloalto
-         Password: Pal0Alt0@123
+## How to Deploy
+1.  Download the **tgw_2fw_vpc_insertion** directory.
+2.  In an editor, open `variables.tf`
+    *  `Line 10`:  Set your existing AWS EC2 Key 
+    *  `Line 14`:  Enter a source address to access the VM-Series management interface (in valid CIDR notation).  This address will be added to the management interface's Network Security Group.
+    *  `Line 17`:  Uncomment either 'byol', 'payg1', or 'payg2'.  This sets the licensing for both VM-Series firewalls (bring-your-own-license, bundle1, or bundle2).  
+3. (Optional) If you are using BYOL and would like to license the VM-Series via bootstrapping, paste your authcode in  `bootstrap_files/fw1/authcodes` and `bootstrap_files/fw2/authcodes`.  (Note: The authcode must be registered prior to deployment).
+4. After deployment the firewall username and password are:
+         **Username:** paloalto
+         **Password:** PanPassword123!
+
+
 
  ```
 
