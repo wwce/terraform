@@ -20,6 +20,6 @@ This Terraform build deploys the following architecture.
 ## How to Deploy
 1.  Download the tgw_2fw_vpc_insertion directory.
 2.  In an editor, open 'variables.tf'
-   *  Line 10:  Set your existing AWS EC2 Key 
-   *  Line 14:  Enter a source address to access the VM-Series management interface.  This address will be added to the management interface's Network Security Group.
-   *  Line 17:  Uncomment either 'byol', 'payg1', or 'payg2'.  This sets the licensing for both VM-Series firewalls (bring-your-own-license, bundle1, or bundle2).  
+    *  Line 10:  Set your existing AWS EC2 Key 
+    *  Line 14:  Enter a source address to access the VM-Series management interface.  This address will be added to the management interface's Network Security Group.
+    *  Line 17:  Uncomment either 'byol', 'payg1', or 'payg2'.  This sets the licensing for both VM-Series firewalls (bring-your-own-license, bundle1, or bundle2).  
