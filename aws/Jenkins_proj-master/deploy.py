@@ -492,7 +492,7 @@ def apply_tf(working_dir, vars, description):
     return (return_code, outputs)
 
 
-def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_bucket):
+def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair):
     username = username
     password = password
     aws_access_key = aws_access_key
@@ -508,7 +508,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         'aws_secret_key': aws_secret_key,
         'aws_region': aws_region,
         'ServerKeyName': ec2_key_pair,
-        'bootstrap_s3bucket': bootstrap_bucket
+        # 'bootstrap_s3bucket': bootstrap_bucket
     }
 
     waf_conf_vars = {
@@ -666,7 +666,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--aws_secret_key', help='AWS Secret', required=True)
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
-    parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
+    # parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
 
     args = parser.parse_args()
     username = args.username
@@ -675,6 +675,6 @@ if __name__ == '__main__':
     aws_secret_key = args.aws_secret_key
     aws_region = args.aws_region
     ec2_key_pair = args.aws_key_pair
-    bootstrap_s3bucket = args.s3_bootstrap_bucket
+    # bootstrap_s3bucket = args.s3_bootstrap_bucket
 
-    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_s3bucket)
+    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair)

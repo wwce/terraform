@@ -34,7 +34,7 @@ import xml.etree.ElementTree as ET
 import xmltodict
 import requests
 import urllib3
-
+from google.cloud import storage
 
 
 from pandevice import firewall
@@ -432,8 +432,18 @@ def apply_tf(working_dir, vars, description):
 
     return (return_code, outputs)
 
+def implicit():
 
-def main(username, password, rg_name, azure_region):
+
+    # If you don't specify credentials when constructing the client, the
+    # client library will look for credentials in the environment.
+    storage_client = storage.Client()
+
+    # Make an authenticated API request
+    buckets = list(storage_client.list_buckets())
+    print(buckets)
+
+def main(username, password, GCP_region, Billing_Account ):
 
     """
     Main function
@@ -445,6 +455,10 @@ def main(username, password, rg_name, azure_region):
     """
     username = username
     password = password
+    # TODO maybe use a zone lookup but for now use region-B
+    GCP_Zone = 'region-b'
+
+
 
 
 
@@ -483,7 +497,7 @@ def main(username, password, rg_name, azure_region):
 
         logger.info("Got these values from output of WebInDeploy \n\n")
         logger.info("AppGateway address is {}".format(albDns))
-        logger.info("Firewall Mgt address is {}".format(fwMgt))
+        logger.info("Firewall Mgt address is {}".format(fwMgtIP))
 
     else:
         logger.info("WebInDeploy failed")
@@ -576,15 +590,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
     parser.add_argument('-u', '--username', help='Firewall Username', required=True)
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
-    parser.add_argument('-a', '--GCP_Region', help='Azure Region', required=True)
-    parser.add_argument('-r', '--GCP_Zone', help='GCP Zone', required=True)
+    parser.add_argument('-a', '--GCP_Region', help='GCP Region', required=True)
+    # parser.add_argument('-r', '--GCP_Zone', help='GCP Zone', required=True)
     parser.add_argument('-m', '--Billing_Account', help='Billing Account', required=True)
 
     args = parser.parse_args()
     username = args.username
     password = args.password
-    GCP_Zone = args.GCP_Zone
+    # GCP_Zone = args.GCP_Zone
     GCP_Region = args.GCP_Region
     Billing_Account = args.Billing_Account
 
-    main(username, password, GCP_Region, GCP_Zone, Billing_Account)
+    main(username, password, GCP_Region, Billing_Account)
