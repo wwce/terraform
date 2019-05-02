@@ -1,5 +1,5 @@
 ## 2 x VM-Series / Transit Gateway / 2 x Spokes VPCs
-Credit for this Terraform build goes to **djspears**.  This build contains the following modifiations of [djspears build](https://github.com/wwce/terraform/tree/master/aws/TGW-VPC).
+This build is an iteration of [djspears build](https://github.com/wwce/terraform/tree/master/aws/TGW-VPC) that contains the following differences:
 1. Spoke-to-Internet traffic explicitly flows through firewall-1 (no SNAT).  
 2. Spoke-to-Spoke traffic explicitly flows through firewall-2 (no SNAT).
 3. Creation of dedicated route tables for each subnet (main route table is not used).
