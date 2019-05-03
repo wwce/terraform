@@ -6,7 +6,7 @@ This build is an iteration of [djspears build](https://github.com/wwce/terraform
 
 ## Overview
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/aws/tgw_2fw_vpc_insertion/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/aws/tgw_2fw_vpc_insertion/images/diagram.png">
 </p>
 
 #### VM-Series Overview
