@@ -34,7 +34,7 @@ variables:
     description: Azure Resource Group
     default: cloud-security-framework-changeme
     type_hint: text
-  - name: Azure_Region
+  - name: azure_region
     description: Azure Region
     type_hint: dropdown
     dd_list:
