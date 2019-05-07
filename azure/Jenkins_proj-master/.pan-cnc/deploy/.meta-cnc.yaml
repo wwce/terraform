@@ -34,8 +34,8 @@ variables:
     description: Azure Resource Group
     default: cloud-security-framework-changeme
     type_hint: text
-  description: AWS Region
-
+  - name: Azure_Region
+    description: Azure Region
     type_hint: dropdown
     dd_list:
       - key: “West US”
