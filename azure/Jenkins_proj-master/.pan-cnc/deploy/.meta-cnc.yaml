@@ -35,28 +35,9 @@ variables:
     type_hint: text
   - name: azure_region
     description: Azure Region
-    type_hint: dropdown
-    dd_list:
-      - key: “West US”
-        value: “westus”
-      - key: “West US 2”
-        value: “westus2”
-      - key: “West Central US”
-        value: “westcentralus”
-      - key: “East US”
-        value: “eastus”
-      - key: "East US 2”
-        value: "eastus2"
-      - key: "Central US”
-        value: "centralus”
-      - key: “North Central US
-        value: “northcentralus”
-      - key: “South Central US”
-        value: “southcentralus”
-      - key: “Canada Central”
-        value: “canadacentral”
-      - key: “Canada East”
-        value: “canadaeast”
+    default: central us
+    type_hint: text
+    
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
 # determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
 # to load and parse. Jinja2 style variables will be variable interpolated using the values of the 'variables' defined
