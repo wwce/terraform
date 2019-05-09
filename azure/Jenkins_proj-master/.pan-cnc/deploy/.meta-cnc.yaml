@@ -49,11 +49,11 @@ variables:
      - key: "East US 2”
        value: "eastus2"
      - key: "Central US”
-       value: "centralus”
+       value: "centralus"
      - key: “North Central US"
-       value: “northcentralus”
+       value: "northcentralus"
      - key: “South Central US”
-       value: “southcentralus”
+       value: "southcentralus"
      - key: “Canada Central”
        value: “canadacentral”
      - key: “Canada East”
