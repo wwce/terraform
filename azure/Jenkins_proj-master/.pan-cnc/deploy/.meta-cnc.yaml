@@ -66,38 +66,6 @@ variables:
        value: "northeurope"
      - key: "West Europe"
        value: "westeurope"
-     - key: "Australia East"
-       value: "australiaeast"
-     - key: “Australia Southeast”
-       value: “australiasoutheast”
-     - key: “Australia Central”
-       value: “australiacentral”
-     - key: “Australia Central 2“
-       value: “australiacentral2”
-     - key: "East Asia"
-       value: "eastasia"
-     - key: "South East Asia"
-       value: "southeastasia"
-     - key: "Korea Central"
-       value: "koreacentral"
-     - key: "Korea South"
-       value: "koreasouth"
-     - key: "Japan West"
-       value: "japanwest"
-     - key: "Japan East"
-       value: "japaneast"
-     - key: “South India”
-       value: “southindia”
-     - key: “Central India”
-       value: “centralindia”
-     - key: “West India“
-       value: “westindia”
-     - key: "Brazil South"
-       value: "brazilsouth"
-     - key: "France Central"
-       value: "francecentral"
-     - key: "France South"
-       value: "francesouth"
  # - name: azure_region
  #   description: Azure Region
  #   default: centralus
