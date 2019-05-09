@@ -46,6 +46,8 @@ variables:
        value: “westcentralus”
      - key: “East US”
        value: “eastus”
+     - key: "Central US"
+       value: "centralus"
      - key: “South Central US”
        value: "southcentralus"
      - key: “Canada Central”
