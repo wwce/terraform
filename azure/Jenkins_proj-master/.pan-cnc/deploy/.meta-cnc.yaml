@@ -39,31 +39,65 @@ variables:
     type_hint: dropdown
     dd_list:
      - key: "West US"
-       value: "westus"
-     - key: "West US 2"
-       value: "westus2"
-     - key: "West Central US"
-       value: "westcentralus"
-     - key: “East US”
-       value: “eastus”
-     - key: “East US 2”
-       value: “eastus2”
-     - key: "Central US"
-       value: "centralus"
-     - key: “South Central US”
-       value: "southcentralus"
-     - key: “Canada Central”
-       value: “canadacentral”
-     - key: “Canada East”
-       value: “canadaeast”
-     - key: “UK West”
-       value: “ukwest”
-     - key: “UK South“
-       value: “uksouth”
-     - key: "North Europe"
-       value: "northeurope"
-     - key: "West Europe"
-       value: "westeurope"
+        value: "westus"
+      - key: "West US 2"
+        value: "westus2"
+      - key: "West Central US"
+        value: "westcentralus"
+      - key: "East US"
+        value: "eastus"
+      - key: "East US 2"
+        value: "eastus2"
+      - key: "Central US"
+        value: "centralus"
+      - key: "North Central US"
+        value: "northcentralus"
+      - key: "South Central US"
+        value: "southcentralus"
+      - key: "Canada Central"
+        value: "canadacentral"
+      - key: "Canada East"
+        value: "canadaeast"
+      - key: "UK West"
+        value: "ukwest"
+      - key: "UK South"
+        value: "uksouth"
+      - key: "North Europe"
+        value: "northeurope"
+      - key: "West Europe"
+        value: "westeurope"
+      - key: "Australia East"
+        value: "australiaeast"
+      - key: "Australia Southeast"
+        value: "australiasoutheast"
+      - key: "Australia Central"
+        value: "australiacentral"
+      - key: "Australia Central 2"
+        value: "australiacentral2"
+      - key: "East Asia"
+        value: "eastasia"
+      - key: "South East Asia"
+        value: "southeastasia"
+      - key: "Korea Central"
+        value: "koreacentral"
+      - key: "Korea South"
+        value: "koreasouth"
+      - key: "Japan West"
+        value: "japanwest"
+      - key: "Japan East"
+        value: "japaneast"
+      - key: "South India"
+        value: "southindia"
+      - key: "Central India"
+        value: "centralindia"
+      - key: "West India"
+        value: "westindia"
+      - key: "Brazil South"
+        value: "brazilsouth"
+      - key: "France Central"
+        value: "francecentral"
+      - key: "France South"
+        value: "francesouth"
  # - name: azure_region
  #   description: Azure Region
  #   default: centralus
