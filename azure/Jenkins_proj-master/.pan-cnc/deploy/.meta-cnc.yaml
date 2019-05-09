@@ -36,7 +36,16 @@ variables:
   - name: azure_region
     description: Azure Region
     default: centralus
-    type_hint: text
+    type_hint: dropdown
+    dd_list:
+     - key: "West US"
+       value: "westus"
+     - key: "West US 2"
+       value: "westus2"
+ # - name: azure_region
+ #   description: Azure Region
+ #   default: centralus
+ #   type_hint: text
     
     
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
