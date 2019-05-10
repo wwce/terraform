@@ -40,12 +40,12 @@ resource "aws_iam_role_policy" "jenkins-bootstrappolicy" {
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::${var.bootstrap_s3bucket}"
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.bootstrap_bucket.bucket}"
     },
     {
     "Effect": "Allow",
     "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:::${var.bootstrap_s3bucket}/*"
+    "Resource": "arn:aws:s3:::${aws_s3_bucket.bootstrap_bucket.bucket}/*"
     }
   ]
 }
@@ -128,5 +128,5 @@ resource "aws_instance" "PA-VM1" {
     network_interface_id = "${aws_network_interface.FW1-TRUST.id}"
   }
 
-  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", var.bootstrap_s3bucket)))}"
+  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.bootstrap_bucket.bucket}")))}"
 }

@@ -14,9 +14,6 @@ variable "FW1_Untrust_IP" {}
 
 variable "FW1_Trust_IP" {}
 variable "FW1_mgmt_IP" {}
-
-variable "bootstrap_s3bucket" {}
-
 variable "VPCName" {}
 variable "VPCCIDR" {}
 variable "ServerKeyName" {}

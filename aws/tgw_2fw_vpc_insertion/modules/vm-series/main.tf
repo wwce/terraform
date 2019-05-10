@@ -17,20 +17,16 @@ variable bootstrap_profile {
   default = ""
 }
 
-variable bootstrap_s3bucket {}
+variable bootstrap_bucket {}
 
 variable tgw_id {}
 
 variable aws_region {}
 variable aws_key {}
 
-variable instance_type {
-  default = "m4.2xlarge"
-}
+variable instance_type {}
 
-variable ngfw_license_type {
-  default = "payg2"
-}
+variable ngfw_license_type {}
 
 variable ngfw_version {
   default = "8.1"
@@ -49,7 +45,6 @@ variable "license_type_map" {
 data "aws_ami" "panw_ngfw" {
   most_recent = true
   owners = ["aws-marketplace"]
-  
   filter {
     name   = "owner-alias"
     values = ["aws-marketplace"]
@@ -95,6 +90,7 @@ output "eni-trust" {
   value = "${aws_network_interface.eni-trust.id}"
 }
 
+
 resource "aws_eip" "eip-management" {
   vpc               = true
   network_interface = "${aws_network_interface.eni-management.id}"
@@ -115,6 +111,7 @@ resource "aws_network_interface" "eni-untrust" {
   }
 }
 
+
 resource "aws_eip" "eip-untrust" {
   vpc               = true
   network_interface = "${aws_network_interface.eni-untrust.id}"
@@ -128,7 +125,7 @@ resource "aws_instance" "instance-ngfw" {
   disable_api_termination              = false
   instance_initiated_shutdown_behavior = "stop"
   iam_instance_profile                 = "${var.bootstrap_profile}"
-  user_data                            = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", var.bootstrap_s3bucket)))}"
+  user_data                            = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", var.bootstrap_bucket)))}"
 
   ebs_optimized = true
   ami           = "${data.aws_ami.panw_ngfw.image_id}"
@@ -136,7 +133,10 @@ resource "aws_instance" "instance-ngfw" {
   key_name      = "${var.aws_key}"
 
   monitoring = false
-
+  
+  root_block_device {
+    delete_on_termination = "true"
+  }
   network_interface {
     device_index         = 1
     network_interface_id = "${aws_network_interface.eni-management.id}"

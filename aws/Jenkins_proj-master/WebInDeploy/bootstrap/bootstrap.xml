@@ -2248,7 +2248,7 @@
                 <rules>
                   <entry name="Block-Critical-High-Medium">
                     <action>
-                      <reset-both/>
+                      <reset-server/>
                     </action>
                     <vendor-id>
                       <member>any</member>
@@ -2291,7 +2291,7 @@
                 <rules>
                   <entry name="Block-Critical-High-Medium">
                     <action>
-                      <reset-both/>
+                      <reset-server/>
                     </action>
                     <vendor-id>
                       <member>any</member>
@@ -2334,7 +2334,7 @@
                 <rules>
                   <entry name="Block-Critical-High">
                     <action>
-                      <reset-both/>
+                      <reset-server/>
                     </action>
                     <vendor-id>
                       <member>any</member>
