@@ -456,7 +456,7 @@ def main(username, password, GCP_region, Billing_Account ):
     username = username
     password = password
     # TODO maybe use a zone lookup but for now use region-B
-    GCP_Zone = 'region-b'
+    GCP_Zone = 'us-central1-b'
 
 
 
