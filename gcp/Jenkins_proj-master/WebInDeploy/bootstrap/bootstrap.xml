@@ -689,7 +689,7 @@
           <server-verification>yes</server-verification>
           <dns-setting>
             <servers>
-              <primary>10.0.0.2</primary>
+              <primary>8.8.8.8</primary>
               <secondary>10.0.0.2</secondary>
             </servers>
           </dns-setting>
@@ -741,13 +741,6 @@
                 </hourly>
               </recurring>
             </anti-virus>
-            <wildfire>
-              <recurring>
-                <every-min>
-                  <action>download-and-install</action>
-                </every-min>
-              </recurring>
-            </wildfire>
           </update-schedule>
         </system>
         <setting>
