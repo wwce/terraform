@@ -591,6 +591,8 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     # #
     api_key = getApiKey(fwMgtIP, username, password)
 
+    #FIXME Add timeout after 3 minutes
+
     while True:
         err = getFirewallStatus(fwMgtIP, api_key)
         if err == 'cmd_error':
