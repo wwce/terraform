@@ -596,10 +596,10 @@ def main(username, password, GCP_region, Billing_Account ):
     logger.info("Applying addtional config to firewall")
 
     return_code, web_in_fw_conf_out = apply_tf('./WebInFWConf', WebInFWConf_vars, 'WebInFWConf')
-
+    logger.debug('Got return code {}'.format(return_code))
     if return_code == 0:
         update_status('web_in_fw_conf', 'success')
-        logger.info("WebInFWConf failed")
+        logger.info("WebInFWConf succeeded")
 
     else:
         logger.info("WebInFWConf failed")
