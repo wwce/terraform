@@ -86,27 +86,7 @@ def main(username, password):
 
         logger.info("Destroyed WebInDeploy ")
 
-    WebInBootstrap_vars.update({'RG_Name': rg_name})
-    WebInBootstrap_vars.update({'Attack_RG_Name': attack_rg_name})
 
-    tf = Terraform(working_dir='./WebInBootstrap')
-
-    if run_plan:
-        print('Calling tf.plan')
-        tf.plan(capture_output=False)
-
-    return_code1, stdout, stderr = tf.cmd('destroy', var=WebInBootstrap_vars, capture_output=False, **kwargs)
-    # return_code1 =0
-    print('Got return code {}'.format(return_code1))
-
-    if return_code1 != 0:
-        logger.info("WebInBootstrap destroyed")
-        deployment_status = {'WebInDeploy': 'Fail'}
-
-        exit()
-    else:
-        deployment_status = {'WebInDeploy': 'Success'}
-        exit()
 
 
 if __name__ == '__main__':
