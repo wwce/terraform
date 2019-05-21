@@ -2,7 +2,7 @@ name: GCP_login
 label: GCP Login
 
 description: |
-  This skillet will log into Azure. You will be prompted to follow a link and enter a device-code in your browser.
+  This skillet will log into GCP. You will be prompted to follow a link and enter a device-code in your browser.
 # type of skillet (panos or panorama or template or terraform)
 type: python3
 
