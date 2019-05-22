@@ -19,5 +19,5 @@ def gcloud_login():
     cmd = 'gcloud auth login'
     os.system(cmd)
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     gcloud_login()
