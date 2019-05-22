@@ -49,7 +49,7 @@ variable "kali" {
   type = "map"
 
   default = {
-    "us-east-1"      = "ami-092d0d014b7b31a08"
+    "us-east-1"      = "ami-076e36b130f0652ac"
     "us-east-2"      = "ami-0a444079f17309e2a"
     "us-west-1"      = "ami-03e0ff3de0548396b"
     "us-west-2"      = "ami-07c2e617785343806"
