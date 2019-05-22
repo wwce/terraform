@@ -3,7 +3,7 @@ name: gcp_jenkins_exp_teardown
 label: GCP Jenkins Security Framework Step 4 Teardown
 
 description: >
-  This skillet will destroy the Azure Jenkins Environment.  Run this step once the demo is complete.
+  This skillet will destroy the GCP Jenkins Environment.  Run this step once the demo is complete.
 # type of skillet (panos or panorama or template or terraform)
 type: python3
 
