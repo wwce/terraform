@@ -29,4 +29,4 @@ variables:
 # in the 'variables' section.
 snippets:
   - name: script
-    file: ../../gcloud_login.py
+    file: ../../gcp_login.py
