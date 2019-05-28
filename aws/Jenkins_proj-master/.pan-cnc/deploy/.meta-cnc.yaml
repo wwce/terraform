@@ -53,7 +53,7 @@ variables:
       - key: "ca-central-1--- Canada Central"
         value: "ca-central-1"
       - key: "eu-west-1--- Ireland"
-        value: "eu-west1-2"
+        value: "eu-west-1"
       - key: "eu-west-2--- London"
         value: "eu-west-2"
       - key: "eu-central-1--- Frankfurt"
@@ -67,7 +67,7 @@ variables:
       - key: "ap-southeast-2--- Sydney"
         value: "ap-southeast-2"
       - key: "ap-south-1--- Mumbai"
-        value: "us-west1"
+        value: "ap-south-1"
       - key: "sa-east-1--- Sao Paulo"
         value: "sa-east-1"
   - name: aws_key_pair
