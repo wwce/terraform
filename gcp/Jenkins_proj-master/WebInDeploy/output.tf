@@ -10,3 +10,6 @@ output "NATIVE-DNS" {
   value = "${google_compute_global_forwarding_rule.webservers.ip_address}"
 }
 
+output "Attacker_IP" {
+  value = "${var.Attacker_IP}"
+}
