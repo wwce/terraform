@@ -541,7 +541,7 @@ def main(username, password, GCP_region, Billing_Account ):
     if return_code == 0:
         update_status('web_in_deploy_status', 'success')
         albDns = web_in_deploy_output['ALB-DNS']['value']
-        Threat = web_in_deploy_output['']['value']
+        nlbDns = web_in_deploy_output['NATIVE-DNS']['value']
         fwMgtIP = web_in_deploy_output['FW_Mgmt_IP']['value']
 
         logger.info("Got these values from output of WebInDeploy \n\n")
