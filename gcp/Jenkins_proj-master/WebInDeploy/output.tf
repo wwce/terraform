@@ -11,5 +11,5 @@ output "NATIVE-DNS" {
 }
 
 output "Attacker_IP" {
-  value = "${var.Attacker_IP}"
+  value = "{google_compute_instance.attacker.network_interface.0.access_config.0.nat_ip}"
 }
