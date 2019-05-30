@@ -27,6 +27,7 @@ After deployment, the firewalls' username and password are:
 ### Deployment
 1.  Download the **adv_peering_2fw_2spoke** directory.
 2.  In an editor, open `variables.tf` and set values for the following variables
+
 | Variable        | Description |
 | :------------- | :------------- |
 | `main_project` | Project ID for the VM-Series, VM-Series VPCs, GCP storage bucket, & public load balancer. |
