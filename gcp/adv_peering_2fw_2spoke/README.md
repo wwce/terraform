@@ -62,7 +62,7 @@ adv_peering_2fw_2spoke $ terraform apply
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png" width="350">
 </p>
 
-7. From Terraform output, go to `GLB-ADDRESS = http://35.244.207.26` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE & PHP SETUP.
+7. From Terraform output, go to `GLB-ADDRESS = http://<glb_eip>` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE & PHP SETUP.
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png" width="350">
 </p>
