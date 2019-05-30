@@ -1,5 +1,5 @@
 ## 2 x VM-Series / 2 x Spoke VPCs via Advanced Peering
-This Terraform build creates 2 VM-Series firewalls that secure ingress/egress traffic to 2 spoke VPCs.  The spoke VPCs are connected via VPC Peering to the VM-Series trust VPC. After the Terraform build completes, several manual steps must be performed to enable transitive routing.  The manual changes are required since they cannot be performed through Terraform, yet.
+Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic to 2 spoke VPCs.  The spoke VPCs are connected via VPC Peering to the VM-Series trust VPC. After the build completes, several manual changes must be performed to enable transitive routing.  The manual changes are required since they cannot be performed through Terraform, yet.
 
 ### Overview
 * 5 x VPCs (mgmt, untrust, trust, spoke1, & spoke2) with relevant peering connections
