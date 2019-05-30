@@ -1,10 +1,9 @@
 ## 2 x VM-Series / 2 x Spoke VPCs via Advanced Peering
-Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic to 2 spoke VPCs.  The spoke VPCs are connected via VPC Peering to the VM-Series trust VPC. After the build completes, several manual changes must be performed to enable transitive routing.  The manual changes are required since they cannot be performed through Terraform, yet.
+Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic for 2 spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. After the build completes, several manual changes must be performed to enable transitive routing.  The manual changes are required since they cannot be performed through Terraform, yet.
 
 ### Overview
 * 5 x VPCs (mgmt, untrust, trust, spoke1, & spoke2) with relevant peering connections
 * 2 x VM-Series (BYOL / Bundle1 / Bundle2)
-    *  Secures internet-to-spokes, spoke-to-internet, spoke-to-spoke 
 * 2 x Ubuntu VM in spoke1 VPC (install Apache during creation)
 * 1 x Ubuntu VM in spoke2 VPC
 * 1 x GCP Public Load Balancer (VM-Series as backend)
@@ -17,7 +16,7 @@ Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic to 2 
 
 
 ### Prerequistes 
-1. Working installation of Terraform
+1. Terraform
 2. Access to GCP Console
 
 After deployment, the firewalls' username and password are:
@@ -63,7 +62,7 @@ adv_peering_2fw_2spoke $ terraform apply
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png" width="350">
 </p>
 
-7. From Terraform output, go to `GLB-ADDRESS = http://35.244.207.26` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE SETUP.
+7. From Terraform output, go to `GLB-ADDRESS = http://35.244.207.26` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE & PHP SETUP.
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png" width="350">
 </p>
