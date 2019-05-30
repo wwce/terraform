@@ -28,7 +28,7 @@ After deployment, the firewalls' username and password are:
 1.  Download the **adv_peering_2fw_2spoke** directory.
 2.  In an editor, open `variables.tf` and set values for the following variables
 | Variable        | Description |
-| ------------- |-------------|
+| :------------- | :------------- |
 | `main_project` | Project ID for the VM-Series, VM-Series VPCs, GCP storage bucket, & public load balancer. |
 | `main_project_auth_file` | Authentication key file for main_project |
 | `spoke1_project` | Project ID for spoke1 VMs, VPC, & internal load balancer |
@@ -53,18 +53,18 @@ adv_peering_2fw_2spoke $ terraform apply
 5. After deployment finishes, for EACH PEER, enable **Import custom routes** & **Export custom routes** 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/peering.png" width="250">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/peering.png" width="350">
 </p>
 
 6. Remove default GCP VPC route for spoke1-vpc, spoke2-vpc, & trust-vpc
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png" width="250">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png" width="350">
 </p>
 
 7. From Terraform output, go to `GLB-ADDRESS = http://35.244.207.26` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE SETUP.
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png" width="250">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png" width="350">
 </p>
 
 ## Support Policy
