@@ -4,9 +4,7 @@ This Terraform build creates two VM-Series in a transitive VPC.  Two spoke VPCs 
 ### Overview
 * 5 x VPCs (mgmt, untrust, trust, spoke1, & spoke2) with relevant peering connections
 * 2 x VM-Series (BYOL / Bundle1 / Bundle2)
-    *  Secures ingress from internet-to-spokes (via GCP public load balancer or elastic IP on untrust interface)
-    *  Secures egress from spoke-to-internet (via ECMP over peering connection)
-    *  Secures egress from spoke-to-spoke  (via ECMP over peering link.  Source NAT required on VM-Series)
+    *  Secures internet-to-spokes, spoke-to-internet, spoke-to-spoke 
 * 2 x Ubuntu VM in spoke1 VPC (install Apache during creation)
 * 1 x Ubuntu VM in spoke2 VPC
 * 1 x GCP Public Load Balancer (VM-Series as backend)
@@ -15,7 +13,7 @@ This Terraform build creates two VM-Series in a transitive VPC.  Two spoke VPCs 
 
 ### Diagram
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png" width="500">
 </p>
 
 
