@@ -10,8 +10,7 @@ This Terraform build creates two VM-Series in a transitive VPC.  Two spoke VPCs 
 * 1 x GCP Public Load Balancer (VM-Series as backend)
 * 1 x GCP Internal Load Balancer (spoke1 VM's as backend)
 * 1 x GCP Storage Bucket for VM-Series bootstrapping (random string appended to bucket name for global uniqueness)
-
-### Diagram
+</br>
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png" width="250">
 </p>
@@ -41,7 +40,7 @@ After deployment, the firewalls' username and password are:
 
 3.  Download project authenication key files to the main directory of the terraform build.
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/directory.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/directory.png" width="250">
 </p>
 
 4. Execute Terraform
@@ -54,18 +53,18 @@ adv_peering_2fw_2spoke $ terraform apply
 5. After deployment finishes, for EACH PEER, enable **Import custom routes** & **Export custom routes** 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/peering.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/peering.png" width="250">
 </p>
 
 6. Remove default GCP VPC route for spoke1-vpc, spoke2-vpc, & trust-vpc
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/routes.png" width="250">
 </p>
 
 7. From Terraform output, go to `GLB-ADDRESS = http://35.244.207.26` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE SETUP.
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/web.png" width="250">
 </p>
 
 ## Support Policy
