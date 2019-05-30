@@ -25,8 +25,8 @@ After deployment, the firewalls' username and password are:
      * **Password:** Pal0Alt0@123
 
 ### Deployment
-1.  Download the **adv_peering_2fw_2spoke** directory.
-2.  In an editor, open `variables.tf` and set values for the following variables
+1.  Download the **adv_peering_2fw_2spoke** repo to the machine running the build
+2.  In an editor, open **variables.tf** and set values for the following variables
 
 | Variable        | Description |
 | :------------- | :------------- |
