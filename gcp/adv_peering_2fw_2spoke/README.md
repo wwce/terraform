@@ -45,9 +45,9 @@ After deployment, the firewalls' username and password are:
 
 4. Execute Terraform
 ```
-adv_peering_2fw_2spoke $ terraform init
-adv_peering_2fw_2spoke $ terraform plan
-adv_peering_2fw_2spoke $ terraform apply
+$ terraform init
+$ terraform plan
+$ terraform apply
 ```
 
 5. After deployment finishes, for EACH PEER, enable **Import custom routes** & **Export custom routes** 
