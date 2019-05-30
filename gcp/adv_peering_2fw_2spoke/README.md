@@ -13,7 +13,7 @@ This Terraform build creates two VM-Series in a transitive VPC.  Two spoke VPCs 
 
 ### Diagram
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png" width="500">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png" width="250">
 </p>
 
 
