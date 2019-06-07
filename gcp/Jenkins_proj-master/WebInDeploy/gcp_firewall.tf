@@ -29,6 +29,6 @@ resource "google_compute_firewall" "attacker" {
   network = "${google_compute_network.attacker_network.name}"
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22", "443", "5000"]
   }
 }
