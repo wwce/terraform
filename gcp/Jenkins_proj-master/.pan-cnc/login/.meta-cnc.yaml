@@ -4,7 +4,7 @@ label: GCP Login
 description: |
   This skillet will log into GCP. You will be prompted to follow a link and enter a device-code in your browser.
 # type of skillet (panos or panorama or template or terraform)
-type: python3
+type: template
 
 # more complex skillets may express a dependency on another skillet that should be loaded before this one.
 # For example, a set of skillets may build off of a single 'golden config' that contains shared configuration
@@ -29,4 +29,4 @@ variables:
 # in the 'variables' section.
 snippets:
   - name: script
-    file: ../../gcp_login.py
+    file: docker_cmd.j2
