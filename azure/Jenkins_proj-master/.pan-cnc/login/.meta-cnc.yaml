@@ -1,5 +1,5 @@
 name: azure_login
-label: Azure Login
+label: Azure Login (Pre-Deployment Step)
 
 description: |
   This skillet will log into Azure. You will be prompted to follow a link and enter a device-code in your browser.
