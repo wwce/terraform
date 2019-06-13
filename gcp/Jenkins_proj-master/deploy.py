@@ -18,7 +18,7 @@
 
 Usage
 
-python deploy.py -u <fwusername> -p<fwpassword> -r<resource group> -j<region>
+python deploy.py -u <fwusername> -p<fwpassword> -r<resource group> -a<region>
 
 """
 
