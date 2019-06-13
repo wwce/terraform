@@ -32,7 +32,48 @@ variables:
   - name: GCP_Region
     description: GCP Region
     default: us-central1
-    type_hint: text
+    type_hint: dropdown
+    dd_list:                                                                                                      
+     - key: "US-Central-1"                                                                                        
+       value: "us-central1"                                                                                       
+     - key: "US-East-1"                                                                                           
+       value: "us-east1"                                                                                          
+     - key: "US-East-4"                                                                                           
+       value: "us-east4"                                                                                          
+     - key: "US-West-1"                                                                                           
+       value: "us-west1"                                                                                          
+     - key: "US-West-2"                                                                                           
+       value: "us-west2"                                                                                          
+     - key: "Europe-North-1"                                                                                      
+       value: "europe-north1"                                                                                     
+     - key: "Europe-West-1"                                                                                       
+       value: "europe-west1"                                                                                      
+     - key: "Europe-West-2"                                                                                       
+       value: "europe-west2"                                                                                      
+     - key: "Europe-West-3"                                                                                       
+       value: "europe-west3"                                                                                      
+     - key: "Europe-West-4"                                                                                       
+       value: "europe-west4"                                                                                      
+     - key: "Europe-West-6"                                                                                       
+       value: "europe-west6"                                                                                      
+     - key: "North-America-Northeast-1"                                                                           
+       value: "northamerica-northeast1"                                                                           
+     - key: "South-America-East-1"                                                                                
+       value: "southamerica-east1"                                                                                
+     - key: "Asia-East-1"                                                                                         
+       value: "asia-east1"                                                                                        
+     - key: "Asia-East-2"                                                                                         
+       value: "asia-east2"                                                                                        
+     - key: "Asia-Northeast-1"                                                                                    
+       value: "asia-northeast1"                                                                                   
+     - key: "Asia-Northeast-2"                                                                                    
+       value: "asia-northeast2"                                                                                   
+     - key: "Asia-South-1"                                                                                        
+       value: "asia-south1"                                                                                       
+     - key: "Asia-Southeast-1"                                                                                    
+       value: "asia-southeast1"                                                                                   
+     - key: "Australia-Southeast-1"                                                                               
+       value: "australia-southeast1"
   - name: Billing_Account
     description: GCP Billing Account
     default:
