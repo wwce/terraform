@@ -1,5 +1,5 @@
 name: GCP_login
-label: GCP Login
+label: GCP Login (Pre-Deployment Step)
 
 description: |
   This skillet will log into GCP. You will be prompted to follow a link and enter a device-code in your browser.
