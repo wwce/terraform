@@ -4,6 +4,10 @@ resource "google_compute_instance" "attacker" {
   zone         = "${var.GCP_Zone}"
   machine_type = "n1-standard-1"
   allow_stopping_for_update = true
+  timeouts = {
+    create = "15m"
+    delete = "60m"
+  }
   depends_on = [
                 "google_storage_bucket_object.config_file_attacker",
                 "google_project_service.attacker_project"
