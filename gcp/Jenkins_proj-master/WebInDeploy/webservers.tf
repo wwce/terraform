@@ -4,6 +4,7 @@ resource "google_compute_instance" "jenkins1" {
   zone         = "${var.GCP_Zone}"
   machine_type = "n1-standard-1"
   allow_stopping_for_update = true
+  create_timeout = 8
   depends_on = [
                 "google_storage_bucket_object.config_file_webserver",
                 "google_project_service.victim_project"
@@ -42,6 +43,7 @@ resource "google_compute_instance" "jenkins2" {
   zone         = "${var.GCP_Zone}"
   machine_type = "n1-standard-1"
   allow_stopping_for_update = true
+  create_timeout = 8
   depends_on = [
                 "google_storage_bucket_object.config_file_webserver",
                 "google_project_service.victim_project"
