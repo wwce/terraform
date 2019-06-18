@@ -6,6 +6,10 @@ resource "google_compute_instance" "firewall" {
   min_cpu_platform          = "Intel Skylake"
   can_ip_forward            = true
   allow_stopping_for_update = true
+  timeouts = {
+    create = "15m"
+    delete = "60m"
+  }
   depends_on = ["google_storage_bucket_object.init_cfg",
                 "google_storage_bucket_object.bootstrap",
                 "google_storage_bucket_object.content",
