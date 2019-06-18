@@ -5,7 +5,6 @@ resource "google_compute_instance" "firewall" {
   zone                      = "${var.GCP_Zone}"
   min_cpu_platform          = "Intel Skylake"
   can_ip_forward            = true
-  create_timeout            = 8
   allow_stopping_for_update = true
   depends_on = ["google_storage_bucket_object.init_cfg",
                 "google_storage_bucket_object.bootstrap",
