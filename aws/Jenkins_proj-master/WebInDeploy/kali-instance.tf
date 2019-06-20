@@ -31,7 +31,7 @@ resource "aws_instance" "kali" {
              "sudo cd /var/tmp\n",
              "sudo wget -O initialize_attacker.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_attacker.sh\n",
              "sudo chmod 755 initialize_attacker.sh &&\n",
-             "sudo bash ./initialize_attacker.sh
+             "sudo bash ./initialize_attacker.sh\n"
     )))
    }"
 }
