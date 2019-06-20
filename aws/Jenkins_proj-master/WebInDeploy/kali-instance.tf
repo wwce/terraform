@@ -28,7 +28,6 @@ resource "aws_instance" "kali" {
 
   user_data = "${base64encode(join("", list(
       "#! /bin/bash\n",
-      "#! /bin/bash\n",
              "sudo cd /var/tmp\n",
              "sudo wget -O initialize_attacker.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_attacker.sh\n",
              "sudo chmod 755 initialize_attacker.sh &&\n",
