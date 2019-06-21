@@ -93,9 +93,7 @@ def main (username, password):
     fpath = './WebInBootstrap/' + tfstate_file
     if os.path.isfile(fpath):
         delete_rg_cmd = 'group delete --name ' + rg_name1 + ' --yes'
-        az_cli(delete_rg_cmd)
-        delete_state_files('./WebInBootstrap', tfstate_files)
-        delete_file(fpath)
+        # az_cli(delete_rg_cmd)
     #
     # Delete state files
     #
