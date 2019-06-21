@@ -14,7 +14,7 @@ Storage_Account_Fileshare = "<Storage Account Fileshare Name>"
 
 Storage_Account_Fileshare_Directory = "None" 
 
-Web_Initscript_Path = "/scripts/initialize_webserver1.sh"
+Web_Initscript_Path = "/scripts/initialize_webserver.sh"
 
 Attack_Initscript_Path = "/scripts/initialize_attacker.sh"
 
