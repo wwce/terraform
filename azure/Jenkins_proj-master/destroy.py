@@ -67,7 +67,10 @@ def delete_state_files(working_dir, file_list):
     """
     for file_name in file_list:
         fpath = working_dir + file_name
-        delete_file(fpath)
+        try:
+            delete_file(fpath)
+        except Exception as e:
+            print ('Unable to delete the file {} got error {}'.format(fpath, e))
 
 def main (username, password):
     #get_default_cli().invoke(['login', "--use-device-code"], out_file=sys.stdout)
@@ -75,7 +78,7 @@ def main (username, password):
     # Destroy Infrastructure
     #
     tfstate_file = 'terraform.tfstate'
-    tfstate_files = ['terraform.tfstate', tfstate_file + '.backup']
+    tfstate_files = ['terraform.tfstate', 'terraform.tfstate.backup']
 
     fpath = './WebInDeploy/' + tfstate_file
     if os.path.isfile(fpath):
@@ -85,7 +88,7 @@ def main (username, password):
         delete_rg_cmd = 'group delete --name ' + rg_name + ' --yes'
         az_cli(delete_rg_cmd)
     #
-    # Delete state files
+    # Delete state files WebInDeploy
     #
     delete_state_files('./WebInDeploy/', tfstate_files)
 
@@ -93,11 +96,19 @@ def main (username, password):
     fpath = './WebInBootstrap/' + tfstate_file
     if os.path.isfile(fpath):
         delete_rg_cmd = 'group delete --name ' + rg_name1 + ' --yes'
-        # az_cli(delete_rg_cmd)
+        az_cli(delete_rg_cmd)
     #
-    # Delete state files
+    # Delete state files WebInBootstrap
     #
     delete_state_files('./WebInBootstrap/', tfstate_files)
+
+
+    #
+    # Delete state files WebInFWConf
+    #
+    delete_state_files('./WebInFWConf/', tfstate_files)
+
+
 
 
 if __name__ == '__main__':
