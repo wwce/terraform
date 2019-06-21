@@ -55,12 +55,28 @@ def delete_rg(rg_name):
     if code == 0:
         print ('Successfully deleted Rg {} {}'.format(code,rg_name))
 
+def delete_state_files(working_dir, file_list):
+    """
+
+    :param working_dir: string
+    :param tfstate_files: list of files
+    :return: True or False
+
+    Removes a list of files from a directory
+
+    """
+    for file_name in file_list:
+        fpath = working_dir + file_name
+        delete_file(fpath)
+
 def main (username, password):
     #get_default_cli().invoke(['login', "--use-device-code"], out_file=sys.stdout)
     #
     # Destroy Infrastructure
     #
     tfstate_file = 'terraform.tfstate'
+    tfstate_files = ['terraform.tfstate', tfstate_file + '.backup']
+
     fpath = './WebInDeploy/' + tfstate_file
     if os.path.isfile(fpath):
         tf = Terraform(working_dir='./WebInDeploy')
@@ -68,13 +84,22 @@ def main (username, password):
         rg_name1 = tf.output('Attacker_RG_Name')
         delete_rg_cmd = 'group delete --name ' + rg_name + ' --yes'
         az_cli(delete_rg_cmd)
-        delete_file(fpath)
+    #
+    # Delete state files
+    #
+    delete_state_files('./WebInDeploy/', tfstate_files)
+
 
     fpath = './WebInBootstrap/' + tfstate_file
     if os.path.isfile(fpath):
         delete_rg_cmd = 'group delete --name ' + rg_name1 + ' --yes'
         az_cli(delete_rg_cmd)
+        delete_state_files('./WebInBootstrap', tfstate_files)
         delete_file(fpath)
+    #
+    # Delete state files
+    #
+    delete_state_files('./WebInBootstrap/', tfstate_files)
 
 
 if __name__ == '__main__':
