@@ -67,10 +67,11 @@ def delete_state_files(working_dir, file_list):
     """
     for file_name in file_list:
         fpath = working_dir + file_name
-        try:
-            delete_file(fpath)
-        except Exception as e:
-            print ('Unable to delete the file {} got error {}'.format(fpath, e))
+        if os.path.exists(fpath):
+          try:
+              delete_file(fpath)
+          except Exception as e:
+              print ('Unable to delete the file {} got error {}'.format(fpath, e))
 
 def main (username, password):
     #get_default_cli().invoke(['login', "--use-device-code"], out_file=sys.stdout)
