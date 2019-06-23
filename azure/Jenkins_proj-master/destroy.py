@@ -71,7 +71,7 @@ def delete_state_files(working_dir, file_list):
         	try:
             	delete_file(fpath)
         	except Exception as e:
-        	print ('Unable to delete the file {} got error {}'.format(fpath, e))
+            	print ('Unable to delete the file {} got error {}'.format(fpath, e))
 
 def main (username, password):
     #get_default_cli().invoke(['login', "--use-device-code"], out_file=sys.stdout)
