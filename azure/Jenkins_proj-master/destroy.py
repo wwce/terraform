@@ -32,11 +32,14 @@ def run_cmd(cmd):
 
 
 def delete_file(fpath):
-    try:
-        os.remove(fpath)
-        print ('Removed state file {}'.format(fpath))
-    except Exception as e:
-        print ('Unable to delete the file {} got error {}'.format(fpath, e))
+    if os.path.exists(fpath):
+        try:
+            os.remove(fpath)
+            print ('Removed state file {}'.format(fpath))
+        except Exception as e:
+            print ('Unable to delete the file {} got error {}'.format(fpath, e))
+    else:
+        print('No need to delete {} as it no longer exists'.format(fpath))
 
 def az_cli(args_str):
     temp = tempfile.TemporaryFile()
@@ -68,10 +71,9 @@ def delete_state_files(working_dir, file_list):
     for file_name in file_list:
         fpath = working_dir + file_name
         if os.path.exists(fpath):
-            try:
-                delete_file(fpath)
-            except Exception as e:
-                print ('Unable to delete the file {} got error {}'.format(fpath, e))
+            delete_file(fpath)
+        else:
+            print('Already deleted file {}'.format(fpath))
 
 def main (username, password):
     #get_default_cli().invoke(['login', "--use-device-code"], out_file=sys.stdout)
