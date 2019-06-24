@@ -18,7 +18,7 @@
 
 Usage
 
-python deploy.py -u <fwusername> -p<fwpassword> -r<resource group> -j<region>
+python deploy.py --username <fwusername> -p<fwpassword> -r<resource group> -j<region>
 
 """
 
@@ -679,7 +679,7 @@ def main(username, password, rg_name, azure_region):
 
     if return_code == 0:
         update_status('web_in_fw_conf', 'success')
-        logger.info("WebInFWConf failed")
+        logger.info("WebInFWConf ok")
 
     else:
         logger.info("WebInFWConf failed")
