@@ -682,7 +682,7 @@ def main(username, password, rg_name, azure_region):
         logger.info("WebInFWConf ok")
 
     else:
-        logger.info("WebInFWConf failed")
+        logger.info("WebInFWConf sent return code {}".format(return_code))
         update_status('web_in_deploy_status', 'error')
         print(json.dumps(status_output))
         exit(1)
