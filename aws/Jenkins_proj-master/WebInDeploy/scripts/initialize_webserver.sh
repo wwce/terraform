@@ -7,7 +7,7 @@ cd /var/tmp
 echo "version: '3'" > docker-compose.yml
 echo "services:" >> docker-compose.yml
 echo "  jenkins:" >> docker-compose.yml
-echo "    image: paloaltonetworks/csf_jenkins" >> docker-compose.yml
+echo "    image: pglynn/jenkins:latest" >> docker-compose.yml
 echo "    environment:" >> docker-compose.yml
 echo "      JAVA_OPTS: \"-Djava.awt.headless=true\"" >> docker-compose.yml
 echo "      JAVA_OPTS: \"-Djenkins.install.runSetupWizard=false\"" >> docker-compose.yml
