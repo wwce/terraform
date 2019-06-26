@@ -18,7 +18,7 @@ extends:
 # labels allow extensible configuration options per skillet type. For example, lables can be used to
 # group multiple skillets of the same type (pan-os skillets labeled as version: 9.0 for example)
 labels:
-  collection: terraform_provider: google
+  collection: GCP K8s Prisma API
 
 
 # Variables will be presented to the user via the Panhandler GUI. These values will then be passed to
