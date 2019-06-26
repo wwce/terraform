@@ -3,11 +3,7 @@ name: gke_k8s_EW_inspection
 # label should be a human readable label that conveys what this skillet will do
 label: GCP 4-node k8s cluster with VM-Series Firewall
 
-description: > 
-This skillet deploys a 4-node GCP k8s cluster with a VM-Series Firewall for 
-both N/S and E/W Inspection. This is the base deployment used in the Ignite 19 
-k8s HOW lab.  There is also a guide that walks through deploying a 2 tier container 
-application and Prisma Public Cloud API scanning.
+description: This skillet deploys a 4-node GCP k8s cluster with a VM-Series Firewall for both N/S and E/W Inspection. This is the base deployment used in the Ignite 19 k8s HOW lab.  There is also a guide that walks through deploying a 2 tier container application and Prisma Public Cloud API scanning.
 
 # type instructs Panhandler how to consume this skillet
 type: terraform
