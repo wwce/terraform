@@ -1,13 +1,13 @@
-# This is an example .meta-cnc.yaml file. This will allow Panhandler to consume this terraform project
-
-# this is the name of this skillet, should be unique within a given repository
 name: gke_k8s_EW_inspection
 
 # label should be a human readable label that conveys what this skillet will do
 label: GCP 4-node k8s cluster with VM-Series Firewall
 
-# description is a longer more informative version of a label
-description: This skillet deploys a 4-node GCP k8s cluster with a VM-Series Firewall for both N/S and E/W Inspection. This is the base deployment used in the Ignite 19 k8s HOW lab.  There is also a guide that walks through deploying a 2 tier container application and Prisma Public Cloud API scanning.
+description: > 
+This skillet deploys a 4-node GCP k8s cluster with a VM-Series Firewall for 
+both N/S and E/W Inspection. This is the base deployment used in the Ignite 19 
+k8s HOW lab.  There is also a guide that walks through deploying a 2 tier container 
+application and Prisma Public Cloud API scanning.
 
 # type instructs Panhandler how to consume this skillet
 type: terraform
@@ -18,7 +18,7 @@ extends:
 # labels allow extensible configuration options per skillet type. For example, lables can be used to
 # group multiple skillets of the same type (pan-os skillets labeled as version: 9.0 for example)
 labels:
-  terraform_provider: google
+  collection: terraform_provider: google
 
 
 # Variables will be presented to the user via the Panhandler GUI. These values will then be passed to
