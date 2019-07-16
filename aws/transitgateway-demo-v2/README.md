@@ -1,8 +1,7 @@
 ## 2 x VM-Series / Transit Gateway / 2 x Spokes VPCs
-This build is an iteration of [djspears build](https://github.com/wwce/terraform/tree/master/aws/TGW-VPC) that contains the following differences:
-1. Spoke-to-Internet traffic explicitly flows through firewall-1 (no SNAT).  
-2. Spoke-to-Spoke traffic explicitly flows through firewall-2 (no SNAT).
-3. Creation of dedicated route tables for each subnet (main route table is not used).
+This build is a further iteration of [mattmclimans build](https://github.com/wwce/terraform/tree/master/aws/TGW-VPC)  that contains the following differences:
+1. Added HA Failover script that is found in the AWS CFT section.  
+2. Addtional subnets and NAT Gateways to support the lambda function
 
 ## Overview
 <p align="center">
@@ -24,7 +23,7 @@ This build is an iteration of [djspears build](https://github.com/wwce/terraform
 2. If you do not want to use the AWS CLI, the `providers.tf` must be modified to include your AWS Access Key and Secret Key [(more info)](https://www.terraform.io/docs/providers/aws/index.html).
 
 ## How to Deploy
-1.  Download the **tgw_2fw_vpc_insertion** directory.
+1.  Download the **transitgateway-demo-v2** directory.
 2.  In an editor, open `variables.tf`
     *  `Line 10`:  Set your existing AWS EC2 Key 
     *  `Line 14`:  Enter a source address to access the VM-Series management interface (in valid CIDR notation).  This address will be added to the management interface's Network Security Group.
@@ -33,6 +32,8 @@ This build is an iteration of [djspears build](https://github.com/wwce/terraform
 4. After deployment, the firewalls' username and password are:
      * **Username:** paloalto
      * **Password:** PanPassword123!
+
+
 
 ## Support Policy
 The guide in this directory and accompanied files are released under an as-is, best effort, support policy. These scripts should be seen as community supported and Palo Alto Networks will contribute our expertise as and when possible. We do not provide technical support or help in using or troubleshooting the components of the project through our normal support options such as Palo Alto Networks support teams, or ASC (Authorized Support Centers) partners and backline support options. The underlying product used (the VM-Series firewall) by the scripts or templates are still supported, but the support is only for the product functionality and not for help in deploying or using the template or script itself.
