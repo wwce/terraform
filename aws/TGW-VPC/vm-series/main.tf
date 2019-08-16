@@ -49,7 +49,6 @@ variable "license_type_map" {
 data "aws_ami" "panw_ngfw" {
   most_recent = true
   owners = ["aws-marketplace"]
-  
   filter {
     name   = "owner-alias"
     values = ["aws-marketplace"]
