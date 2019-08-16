@@ -27,7 +27,7 @@
 
  This is a screenshot of the output once the deployment has completed that shows how to connect to the various components:
 
-![tgwout](https://user-images.githubusercontent.com/21991161/63199744-68331c80-c044-11e9-803e-5575c0ae8a28.png)
+![tgwout](https://user-images.githubusercontent.com/21991161/53307965-1793f100-3863-11e9-8eaa-fabeb35d7cda.jpg)
 
 
  # Support Policy
