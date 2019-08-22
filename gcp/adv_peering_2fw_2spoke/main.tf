@@ -30,7 +30,7 @@ module "vpc_untrust" {
 module "vpc_trust" {
   source            = "./modules/create_vpc/"
   vpc_name          = "trust-vpc"
-  subnetworks       = ["trust-zone"]
+  subnetworks       = ["trust-subnet"]
   ip_cidrs          = ["192.168.2.0/24"]
   regions           = ["${var.region}"]
   ingress_allow_all = true
