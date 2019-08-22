@@ -52,7 +52,7 @@ module "vmseries_internal_lb_ilbnh" {
   source                  = "./modules/create_ilbnh/"
   internal_lb_name_ilbnh  = "ilbnh"
   internal_lb_ports_ilbnh = "22"
-  subnetworks             = ["trust-subnet"]
+  subnetworks             = ["${module.vpc_trust.subnetwork_self_link[0]}"]
   internal_lbnh_ip        = "192.168.2.6"
   enable_ilbnh            = "${var.enable_ilbnh}"
   backends  = [
