@@ -9,22 +9,23 @@ This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.
 ### Requirements
 * An existing Transit Gateway
 * An existing Transit Gateway route table for the Security-VPC attachment
+* Ec2 Key Pair for deployment region
 
 
 ### How to Deploy
-1.  Open variables.tf in a text editor. 
+1.  Open **variables.tf** in a text editor. 
 2.  Uncomment default values and add correct value for following variables: 
-    * fw_ami
+    * **fw_ami**
          * Firewall AMI for AWS Region, SKU, & PAN-OS version.
-fw_sg_source
-Source prefix to apply to VM-Series mgmt. interface
-tgw_id 
-Transit Gateway ID from Step 1
-tgw_rtb_id 
-Transit Gateway Route Table ID from Step 1
-Save variables.tf
-BYOL ONLY 
-If you want to license the VM-Series on creation, copy and paste your Auth Code into the /bootstrap/authcodes file.  The Auth Code must be registered with your Palo Alto Networks support account before proceeding.
+    * **fw_sg_source**
+         * Source prefix to apply to VM-Series mgmt. interface
+    * **tgw_id** 
+         * Existing Transit Gateway ID
+    * **tgw_rtb_id** 
+         * Existing Transit Gateway Route Table ID
+3.  Save **variables.tf**
+4.  BYOL ONLY 
+    * If you want to license the VM-Series on creation, copy and paste your Auth Code into the /bootstrap/authcodes file.  The Auth Code must be registered with your Palo Alto Networks support account before proceeding.
 Before proceeding, make sure you have accepted and subscribed to the VM-Series software in the AWS Marketplace. 
 
 
