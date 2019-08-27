@@ -8,15 +8,25 @@ This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.
 
 ### Requirements
 * An existing Transit Gateway
-* An existing Transit Gateway route table for the Spoke-VPC attachment (application VPC)
 * An existing Transit Gateway route table for the Security-VPC attachment
-* S3 Bucket for VM-Series bootstrap
-* S3 Bucket for Lambda code
 
 
 ### How to Deploy
-1.  Review [AWS VM-Series Autoscaling 2.0](https://docs.paloaltonetworks.com/vm-series/8-1/vm-series-deployment/set-up-the-vm-series-firewall-on-aws/auto-scale-vm-series-firewalls-with-the-amazon-elb/autoscale-template-version2_0.html)
-2.  Follow the **guide.pdf** for additional instructions.  
+1.  Open variables.tf in a text editor. 
+2.  Uncomment default values and add correct value for following variables: 
+    * fw_ami
+         * Firewall AMI for AWS Region, SKU, & PAN-OS version.
+fw_sg_source
+Source prefix to apply to VM-Series mgmt. interface
+tgw_id 
+Transit Gateway ID from Step 1
+tgw_rtb_id 
+Transit Gateway Route Table ID from Step 1
+Save variables.tf
+BYOL ONLY 
+If you want to license the VM-Series on creation, copy and paste your Auth Code into the /bootstrap/authcodes file.  The Auth Code must be registered with your Palo Alto Networks support account before proceeding.
+Before proceeding, make sure you have accepted and subscribed to the VM-Series software in the AWS Marketplace. 
+
 
 
 ## Support Policy
