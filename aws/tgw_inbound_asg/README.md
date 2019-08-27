@@ -3,7 +3,7 @@ This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.
 
 ### Overview
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/aws-cft/master/tgw_inbound_asg/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/aws/tgw_inbound_asg/diagram.png">
 </p>
 
 ### Requirements
