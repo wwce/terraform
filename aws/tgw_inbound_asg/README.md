@@ -7,10 +7,10 @@ This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.
 </p>
 
 ### Requirements
-* An existing Transit Gateway
-* An existing Transit Gateway route table for the Security-VPC attachment
-* Ec2 Key Pair for deployment region
-* FW UN/PW: **pandemo** / **demopassword**
+* Existing Transit Gateway
+* Existing Transit Gateway route table for the Security-VPC attachment
+* EC2 Key Pair for deployment region
+* UN/PW: **pandemo** / **demopassword**
 
 
 ### How to Deploy
