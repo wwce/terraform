@@ -1,0 +1,11 @@
+version: '3'
+services:
+  jenkins:
+    build: .
+    container_name: jenkins
+    environment:
+      JAVA_OPTS: "-Djava.awt.headless=true"
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    ports:
+      - "50000:50000"
+      - "8080:8080"

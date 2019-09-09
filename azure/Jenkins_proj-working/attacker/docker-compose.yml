@@ -1,0 +1,8 @@
+version: '3'
+services:
+  attacker:
+    build: .
+    container_name: attacker
+    ports:
+      - "443:443"
+      - "5000:5000"
