@@ -491,6 +491,77 @@ def apply_tf(working_dir, vars, description):
 
     return (return_code, outputs)
 
+def twistlock_signup(mgt_ip,username,password,timeout = 5):
+    # $ curl - k \
+    #   - H
+    # 'Content-Type: application/json' \
+    # - X
+    # POST \
+    # - d
+    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
+    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    url = 'https://' + mgt_ip + ':8083/api/v1/signup'
+    payload = {
+        "username": username,
+        "password": password
+    }
+    payload = json.dumps(payload)
+    headers = {'Content-Type': 'application/json'}
+    max_count = 15
+    count = 0
+    while True:
+        count = count + 1
+        if count < max_count:
+            try:
+                response = requests.post(url, data=payload, headers=headers, verify=False, timeout=timeout)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    data = response.json()
+                    return 'Success'
+            except requests.exceptions.HTTPError as err:
+                logger.error('HTTP Error {}'.format(err))
+                return 'Got invalid response from console running signup'
+            except requests.exceptions.Timeout as errt:
+                logger.error('Timeout Error Console not up')
+            except requests.exceptions.RequestException as err:
+                logger.error("General Error", err)
+
+
+def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
+    # $ curl - k \
+    #   - H
+    # 'Content-Type: application/json' \
+    # - X
+    # POST \
+    # - d
+    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
+    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    url = 'https://' + mgt_ip + ':8083/api/v1/authenticate'
+    payload = {
+        "username": username,
+        "password": password
+    }
+    headers = {'Content-Type': 'application/json'}
+    try:
+        payload = json.dumps(payload)
+        response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
+        response.raise_for_status()
+        if response.status_code == 200:
+            data = response.json()
+            return data.get('token')
+    except requests.exceptions.HTTPError as err:
+        print ('HTTP Error {}'.format(err))
+        return
+    except requests.exceptions.Timeout as errt:
+        print ('Timeout Error {}'.format(errt))
+        return
+    except requests.exceptions.RequestException as err:
+        print ("General Error", err)
+        return
+
+
+
+
 
 def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair):
     username = username
@@ -548,6 +619,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     if return_code == 0:
         update_status('web_in_deploy_status', 'success')
         albDns = web_in_deploy_output['ALB-DNS']['value']
+        console_MgtIP = web_in_deploy_output['CONSOLE-MGT']['value']
         fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
         nlbDns = web_in_deploy_output['NLB-DNS']['value']
         fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
@@ -642,6 +714,13 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     fw.commit()
     time.sleep(60)
     logger.info("waiting for commit")
+
+    #
+    # Setup Twistlock Console
+    #
+
+    resp = twistlock_signup(console_MgtIP, username, password)
+
 
     #
     # Check Jenkins

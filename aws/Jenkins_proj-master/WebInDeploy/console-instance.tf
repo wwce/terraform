@@ -7,7 +7,7 @@ resource "aws_network_interface" "console-int" {
 
 resource "aws_eip_association" "console-Association" {
   network_interface_id = "${aws_network_interface.console-int.id}"
-  allocation_id        = "${aws_eip.console.id}"
+  allocation_id        = "${aws_eip.CONSOLE-MGT.id}"
 }
 
 resource "aws_instance" "twistlock-console" {
