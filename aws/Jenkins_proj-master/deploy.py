@@ -492,14 +492,7 @@ def apply_tf(working_dir, vars, description):
     return (return_code, outputs)
 
 def twistlock_signup(mgt_ip,username,password,timeout = 5):
-    # $ curl - k \
-    #   - H
-    # 'Content-Type: application/json' \
-    # - X
-    # POST \
-    # - d
-    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
-    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    """Loop until signup returns a response (12 retries)"""
     url = 'https://' + mgt_ip + ':8083/api/v1/signup'
     payload = {
         "username": username,
@@ -507,24 +500,24 @@ def twistlock_signup(mgt_ip,username,password,timeout = 5):
     }
     payload = json.dumps(payload)
     headers = {'Content-Type': 'application/json'}
-    max_count = 15
+    max_count = 12
     count = 0
     while True:
         count = count + 1
+        time.sleep(5)
         if count < max_count:
             try:
                 response = requests.post(url, data=payload, headers=headers, verify=False, timeout=timeout)
-                response.raise_for_status()
                 if response.status_code == 200:
                     data = response.json()
                     return 'Success'
-            except requests.exceptions.HTTPError as err:
-                logger.error('HTTP Error {}'.format(err))
-                return 'Got invalid response from console running signup'
-            except requests.exceptions.Timeout as errt:
-                logger.error('Timeout Error Console not up')
+                elif response.status_code == 400:
+                    return 'Already initialised'
             except requests.exceptions.RequestException as err:
-                logger.error("General Error", err)
+                print("General Error", err)
+        else:
+            return
+
 
 
 def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
@@ -559,11 +552,34 @@ def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
         print ("General Error", err)
         return
 
+def twistlock_add_license(mgt_ip,token,license, timeout = 5):
+    """Adds the license key to Twistlock console"""
+    url = 'https://' + mgt_ip + ':8083/api/v1/settings/license'
+    payload = {"key": license}
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer }
+    try:
+        payload = json.dumps(payload)
+        response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
+        response.raise_for_status()
+        if response.status_code == 200:
+            return 'Success'
+    except requests.exceptions.HTTPError as err:
+        print ('HTTP Error {}'.format(err))
+        return
+    except requests.exceptions.Timeout as errt:
+        print ('Timeout Error {}'.format(errt))
+        return
+    except requests.exceptions.RequestException as err:
+        print ("General Error", err)
+        res = json.loads(r)
+        return
 
 
 
 
-def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair):
+def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key):
     username = username
     password = password
     aws_access_key = aws_access_key
@@ -720,6 +736,10 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     #
 
     resp = twistlock_signup(console_MgtIP, username, password)
+    token = twistlock_get_auth_token(console_MgtIP,username,password)
+    license_add_response = twistlock_add_license(console_MgtIP, token, twistlock_license_key)
+    if license_add_response == 'Success':
+        logger.info("Twistlock Console licensed and Ready")
 
 
     #
@@ -747,6 +767,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--aws_secret_key', help='AWS Secret', required=True)
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
+    parser.add_argument('-c', '--twistlock_key', help='Twistlock license key', required=True)
     # parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
 
     args = parser.parse_args()
@@ -756,6 +777,7 @@ if __name__ == '__main__':
     aws_secret_key = args.aws_secret_key
     aws_region = args.aws_region
     ec2_key_pair = args.aws_key_pair
+    twistlock_license_key = args.twistlock_key
     # bootstrap_s3bucket = args.s3_bootstrap_bucket
 
-    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair)
+    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key)
