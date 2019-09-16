@@ -23,7 +23,7 @@ chmod +x /usr/local/bin/docker-compose
 # sudo usermod -aG docker $USER
 
 
-//curl -o ./twistlock.tar.gz https://cdn.twistlock.com/releases/0955bgg7/twistlock_19_07_358.tar.gz
+curl -o ./twistlock.tar.gz https://cdn.twistlock.com/releases/0955bgg7/twistlock_19_07_358.tar.gz
 mkdir twistlock
 tar -xzf twistlock.tar.gz -C twistlock/
 ./twistlock/twistlock.sh -s onebox
