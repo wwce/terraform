@@ -34,6 +34,14 @@ variables:
     description: AWS Access Key
     default: abc123
     type_hint: text
+  - name: twistlock_url
+    description: URL for latest Twistlock version
+    default: https://cdn.twistlock.com/releases/xxxxxx/twistlock_xx_xx_xx.tar.gz
+    type_hint: text
+  - name: twistlock_key
+    description: Twistlock license key
+    default: xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    type_hint: text
   - name: aws_secret_key
     description: AWS Secret Key
     default:

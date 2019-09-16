@@ -576,10 +576,15 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
         res = json.loads(r)
         return
 
+def replace_string_in_file(filepath, old_string, new_string):
+    with open(filepath) as f:
+        s = f.read()
+        s = s.replace(old_string, new_string)
+        with open(filepath, "w") as f:
+            f.write(s)
 
 
-
-def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key):
+def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key, cdn_url):
     username = username
     password = password
     aws_access_key = aws_access_key
@@ -589,6 +594,15 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     albDns = ''
     nlbDns = ''
     fwMgtIP = ''
+
+
+
+    #
+    # Replace cdn url in console setup file with latest version
+    #
+    filepath = './WebInDeploy/scripts/initialise_console.sh'
+    replace_string_in_file(filepath, '<cdn-url>', cdn_url)
+
 
     WebInDeploy_vars = {
         'aws_access_key': aws_access_key,
@@ -768,7 +782,8 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
     parser.add_argument('-c', '--twistlock_key', help='Twistlock license key', required=True)
-    # parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
+    parser.add_argument('-t', '--twistlock_url', help='URL for latest twistlock version', required=True)
+
 
     args = parser.parse_args()
     username = args.username
@@ -778,6 +793,7 @@ if __name__ == '__main__':
     aws_region = args.aws_region
     ec2_key_pair = args.aws_key_pair
     twistlock_license_key = args.twistlock_key
+    cdn_url = args.twistlock_url
     # bootstrap_s3bucket = args.s3_bootstrap_bucket
 
-    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key)
+    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key, cdn_url)
