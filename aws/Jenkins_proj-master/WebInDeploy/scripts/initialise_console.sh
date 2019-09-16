@@ -1,5 +1,10 @@
 #!/bin/bash
 # Install docker
+
+# if url is not supplied at the command prompt
+# display usae message and die
+[ $# -eq 0 ] && { echo "Usage: $0 cdn-url"; exit 1; }
+
 apt-get update
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -23,7 +28,7 @@ chmod +x /usr/local/bin/docker-compose
 # sudo usermod -aG docker $USER
 
 
-curl -o ./twistlock.tar.gz https://cdn.twistlock.com/releases/0955bgg7/twistlock_19_07_358.tar.gz
+curl -o ./twistlock.tar.gz $1
 mkdir twistlock
 tar -xzf twistlock.tar.gz -C twistlock/
 ./twistlock/twistlock.sh -s onebox
