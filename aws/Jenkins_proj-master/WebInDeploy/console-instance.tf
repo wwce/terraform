@@ -33,8 +33,8 @@ resource "aws_instance" "twistlock-console" {
    "#!/bin/bash\n",
           "cd /var/tmp\n",
           "sudo wget -O initialize_console.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/initialise_console.sh\n",
-          "sudo chmod 755 /var/tmp/initialize_console.sh &&\n",
-          "sudo bash /var/tmp/initialize_console.sh <cdn-url>\n"
+          "sudo chmod 755 /var/tmp/initialise_console.sh &&\n",
+          "sudo bash /var/tmp/initialise_console.sh <cdn-url>\n"
    )))
    }"
 }
