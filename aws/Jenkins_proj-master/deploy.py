@@ -781,7 +781,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--aws_secret_key', help='AWS Secret', required=True)
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
-    parser.add_argument('-c', '--twistlock_key', help='Twistlock license key', required=True)
+    parser.add_argument('-v', '--twistlock_key', help='Twistlock license key', required=True)
     parser.add_argument('-t', '--twistlock_url', help='URL for latest twistlock version', required=True)
 
 
