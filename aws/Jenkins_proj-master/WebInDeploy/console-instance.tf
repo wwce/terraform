@@ -32,7 +32,7 @@ resource "aws_instance" "twistlock-console" {
   user_data = "${base64encode(join("", list(
    "#!/bin/bash\n",
           "sudo cd /var/tmp\n",
-          "sudo wget -O initialize_console.sh <cdn-url>",
+          "sudo wget -O initialize_console.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/initialise_console.sh\n",
           "sudo chmod 755 /var/tmp/initialize_console.sh &&\n",
           "sudo bash /var/tmp/initialize_console.sh <cdn-url>\n"
    )))
