@@ -510,11 +510,12 @@ def twistlock_signup(mgt_ip,username,password,timeout = 5):
                 response = requests.post(url, data=payload, headers=headers, verify=False, timeout=timeout)
                 if response.status_code == 200:
                     data = response.json()
+                    logger.info('Successfully ran signup process')
                     return 'Success'
                 elif response.status_code == 400:
                     return 'Already initialised'
             except requests.exceptions.RequestException as err:
-                print("General Error", err)
+                logger.info("General Error", err)
         else:
             return
 
@@ -541,15 +542,16 @@ def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
         response.raise_for_status()
         if response.status_code == 200:
             data = response.json()
+            logger.info('Successfully generated auth token')
             return data.get('token')
     except requests.exceptions.HTTPError as err:
-        print ('HTTP Error {}'.format(err))
+        logger.info('HTTP Error {}'.format(err))
         return
     except requests.exceptions.Timeout as errt:
-        print ('Timeout Error {}'.format(errt))
+        logger.info('Timeout Error {}'.format(errt))
         return
     except requests.exceptions.RequestException as err:
-        print ("General Error", err)
+        logger.info("General Error", err)
         return
 
 def twistlock_add_license(mgt_ip,token,license, timeout = 5):
@@ -564,16 +566,16 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
         response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
         response.raise_for_status()
         if response.status_code == 200:
+            logger.info('Successfully added license')
             return 'Success'
     except requests.exceptions.HTTPError as err:
-        print ('HTTP Error {}'.format(err))
+        logger.info('HTTP Error {}'.format(err))
         return
     except requests.exceptions.Timeout as errt:
-        print ('Timeout Error {}'.format(errt))
+        logger.info('Timeout Error {}'.format(errt))
         return
     except requests.exceptions.RequestException as err:
-        print ("General Error", err)
-        res = json.loads(r)
+        logger.info("General Error", err)
         return
 
 def replace_string_in_file(filepath, old_string, new_string):
