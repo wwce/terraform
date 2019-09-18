@@ -24,16 +24,18 @@ StackName = "vv-2t"
 
 VPCCIDR = "10.0.0.0/16"
 
-aws_region = "eu-west-1"
+aws_region = ""
 
 ServerKeyName = ""
 
 aws_access_key = ""
 
-aws_secret_key = "R"
+aws_secret_key = ""
 
 KALICIDR = "10.1.0.0/16"
 
 attackcidr1 = "10.1.1.0/24"
 
 kali_AZ1_attack = "10.1.1.50"
+
+kali_AZ1_console = "10.1.1.51"
