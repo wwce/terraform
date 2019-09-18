@@ -1,8 +1,8 @@
 resource "aws_network_interface" "console-int" {
-  subnet_id         = "${aws_subnet.AZ1-MGT.id}"
-  security_groups   = ["${aws_security_group.sgWideOpen.id}"]
+  subnet_id         = "${aws_subnet.AZ1-attack1.id}"
+  security_groups   = ["${aws_security_group.kaliWideOpen.id}"]
   source_dest_check = false
-  private_ips       = ["10.0.0.20"]
+  private_ips       = ["${var.kali_AZ1_console}"]
 }
 
 resource "aws_eip_association" "console-Association" {
@@ -32,7 +32,7 @@ resource "aws_instance" "twistlock-console" {
   user_data = "${base64encode(join("", list(
    "#!/bin/bash\n",
           "sudo cd /var/tmp\n",
-          "sudo wget -O initialize_console.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/initialise_console.sh\n",
+          "sudo wget -O initialize_console.sh <cdn-url>",
           "sudo chmod 755 /var/tmp/initialize_console.sh &&\n",
           "sudo bash /var/tmp/initialize_console.sh <cdn-url>\n"
    )))
