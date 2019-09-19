@@ -41,13 +41,17 @@ from python_terraform import Terraform
 
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
-logging.basicConfig(level=logging.INFO)
+
+logPath = './'
+fileName = 'deploy'
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
+    handlers=[
+        logging.FileHandler("{0}/{1}.log".format(logPath, fileName)),
+        logging.StreamHandler()
+    ])
 logger = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter('%(levelname)-8s %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
 
 # global var to keep status output
 status_output = dict()
@@ -633,6 +637,8 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         'username': username,
         'password': password
     }
+    WebServerDeploy = {}
+
 
     # # Set run_plan to TRUE is you wish to run terraform plan before apply
 
