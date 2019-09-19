@@ -47,6 +47,7 @@ fileName = 'deploy'
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
+    filemode= 'w',
     handlers=[
         logging.FileHandler("{0}/{1}.log".format(logPath, fileName)),
         logging.StreamHandler()
@@ -565,6 +566,7 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
     Bearer = "Bearer " + token
     headers = {'Content-Type': 'application/json',
                'Authorization': Bearer }
+    logger.info('Url is {}\n Payload is {}\n Headers is{}'.format(url,payload,headers))
     try:
         payload = json.dumps(payload)
         response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
