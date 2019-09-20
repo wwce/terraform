@@ -42,17 +42,20 @@ from python_terraform import Terraform
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
 
-logPath = './'
-fileName = 'deploy'
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
-    filemode= 'w',
-    handlers=[
-        logging.FileHandler("{0}/{1}.log".format(logPath, fileName)),
-        logging.StreamHandler()
-    ])
-logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='deploy.log',
+                    filemode='w')
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(levelname)-8s %(message)s')
+console.setFormatter(formatter)
+# add the handler to the root logger
+logging.getLogger('').addHandler(console)
+
 
 # global var to keep status output
 status_output = dict()
@@ -497,7 +500,14 @@ def apply_tf(working_dir, vars, description):
     return (return_code, outputs)
 
 def twistlock_signup(mgt_ip,username,password,timeout = 5):
-    """Loop until signup returns a response (12 retries)"""
+    # $ curl - k \
+    #   - H
+    # 'Content-Type: application/json' \
+    # - X
+    # POST \
+    # - d
+    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
+    #         https: // < CONSOLE >: 8083 / api / v1 / signup
     url = 'https://' + mgt_ip + ':8083/api/v1/signup'
     payload = {
         "username": username,
@@ -505,22 +515,19 @@ def twistlock_signup(mgt_ip,username,password,timeout = 5):
     }
     payload = json.dumps(payload)
     headers = {'Content-Type': 'application/json'}
-    max_count = 12
+    max_count = 15
     count = 0
     while True:
         count = count + 1
-        time.sleep(5)
         if count < max_count:
             try:
                 response = requests.post(url, data=payload, headers=headers, verify=False, timeout=timeout)
                 if response.status_code == 200:
-                    data = response.json()
-                    logger.info('Successfully ran signup process')
                     return 'Success'
                 elif response.status_code == 400:
                     return 'Already initialised'
             except requests.exceptions.RequestException as err:
-                logger.info("General Error", err)
+                print("General Error", err)
         else:
             return
 
