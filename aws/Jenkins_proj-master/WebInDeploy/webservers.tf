@@ -32,7 +32,7 @@ resource "aws_instance" "web1" {
           "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
           "sudo chmod 755 initialize_webserver.sh &&\n",
           "sudo bash ./initialize_webserver.sh\n",
-          "sudo bash ./install_twistlock_defender.sh\n"
+          "sudo bash ./install_twistlock_defender.sh <CONSOLE> <AUTHKEY>\n"
    )))
    }"
 }

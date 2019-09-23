@@ -515,7 +515,7 @@ def twistlock_signup(mgt_ip,username,password,timeout = 5):
     }
     payload = json.dumps(payload)
     headers = {'Content-Type': 'application/json'}
-    max_count = 15
+    max_count = 30
     count = 0
     while True:
         count = count + 1
@@ -669,7 +669,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     #
     # Replace cdn url in console setup file with latest version
     #
-    filepath = './WebInDeploy/console-instance.tf'
+    filepath = './TwistlockDeploy/console-instance.tf'
     replace_string_in_file(filepath, '<cdn-url>', cdn_url)
 
     return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'WebInDeploy')
@@ -681,7 +681,25 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     if return_code == 0:
         update_status('console_deploy_output', 'success')
-        console_mgt_ip = web_in_deploy_output['CONSOLE-MGT']['value']
+        console_mgt_ip = console_deploy_output['CONSOLE-MGT']['value']
+
+        #
+        # Replace cdn url in console setup file with latest version
+        #
+    #
+    # Setup Twistlock Console
+    #
+
+    resp = twistlock_signup(console_mgt_ip, username, password)
+    token = twistlock_get_auth_token(console_mgt_ip,username,password)
+    license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+
+    if license_add_response == 'Success':
+        logger.info("Twistlock Console licensed and Ready")
+    filepath = './WebInDeploy/webservers.tf'
+
+    replace_string_in_file(filepath, '<CONSOLE>', console_mgt_ip)
+    replace_string_in_file(filepath, '<<AUTHKEY>', token)
 
     #
     # Add Jenkins WebServer and Kali servers
@@ -795,15 +813,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     time.sleep(60)
     logger.info("waiting for commit")
 
-    #
-    # Setup Twistlock Console
-    #
 
-    resp = twistlock_signup(console_mgt_ip, username, password)
-    token = twistlock_get_auth_token(console_mgt_ip,username,password)
-    license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
-    if license_add_response == 'Success':
-        logger.info("Twistlock Console licensed and Ready")
 
 
     #
