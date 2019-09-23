@@ -614,11 +614,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
 
 
-    #
-    # Replace cdn url in console setup file with latest version
-    #
-    filepath = './WebInDeploy/console-instance.tf'
-    replace_string_in_file(filepath, '<cdn-url>', cdn_url)
+
 
 
     WebInDeploy_vars = {
