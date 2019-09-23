@@ -594,7 +594,9 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
 def replace_string_in_file(filepath, old_string, new_string):
     with open(filepath) as f:
         s = f.read()
-        s = s.replace(old_string, new_string)
+        cmds = s.split()
+
+        s = s.replace(cmds[4], new_string)
         with open(filepath, "w") as f:
             f.write(s)
 
@@ -623,8 +625,14 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         'aws_access_key': aws_access_key,
         'aws_secret_key': aws_secret_key,
         'aws_region': aws_region,
-        'ServerKeyName': ec2_key_pair,
-        # 'bootstrap_s3bucket': bootstrap_bucket
+        'ServerKeyName': ec2_key_pair
+    }
+
+    TwistlockDeploy_vars = {
+        'aws_access_key': aws_access_key,
+        'aws_secret_key': aws_secret_key,
+        'aws_region': aws_region,
+        'ServerKeyName': ec2_key_pair
     }
 
     waf_conf_vars = {
@@ -656,6 +664,31 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     kwargs = {"auto-approve": True}
 
     #
+    # Add Twistlock Console
+    #
+    #
+    # Replace cdn url in console setup file with latest version
+    #
+    filepath = './WebInDeploy/console-instance.tf'
+    replace_string_in_file(filepath, '<cdn-url>', cdn_url)
+
+    return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'WebInDeploy')
+
+    logger.debug('Got Return code for deploy TwistlockDeploy {}'.format(return_code))
+
+    # update_status('web_in_deploy_stdout', stdout)
+    update_status('console_deploy_output', console_deploy_output)
+
+    if return_code == 0:
+        update_status('console_deploy_output', 'success')
+        console_mgt_ip = web_in_deploy_output['CONSOLE-MGT']['value']
+
+    #
+    # Add Jenkins WebServer and Kali servers
+    #
+    #
+
+    #
     return_code, web_in_deploy_output = apply_tf('./WebInDeploy', WebInDeploy_vars, 'WebInDeploy')
 
     logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code))
@@ -666,7 +699,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     if return_code == 0:
         update_status('web_in_deploy_status', 'success')
         albDns = web_in_deploy_output['ALB-DNS']['value']
-        console_MgtIP = web_in_deploy_output['CONSOLE-MGT']['value']
         fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
         nlbDns = web_in_deploy_output['NLB-DNS']['value']
         fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
@@ -704,6 +736,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         update_status('waf_conf_status', 'error')
         print(json.dumps(status_output))
         exit(1)
+
 
     #
     # Check firewall is up and running
@@ -766,9 +799,9 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     # Setup Twistlock Console
     #
 
-    resp = twistlock_signup(console_MgtIP, username, password)
-    token = twistlock_get_auth_token(console_MgtIP,username,password)
-    license_add_response = twistlock_add_license(console_MgtIP, token, twistlock_license_key)
+    resp = twistlock_signup(console_mgt_ip, username, password)
+    token = twistlock_get_auth_token(console_mgt_ip,username,password)
+    license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
     if license_add_response == 'Success':
         logger.info("Twistlock Console licensed and Ready")
 

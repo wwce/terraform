@@ -22,7 +22,6 @@ variable "attackcidr1" {}
 variable "KALICIDR" {}
 
 variable "kali_AZ1_attack" {}
-variable "kali_AZ1_console" {}
 
 #VMSeries 8.1 Bundle 2 Paygo 
 variable "PANFWRegionMap" {

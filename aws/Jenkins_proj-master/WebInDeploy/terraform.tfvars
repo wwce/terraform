@@ -38,4 +38,4 @@ attackcidr1 = "10.1.1.0/24"
 
 kali_AZ1_attack = "10.1.1.50"
 
-kali_AZ1_console = "10.1.1.51"
+
