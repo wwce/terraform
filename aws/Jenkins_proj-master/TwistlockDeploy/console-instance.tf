@@ -1,8 +1,8 @@
 resource "aws_network_interface" "console-int" {
-  subnet_id         = "${aws_subnet.AZ1-attack1.id}"
-  security_groups   = ["${aws_security_group.kaliWideOpen.id}"]
+  subnet_id         = "${aws_subnet.AZ1-console.id}"
+  security_groups   = ["${aws_security_group.consoleWideOpen.id}"]
   source_dest_check = false
-  private_ips       = ["${var.kali_AZ1_console}"]
+  private_ips       = ["${var.AZ1_console_ip}"]
 }
 
 resource "aws_eip_association" "console-Association" {
@@ -13,7 +13,7 @@ resource "aws_eip_association" "console-Association" {
 resource "aws_instance" "twistlock-console" {
   # instance_initiated_shutdown_behavior = "stop"
   ami           = "${var.UbuntuRegionMap[var.aws_region]}"
-  instance_type = "t2.xlarge"
+  instance_type = "t2.small"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false
 
@@ -34,7 +34,7 @@ resource "aws_instance" "twistlock-console" {
           "cd /var/tmp\n",
           "sudo wget -O initialize_console.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/initialise_console.sh &&\n",
           "sudo chmod 755 /var/tmp/initialize_console.sh &&\n",
-          "sudo bash /var/tmp/initialize_console.sh <cdn-url>\n"
+          "sudo bash /var/tmp/initialize_console.sh https://cdn.twistlock.com/releases/0955bgg7/twistlock_19_07_358.tar.gz\n"
    )))
    }"
 }
