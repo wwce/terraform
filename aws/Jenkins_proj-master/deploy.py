@@ -54,7 +54,8 @@ console.setLevel(logging.INFO)
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
 console.setFormatter(formatter)
 # add the handler to the root logger
-logging.getLogger('').addHandler(console)
+logger = logging.getLogger('').addHandler(console)
+
 
 
 # global var to keep status output
