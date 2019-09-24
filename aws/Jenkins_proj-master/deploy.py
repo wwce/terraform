@@ -28,8 +28,10 @@ import subprocess
 import sys
 import time
 import xml.etree.ElementTree as ET
+import string
 
 import requests
+
 import urllib3
 import xmltodict
 
@@ -38,6 +40,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from pandevice import firewall
 from collections import OrderedDict
 from python_terraform import Terraform
+
 
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
@@ -493,7 +496,29 @@ def apply_tf(working_dir, vars, description):
 
     return (return_code, outputs)
 
+def get_twistlock_console_status(mgt_ip,timeout = 5):
+
+    url = 'https://' + mgt_ip + ':8083/api/v1/_ping'
+
+    max_count = 30
+    count = 0
+    while True:
+        count = count + 1
+        time.sleep(30)
+        if count < max_count:
+            try:
+                response = requests.get(url, verify=False, timeout=timeout)
+                if response.status_code == 200:
+                    return True
+                elif response.status_code == 400:
+                    return True
+            except requests.exceptions.RequestException as err:
+                print("General Error", err)
+        else:
+            return
+
 def twistlock_signup(mgt_ip,username,password,timeout = 5):
+
     # $ curl - k \
     #   - H
     # 'Content-Type: application/json' \
@@ -586,13 +611,24 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
         return
 
 def replace_string_in_file(filepath, old_string, new_string):
-    with open(filepath) as f:
-        s = f.read()
-        cmds = s.split()
+    with open(filepath, 'r') as file:
+        filedata = file.read()
 
-        s = s.replace(cmds[4], new_string)
-        with open(filepath, "w") as f:
-            f.write(s)
+    # Replace the target string
+    filedata = filedata.replace(old_string, new_string)
+
+    # Write the file out again
+    with open(filepath, 'w') as file:
+        file.write(filedata)
+
+    # with open(filepath) as f:
+    #     s = f.read()
+    #     for line in s.readlines():
+    #         if old_string in line:
+    #             string.replace(line, old_string, new_string)
+    #
+    #     with open(filepath, "w") as f:
+    #         f.write(s)
 
 
 def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key, cdn_url):
@@ -605,11 +641,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     albDns = ''
     nlbDns = ''
     fwMgtIP = ''
-
-
-
-
-
 
     WebInDeploy_vars = {
         'aws_access_key': aws_access_key,
@@ -649,7 +680,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     # # Set run_plan to TRUE is you wish to run terraform plan before apply
 
-    run_plan = False
+    run_plan = True
 
     kwargs = {"auto-approve": True}
 
@@ -662,7 +693,9 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     filepath = './TwistlockDeploy/console-instance.tf'
     replace_string_in_file(filepath, '<cdn-url>', cdn_url)
 
-    return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'WebInDeploy')
+
+
+    return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'TwistlockDeploy')
 
     logger.debug('Got Return code for deploy TwistlockDeploy {}'.format(return_code))
 
@@ -679,17 +712,19 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     #
     # Setup Twistlock Console
     #
-
-    resp = twistlock_signup(console_mgt_ip, username, password)
-    token = twistlock_get_auth_token(console_mgt_ip,username,password)
-    license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+    if get_twistlock_console_status(console_mgt_ip):
+        resp = twistlock_signup(console_mgt_ip, username, password)
+        token = twistlock_get_auth_token(console_mgt_ip,username,password)
+        license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+    else:
+        sys.exit(1)
 
     if license_add_response == 'Success':
         logger.info("Twistlock Console licensed and Ready")
     filepath = './WebInDeploy/webservers.tf'
 
     replace_string_in_file(filepath, '<CONSOLE>', console_mgt_ip)
-    replace_string_in_file(filepath, '<<AUTHKEY>', token)
+    replace_string_in_file(filepath, '<AUTHKEY>', token)
 
     #
     # Add Jenkins WebServer and Kali servers

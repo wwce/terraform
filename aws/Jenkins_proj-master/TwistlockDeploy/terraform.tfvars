@@ -6,7 +6,7 @@ StackName = "vv-2t"
 
 VPCCIDR = "10.2.0.0/16"
 
-aws_region = "eu-west-1"
+aws_region = ""
 
 ServerKeyName = ""
 
