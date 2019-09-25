@@ -9,7 +9,7 @@ Terraform creates 2 VM-Series firewalls sets.  1 for inbound and outbound traffi
 * 1 x NLB Internal Load Balancer (NGFW 3 & 4 as backend)
 * 4 x S3 Buckets for VM-Series 
 
-This is picture of the deployed environment:
+This is picture of the deployed environment:  Note: the Panorama server does not get deployed as part of this but can be easily setup to accept connections from the VM_Series firewall by modifying the init.cfg files in the bootstrap folders.
 
 ![2019-09-25_15-44-51](https://user-images.githubusercontent.com/21991161/65640440-02757100-dfb0-11e9-9578-a2a920a270b5.jpg)
 
