@@ -8,8 +8,9 @@ Terraform creates 2 VM-Series firewalls sets.  1 for inbound and outbound traffi
 * 2 x Ubuntu VM in spoke2 VPC
 * 1 x NLB Internal Load Balancer (NGFW 3 & 4 as backend)
 * 4 x S3 Buckets for VM-Series 
-</br>
+
 This is picture of the deployed environment:
+
 ![2019-09-25_15-44-51](https://user-images.githubusercontent.com/21991161/65640440-02757100-dfb0-11e9-9578-a2a920a270b5.jpg)
 
 
