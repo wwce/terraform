@@ -10,7 +10,7 @@ Terraform creates 2 VM-Series firewalls sets.  1 for inbound and outbound traffi
 * 4 x S3 Buckets for VM-Series 
 </br>
 This is picture of the deployed environment:
-https://user-images.githubusercontent.com/21991161/65638357-8ed16500-dfab-11e9-9b7d-605a88893293.jpg
+![2019-09-25_15-44-51](https://user-images.githubusercontent.com/21991161/65640440-02757100-dfb0-11e9-9578-a2a920a270b5.jpg)
 
 
 ### Prerequistes 
@@ -43,7 +43,7 @@ $ terraform apply
 ```
 
 5. After deployment an output with connection information will be displayed:
-https://user-images.githubusercontent.com/21991161/65639787-77e04200-dfae-11e9-842c-19b7599a1ae9.jpg
+![output](https://user-images.githubusercontent.com/21991161/65640400-e671cf80-dfaf-11e9-992f-d026cc7f0f45.jpg)
 
 6. To configure VPC Mirroring first select VPC/Traffic Mirroring/Mirror Filter and Create a new traffic mirror filter
 
