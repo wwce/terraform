@@ -1,5 +1,5 @@
 ## 2 x VM-Series / NLB for VPC Mirror
-Terraform creates 2 VM-Series firewalls that are targets of an internal load balancer ready to receive VXLAN traffic from a VPC Mirroring configuration.  1 for inbound and outbound traffic from the spoke VPCs.   After deployment there are some steps that need to be done to setup VPC traffic Mirroring.  Those are documenented in screen shots below.
+Terraform creates 2 VM-Series firewalls that are targets of an internal load balancer ready to receive VXLAN traffic from a VPC Mirroring configuration.   After deployment there are some steps that need to be done to setup VPC traffic Mirroring.  Those are documenented in screen shots below.
 
 ### Overview
 * 1 x VPC 
