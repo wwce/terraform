@@ -6,7 +6,7 @@ Terraform creates 2 VM-Series firewalls that are targets of an internal load bal
 * 2 x VM-Series (Bundle2)
 * 1 x NLB Internal Load Balancer listening on VXLAN TCP Port 4789 (NGFW 3 & 4 as targets)
 * 2 x S3 Buckets for VM-Series 
-</br>
+
 This is picture of the deployed environment:
 ![deployment](https://user-images.githubusercontent.com/21991161/65703297-271e2700-e04a-11e9-9827-5512629c6db0.jpg)
 
