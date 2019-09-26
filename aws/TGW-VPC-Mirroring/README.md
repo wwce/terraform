@@ -30,10 +30,10 @@ After deployment, the firewalls' username and password are:
 | :------------- | :------------- |
 | `aws_region` | AWS Region of Deployment|
 | `aws_key` | Authentication key file for deployed VMs |
-| `bootstrap_s3bucket` | Project ID for spoke1 VMs, VPC, & internal load balancer |
-| `bootstrap_s3bucket`| Authentication key file for spoke1_project |
-| `bootstrap_s3bucket` | Project ID for spoke2 VM & VPC |
-| `bootstrap_s3bucket` | Authentication key file for spoke2_project |
+| `bootstrap_s3bucket` | Universally unigue name for Boostrap S3 Bucket for NGFW1 |
+| `bootstrap_s3bucket2`| Universally unigue name for Boostrap S3 Bucket for NGFW2 |
+| `bootstrap_s3bucket3`| Universally unigue name for Boostrap S3 Bucket for NGFW3 |
+| `bootstrap_s3bucket4`| Universally unigue name for Boostrap S3 Bucket for NGFW4 |
 | 
 
 3. Execute Terraform
