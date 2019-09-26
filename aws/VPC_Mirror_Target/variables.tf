@@ -7,7 +7,7 @@ variable aws_region {
 
 variable aws_key {
   description = "aws_key"
-  default     = "AWS-Ohio-Key"
+  default     = "AWS-Key"
 }
 
 //Do not create these.  The Terraform will do that.  Just need to make secure
@@ -16,12 +16,12 @@ variable aws_key {
 
 variable bootstrap_s3bucket3 {
   description = "S3 Bucket Name used to Bootstrap the NGFWs"
-  default     = "djs-tgw-bucket-blah-3"
+  default     = "tgw-bucket-3"
 }
 
 variable bootstrap_s3bucket4 {
   description = "S3 Bucket Name used to Bootstrap the NGFWs"
-  default     = "djs-tgw-bucket-blah-4"
+  default     = "tgw-bucket-4"
 }
 //End of the section that MUST be modified to work
 variable management_cidr {
