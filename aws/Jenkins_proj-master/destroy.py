@@ -98,7 +98,21 @@ def main(aws_access_key, aws_secret_key, aws_region):
         exit(1)
     else:
         print ('Destroyed WebInDeploy Successfully')
-        
+
+    tf = Terraform(working_dir='./TwistlockDeploy')
+    tf.cmd('init')
+    if run_plan:
+        print('Calling tf.plan')
+        tf.plan(capture_output=False)
+    return_code1, stdout, stderr = tf.cmd('destroy', capture_output=True, vars=vars, **kwargs)
+    # return_code1 =0
+    print('Got return code {}'.format(return_code1))
+    if return_code1 != 0:
+        logger.info("TwistlockDeploy destroyed")
+        print('Failed to Destroy TwistlockDeploy')
+        exit(1)
+    else:
+        print('Destroyed TwistlockDeploy Successfully')
         exit(0)
 
 

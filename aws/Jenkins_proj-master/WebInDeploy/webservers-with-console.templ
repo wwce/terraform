@@ -34,9 +34,7 @@ resource "aws_instance" "web1" {
           "sudo bash ./initialize_webserver.sh\n",
           "sudo wget -O install_twistlock_defender.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/install_twistlock_defender.sh\n",
           "sudo chmod 755 install_twistlock_defender &&\n",
-          "sudo bash ./install_twistlock_defender.sh 34.251.197.72 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJncm91cHMiOm51bGwsInByb2plY3RzIjpudWxsLCJzZXNzaW9uVGltZW91dFNlYyI6ODY0MDAsImV4cCI6MTU2OTc3Njk2MiwiaXNzIjoidHdpc3Rsb2NrIn0.dwFeBlHj4xFv656vPb0tFXHzHHR91s6fCWcWDUAvd8w\n"
+          "sudo bash ./install_twistlock_defender.sh <CONSOLE> <AUTHKEY>\n"
    )))
    }"
 }
-
-

@@ -28,7 +28,9 @@ import subprocess
 import sys
 import time
 import xml.etree.ElementTree as ET
-import string
+import shutil
+import pathlib
+import os
 
 import requests
 
@@ -57,6 +59,36 @@ logger.setLevel(logging.INFO)
 # global var to keep status output
 status_output = dict()
 
+def replace_string_in_file(filepath, old_string, new_string):
+    with open(filepath, 'r') as file:
+        filedata = file.read()
+
+    # Replace the target string
+    filedata = filedata.replace(old_string, new_string)
+
+    # Write the file out again
+    with open(filepath, 'w') as file:
+        file.write(filedata)
+
+def move_file(src_file, dest_file):
+    # ?if pathlib.Path.exists(src_file):
+    # shutil.copyfile(src_file, dest_file)
+    # else:
+    #     logger.info('Unable to find src file {}'.format(src_file))
+    logger.info('Moving file {} to {}'.format(src_file,dest_file))
+    # shutil.copy('./TwistlockDeploy/console-instance.templ', './TwistlockDeploy/console-instance.tf')
+    try:
+        shutil.copy('./TwistlockDeploy/console-instance.templ', './TwistlockDeploy/console-instance.tf')
+    except IOError as e:
+        logger.info("Unable to copy file got error {}".format(e))
+    # if os.path.isfile(src_file):
+    #
+    #     with open(src_file,"r+") as src:
+    #         lines = src.readlines()
+    #         print(lines)
+    #
+    # with open(dest_file, "r+") as dest:
+    #     dest.writelines(lines)
 
 def send_request(call):
     """
@@ -610,25 +642,9 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
         logger.info("General Error", err)
         return
 
-def replace_string_in_file(filepath, old_string, new_string):
-    with open(filepath, 'r') as file:
-        filedata = file.read()
-
-    # Replace the target string
-    filedata = filedata.replace(old_string, new_string)
-
-    # Write the file out again
-    with open(filepath, 'w') as file:
-        file.write(filedata)
-
-    # with open(filepath) as f:
-    #     s = f.read()
-    #     for line in s.readlines():
-    #         if old_string in line:
-    #             string.replace(line, old_string, new_string)
-    #
-    #     with open(filepath, "w") as f:
-    #         f.write(s)
+def check_http_link(path):
+    r = requests.head(path)
+    return r.status_code == requests.codes.ok
 
 
 def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key, cdn_url):
@@ -649,12 +665,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         'ServerKeyName': ec2_key_pair
     }
 
-    TwistlockDeploy_vars = {
-        'aws_access_key': aws_access_key,
-        'aws_secret_key': aws_secret_key,
-        'aws_region': aws_region,
-        'ServerKeyName': ec2_key_pair
-    }
+
 
     waf_conf_vars = {
         'aws_access_key': aws_access_key,
@@ -684,47 +695,92 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     kwargs = {"auto-approve": True}
 
+
+
+    #   File constants.
+    #   We are using template files for the webserver instance and console.
+    #   At the start of the run we copy the template file to the tf and then populate values with string replacement
+    #   Ensures that on each run we can update the tf file with latest input parameters
+
+    console_filename = './TwistlockDeploy/console-instance.tf'
+    console_template = './TwistlockDeploy/console-instance.templ'
+    webservers_filename = './WebInDeploy/webservers.tf'
+    webservers_with_console_template = './WebInDeploy/webservers-with-console.templ'
+    webservers_template = './TwistlockDeploy/webservers.templ'
+
     #
-    # Add Twistlock Console
+    #   Are we deploying Twistlock on this run?
+    #   Do we have a license string and a reachable link?
     #
-    #
-    # Replace cdn url in console setup file with latest version
-    #
-    filepath = './TwistlockDeploy/console-instance.tf'
-    replace_string_in_file(filepath, '<cdn-url>', cdn_url)
 
 
 
-    return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'TwistlockDeploy')
+    if twistlock_license_key and cdn_url:
 
-    logger.debug('Got Return code for deploy TwistlockDeploy {}'.format(return_code))
+        if check_http_link(cdn_url):
+            logger.info('Link to tar file is valid. Lets continue')
+        else:
+            logger.info('The specified link to the Twistlock install software is not reachable')
+            sys.exit(1)
 
-    # update_status('web_in_deploy_stdout', stdout)
-    update_status('console_deploy_output', console_deploy_output)
-
-    if return_code == 0:
-        update_status('console_deploy_output', 'success')
-        console_mgt_ip = console_deploy_output['CONSOLE-MGT']['value']
+        TwistlockDeploy_vars = {
+            'aws_access_key': aws_access_key,
+            'aws_secret_key': aws_secret_key,
+            'aws_region': aws_region,
+            'ServerKeyName': ec2_key_pair
+        }
 
         #
-        # Replace cdn url in console setup file with latest version
+        # Setup the install script again
+        # Runs every time to pick up new version of code if required.
         #
-    #
-    # Setup Twistlock Console
-    #
-    if get_twistlock_console_status(console_mgt_ip):
-        resp = twistlock_signup(console_mgt_ip, username, password)
-        token = twistlock_get_auth_token(console_mgt_ip,username,password)
-        license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+
+        string_to_match = '<cdn-url>'
+        move_file(console_template, console_filename)
+        move_file(webservers_with_console_template, webservers_filename)
+
+        replace_string_in_file(console_filename, string_to_match, cdn_url)
+
+        return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'TwistlockDeploy')
+
+        logger.debug('Got Return code for deploy TwistlockDeploy {}'.format(return_code))
+
+        # update_status('web_in_deploy_stdout', stdout)
+        update_status('console_deploy_output', console_deploy_output)
+
+        if return_code == 0:
+            update_status('console_deploy_output', 'success')
+            console_mgt_ip = console_deploy_output['CONSOLE-MGT']['value']
+
+            #
+            # Replace cdn url in console setup file with latest version
+            #
+        #
+        # Setup Twistlock Console
+        #
+        if get_twistlock_console_status(console_mgt_ip):
+            resp = twistlock_signup(console_mgt_ip, username, password)
+            token = twistlock_get_auth_token(console_mgt_ip, username, password)
+            license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+        else:
+            sys.exit(1)
+
+        if license_add_response == 'Success':
+            logger.info("Twistlock Console licensed and Ready")
+
+
+        #
+        # Now the console is up we can setup the webserver tf file
+        # the webserser.tf file will now has script to register with console using auth token
+
+        replace_string_in_file(webservers_filename, '<CONSOLE>', console_mgt_ip)
+        replace_string_in_file(webservers_filename, '<AUTHKEY>', token)
+
     else:
-        sys.exit(1)
+        logger.info('No twistlock install this time')
+        move_file(webservers_template, webservers_filename)
 
-    if license_add_response == 'Success':
-        logger.info("Twistlock Console licensed and Ready")
-    filepath = './WebInDeploy/webservers.tf'
 
-    replace_string_in_file(filepath, '<CONSOLE>', console_mgt_ip)
-    replace_string_in_file(filepath, '<AUTHKEY>', token)
 
     #
     # Add Jenkins WebServer and Kali servers
@@ -866,8 +922,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--aws_secret_key', help='AWS Secret', required=True)
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
-    parser.add_argument('-v', '--twistlock_key', help='Twistlock license key', required=True)
-    parser.add_argument('-t', '--twistlock_url', help='URL for latest twistlock version', required=True)
+    parser.add_argument('-v', '--twistlock_key', help='Twistlock license key',required=False)
+    parser.add_argument('-t', '--twistlock_url', help='URL for latest twistlock version',required=False)
 
 
     args = parser.parse_args()
@@ -877,8 +933,13 @@ if __name__ == '__main__':
     aws_secret_key = args.aws_secret_key
     aws_region = args.aws_region
     ec2_key_pair = args.aws_key_pair
-    twistlock_license_key = args.twistlock_key
-    cdn_url = args.twistlock_url
-    # bootstrap_s3bucket = args.s3_bootstrap_bucket
+    if args.twistlock_key is not None:
+        twistlock_license_key=args.twistlock_key
+    else:
+        twistlock_license_key=False
+    if args.twistlock_url is not None:
+        cdn_url = args.twistlock_url
+    else:
+        cdn_url=False
 
     main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, twistlock_license_key, cdn_url)
