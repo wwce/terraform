@@ -906,10 +906,15 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
 
     res = getServerStatus(albDns)
 
+    if cdn_url and twistlock_license_key:
+        logger.info('\n\n   Connect to Twistlock console at https://{}:8083.'.format(console_mgt_ip))
+
     if res == 'server_up':
         logger.info('Jenkins Server is ready')
         logger.info('\n\n   ### Deployment Complete ###')
         logger.info('\n\n   Connect to Jenkins Server at http://{}'.format(albDns))
+        if cdn_url and twistlock_license_key:
+            logger.info('\n\n   Connect to Twistlock console at https://{}:8083.'.format(console_mgt_ip))
     else:
         logger.info('Jenkins Server is down')
         logger.info('\n\n   ### Deployment Complete ###')
