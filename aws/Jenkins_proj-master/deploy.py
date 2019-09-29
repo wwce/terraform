@@ -71,24 +71,20 @@ def replace_string_in_file(filepath, old_string, new_string):
         file.write(filedata)
 
 def move_file(src_file, dest_file):
-    # ?if pathlib.Path.exists(src_file):
-    # shutil.copyfile(src_file, dest_file)
-    # else:
-    #     logger.info('Unable to find src file {}'.format(src_file))
+    """
+
+    :param src_file:
+    :param dest_file:
+    :return:
+    """
     logger.info('Moving file {} to {}'.format(src_file,dest_file))
-    # shutil.copy('./TwistlockDeploy/console-instance.templ', './TwistlockDeploy/console-instance.tf')
     try:
-        shutil.copy('./TwistlockDeploy/console-instance.templ', './TwistlockDeploy/console-instance.tf')
+        shutil.copy(src_file, dest_file)
+        return True
     except IOError as e:
         logger.info("Unable to copy file got error {}".format(e))
-    # if os.path.isfile(src_file):
-    #
-    #     with open(src_file,"r+") as src:
-    #         lines = src.readlines()
-    #         print(lines)
-    #
-    # with open(dest_file, "r+") as dest:
-    #     dest.writelines(lines)
+        return
+
 
 def send_request(call):
     """
@@ -464,7 +460,6 @@ def getServerStatus(IP):
     global gcontext
 
     call = ("http://" + IP + "/")
-    logger.info('URL request is {}'.format(call))
     # Send command to fw and see if it times out or we get a response
     count = 0
     max_count = 15
@@ -476,7 +471,6 @@ def getServerStatus(IP):
             except DeployRequestException as e:
                 logger.debug("Got Invalid response".format(e))
             else:
-                logger.info('Jenkins Server responded with HTTP 200 code')
                 return 'server_up'
         else:
             break
@@ -736,8 +730,15 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         #
 
         string_to_match = '<cdn-url>'
-        move_file(console_template, console_filename)
-        move_file(webservers_with_console_template, webservers_filename)
+        fcopy1=move_file(console_template, console_filename)
+        fcopy2=move_file(webservers_with_console_template, webservers_filename)
+
+        if fcopy1 and fcopy2:
+            logger.info('Created new console and webserver tf files')
+        else:
+            logger.info('Unable to create new console.tf and webservers.tf files')
+            sys.exit(1)
+
 
         replace_string_in_file(console_filename, string_to_match, cdn_url)
 
