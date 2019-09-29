@@ -34,14 +34,6 @@ variables:
     description: AWS Access Key
     default: abc123
     type_hint: text
-  - name: twistlock_url
-    description: URL for latest Twistlock version
-    default: https://cdn.twistlock.com/releases/xxxxxx/twistlock_xx_xx_xx.tar.gz
-    type_hint: text
-  - name: twistlock_key
-    description: Twistlock license key
-    default: xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    type_hint: text
   - name: aws_secret_key
     description: AWS Secret Key
     default:
@@ -81,6 +73,14 @@ variables:
   - name: aws_key_pair
     description: AWS Key Pair
     default: us-east-2-kp
+    type_hint: text
+  - name: twistlock_url
+    description: URL for latest Twistlock version (Leave blank if not deploying Twistlock)
+    default: https://cdn.twistlock.com/releases/xxxxxx/twistlock_xx_xx_xx.tar.gz
+    type_hint: text
+  - name: twistlock_key
+    description: Twistlock license key (Leave blank if not deploying Twistlock)
+    default: xxxxxxxxxxxxxxxxxxxxxxxxxxx
     type_hint: text
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
