@@ -2,6 +2,8 @@
 # The GovCloud Version
 # Warning: Not completely functional
 
+This build is a port of existing work to AWS GovCloud. The original may be found here: https://github.com/wwce/terraform/tree/master/aws/tgw_inbound_asg
+
 This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.paloaltonetworks.com/vm-series/8-1/vm-series-deployment/set-up-the-vm-series-firewall-on-aws/auto-scale-vm-series-firewalls-with-the-amazon-elb/autoscale-template-version2_0.html) to work function with AWS Transit Gateway.
 
 ### Overview
