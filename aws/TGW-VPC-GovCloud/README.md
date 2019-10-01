@@ -1,7 +1,11 @@
 # Transit Gateway Deployment for North/South and East/West Inspection 
 # The GovCloud Version
 
- This terraform template will deploy a complete Transit Gateway(TGW) solution with Palo Alto Networks VM-Series Firewalls to inspect both N/S and E/W traffic. The follow diagram shows what will be deployed:
+This build is a port of existing work to AWS GovCloud. The original may be found here:
+
+https://github.com/wwce/terraform/tree/master/aws/TGW-VPC
+
+This terraform template will deploy a complete Transit Gateway(TGW) solution with Palo Alto Networks VM-Series Firewalls to inspect both N/S and E/W traffic. The follow diagram shows what will be deployed:
 
 ![tgw-vpc](https://user-images.githubusercontent.com/21991161/53307956-ff23d680-3862-11e9-9fd1-49cbacb696ea.jpg)
 
