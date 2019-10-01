@@ -1,4 +1,7 @@
 ## VM-Series Autoscaling for Inbound TGW
+# The GovCloud Version
+# Warning: Not completely functional
+
 This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.paloaltonetworks.com/vm-series/8-1/vm-series-deployment/set-up-the-vm-series-firewall-on-aws/auto-scale-vm-series-firewalls-with-the-amazon-elb/autoscale-template-version2_0.html) to work function with AWS Transit Gateway.
 
 ### Overview
@@ -29,7 +32,8 @@ This build is an adaptation of the [AWS VM-Series Autoscaling 2.0](https://docs.
     * If you want to license the VM-Series on creation, copy and paste your Auth Code into the /bootstrap/authcodes file.  The Auth Code must be registered with your Palo Alto Networks support account before proceeding.
 Before proceeding, make sure you have accepted and subscribed to the VM-Series software in the AWS Marketplace. 
 
-
+## Notes
+1. us-gov-west was used for deployment testing. It should work in other regions provided the underlying features are available.
 
 ## Support Policy
 The guide in this directory and accompanied files are released under an as-is, best effort, support policy. These scripts should be seen as community supported and Palo Alto Networks will contribute our expertise as and when possible. We do not provide technical support or help in using or troubleshooting the components of the project through our normal support options such as Palo Alto Networks support teams, or ASC (Authorized Support Centers) partners and backline support options. The underlying product used (the VM-Series firewall) by the scripts or templates are still supported, but the support is only for the product functionality and not for help in deploying or using the template or script itself.
