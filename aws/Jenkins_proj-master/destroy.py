@@ -36,12 +36,20 @@ from pandevice import firewall
 from pandevice import updater
 from python_terraform import Terraform
 
-logger = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter('%(levelname)-8s %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='destroy.log',
+                    filemode='w')
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+logger = logging.getLogger(__name__)
 
 
 def main(aws_access_key, aws_secret_key, aws_region):

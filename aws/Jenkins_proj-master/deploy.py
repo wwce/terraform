@@ -47,13 +47,21 @@ from python_terraform import Terraform
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter('%(levelname)-8s %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                        datefmt='%m-%d %H:%M',
+                        filename='deploy.log',
+                        filemode='w')
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+logger = logging.getLogger(__name__)
+
 
 
 # global var to keep status output
