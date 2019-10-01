@@ -1,4 +1,4 @@
-# Transit Gateway Deployment for North/South and East/West Inspection 
+# Transit Gateway Deployment for North/South and East/West Inspection FOR GovCloud
 
  This terraform template will deploy a complete Transit Gateway(TGW) solution with Palo Alto Networks VM-Series Firewalls to inspect both N/S and E/W traffic. The follow diagram shows what will be deployed:
 
@@ -22,6 +22,7 @@
  4. After deployment the firewall username and password are:
          Username: admin
          Password: Pal0Alt0@123
+ 5. us-gov-west was used for deployment testing. It should work in other regions provided all underlying features are available.
 
  ```
 
