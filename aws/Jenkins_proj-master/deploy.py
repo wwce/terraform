@@ -587,14 +587,9 @@ def twistlock_signup(mgt_ip,username,password,timeout = 5):
 
 
 def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
-    # $ curl - k \
-    #   - H
-    # 'Content-Type: application/json' \
-    # - X
-    # POST \
-    # - d
-    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
-    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    """
+    Generates the twistlock auth token for use in future requests
+    """
     url = 'https://' + mgt_ip + ':8083/api/v1/authenticate'
     payload = {
         "username": username,
@@ -644,7 +639,60 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
         logger.info("General Error", err)
         return
 
+def get_twistlock_policy_from_console(mgt_ip, token, timeout = 5):
+    """
+    Retrieves existing container policy as a list.
+    In order to update policies first download as a list and insert reomve
+    lines of policy
+
+    """
+    url = 'https://' + mgt_ip + ':8083/api/v1/policies/runtime/container'
+
+
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer}
+    try:
+        response = requests.get(url, headers= headers, verify=False, timeout=timeout)
+        if response.status_code == 200:
+            return response.content
+        elif response.status_code == 400:
+            return
+    except requests.exceptions.RequestException as err:
+        print("General Error", err)
+
+def get_twistlock_policy_from_file(filename):
+    """
+    loads the Jenkins policy from file:
+    """
+    with open(filename) as file:
+        json_rule = json.loads(file.read())
+
+        return(json_rule)
+
+def update_twistlock_policy(mgt_ip, token, policy, timeout=5):
+    """
+    Use put operation to update teh policy on the server
+    """
+    url = 'https://' + mgt_ip + ':8083/api/v1/policies/runtime/container'
+    data = policy
+
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer}
+    try:
+        response = requests.put(url, headers= headers, data=data, verify=False, timeout=timeout)
+        if response.status_code == 200:
+            return True
+        else:
+            return
+    except requests.exceptions.RequestException as err:
+        return
+
 def check_http_link(path):
+    """
+    Checks that the URL is valid
+    """
     r = requests.head(path)
     return r.status_code == requests.codes.ok
 
@@ -709,6 +757,7 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     webservers_filename = './WebInDeploy/webservers.tf'
     webservers_with_console_template = './WebInDeploy/webservers-with-console.templ'
     webservers_template = './TwistlockDeploy/webservers.templ'
+    jenkins_policy_filename = './TwistlockDeploy/twistlock_rule.js'
 
     #
     #   Are we deploying Twistlock on this run?
@@ -768,9 +817,19 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         # Setup Twistlock Console
         #
         if get_twistlock_console_status(console_mgt_ip):
-            resp = twistlock_signup(console_mgt_ip, username, password)
+            # Create initial user account
+            twistlock_signup(console_mgt_ip, username, password)
+            # Generate auth token from credentials
             token = twistlock_get_auth_token(console_mgt_ip, username, password)
+            # Add license key
             license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+            # Download container policy from console
+            console_policy = json.loads(get_twistlock_policy_from_console(console_mgt_ip, token))
+            jenkins_policy = get_twistlock_policy_from_file(jenkins_policy_filename)
+            console_policy['rules'].append(jenkins_policy)
+            # Upload additional Jenkins policy to server
+            update_twistlock_policy(console_mgt_ip, token, console_policy)
+
         else:
             sys.exit(1)
 
