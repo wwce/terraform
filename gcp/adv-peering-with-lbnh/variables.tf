@@ -19,7 +19,7 @@ variable "main_project" {
 
 variable "main_project_authfile" {
   description = "Authentication file for main project (all resources deployed in main.tf)"
-  default     = "/Users/dspears/GCP/ilb-2019-comp.json"
+  default     = "/Users/dspears/GCP/ilb-2019-key.json"
 }
 
 #************************************************************************************
@@ -32,7 +32,7 @@ variable "spoke1_project" {
 
 variable "spoke1_project_authfile" {
   description = "Authentication file for spoke1 project (all resources deployed in spoke1.tf)"
-  default     = "/Users/dspears/GCP/ilb-2019-comp.json"
+  default     = "/Users/dspears/GCP/ilb-2019-key.json"
 }
 
 #************************************************************************************
