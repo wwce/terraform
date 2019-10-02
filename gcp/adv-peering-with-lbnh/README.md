@@ -41,7 +41,7 @@ After deployment, the firewalls' username and password are:
 
 3.  Download project authenication key files to the main directory of the terraform build.
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/directory.png" width="350">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/directory.png" width="550">
 </p>
 
 4. Execute Terraform
@@ -54,18 +54,18 @@ $ terraform apply
 5. After deployment finishes, for EACH PEER, enable **Import custom routes** & **Export custom routes** 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/peering.png" width="350">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/peering.png" width="550">
 </p>
 
 6. Remove default GCP VPC route for spoke1-vpc, spoke2-vpc, & trust-vpc
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/routes.png" width="350">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/routes.png" width="550">
 </p>
 
 7. From Terraform output, go to `GLB-ADDRESS = http://<glb_eip>` in a web browser.  NOTE: IT MAY TAKE SEVERAL MINUTES FOR SPOKE1 VMs TO FULLY INSTALL APACHE & PHP SETUP.
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/web.png" width="350">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv-peering-with-lbnh/images/web.png" width="550">
 </p>
 
 ## Support Policy
