@@ -14,12 +14,12 @@ variable "region" {
 #************************************************************************************
 variable "main_project" {
   description = "Existing project ID for main project (all resources deployed in main.tf)"
-  default     = "djs-ilb-2019"
+  default     = "ilb-2019"
 }
 
 variable "main_project_authfile" {
   description = "Authentication file for main project (all resources deployed in main.tf)"
-  default     = "/Users/dspears/GCP/newkey/djs-ilb-2019-comp.json"
+  default     = "/Users/dspears/GCP/ilb-2019-comp.json"
 }
 
 #************************************************************************************
@@ -27,12 +27,12 @@ variable "main_project_authfile" {
 #************************************************************************************
 variable "spoke1_project" {
   description = "Existing project for spoke1 (can be the same as main project and can be same as main project)."
-  default     = "djs-ilb-2019"
+  default     = "ilb-2019"
 }
 
 variable "spoke1_project_authfile" {
   description = "Authentication file for spoke1 project (all resources deployed in spoke1.tf)"
-  default     = "/Users/dspears/GCP/newkey/djs-ilb-2019-comp.json"
+  default     = "/Users/dspears/GCP/ilb-2019-comp.json"
 }
 
 #************************************************************************************
