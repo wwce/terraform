@@ -681,7 +681,7 @@ def update_twistlock_policy(mgt_ip, token, policy, timeout=5):
     headers = {'Content-Type': 'application/json',
                'Authorization': Bearer}
     try:
-        response = requests.put(url, headers= headers, data=data, verify=False, timeout=timeout)
+        response = requests.put(url, headers=headers, data=json.dumps(data), verify=False, timeout=timeout)
         if response.status_code == 200:
             return True
         else:
@@ -824,11 +824,11 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
             # Add license key
             license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
             # Download container policy from console
-            console_policy = json.loads(get_twistlock_policy_from_console(console_mgt_ip, token))
+
             jenkins_policy = get_twistlock_policy_from_file(jenkins_policy_filename)
-            console_policy['rules'].append(jenkins_policy)
+
             # Upload additional Jenkins policy to server
-            update_twistlock_policy(console_mgt_ip, token, console_policy)
+            update_twistlock_policy(console_mgt_ip, token, jenkins_policy)
 
         else:
             sys.exit(1)
