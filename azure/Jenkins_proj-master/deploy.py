@@ -786,6 +786,9 @@ def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_ur
 
     console_filename = './TwistlockDeploy/scripts/initialize_console.sh'
     console_template = './TwistlockDeploy/scripts/initialize_console.templ'
+    webservers_filename = './WebInDeploy/scripts/initialize_webserver.sh'
+    webservers_with_console_template = './WebInDeploy/scripts/initialize_webserver-with-console.templ'
+    webservers_template = './TwistlockDeploy/scripts/initialize_webserver.templ'
     jenkins_policy_filename = './TwistlockDeploy/twistlock_rule.js'
 
     #
@@ -807,8 +810,9 @@ def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_ur
           'Azure_Region': azure_region,
           'RG_Name': rg_name
         }
-    #
-            # Setup the install script again
+        
+        #
+        # Setup the install script again
         # Runs every time to pick up new version of code if required.
         #
 
