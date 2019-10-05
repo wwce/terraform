@@ -15,3 +15,6 @@ echo "    ports:" >> docker-compose.yml
 echo "      - \"50000:50000\"" >> docker-compose.yml
 echo "      - \"8080:8080\"" >> docker-compose.yml
 docker-compose up -d
+sudo wget -O install_twistlock_defender.sh https://raw.githubusercontent.com/wwce/terraform/twistlck/aws/Jenkins_proj-master/WebInDeploy/scripts/install_twistlock_defender.sh
+sudo chmod 755 install_twistlock_defender.sh
+sudo bash ./install_twistlock_defender.sh <CONSOLE> <AUTHKEY>
