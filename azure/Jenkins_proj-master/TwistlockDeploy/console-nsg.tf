@@ -1,7 +1,7 @@
 resource "azurerm_network_security_group" "Console_NSG" {
   name                  = "Console_NSG"
-  location		= "${azurerm_resource_group.Consolegroup.location}"
-  resource_group_name	= "${azurerm_resource_group.Consolegroup.name}"
+  location		= "${azurerm_resource_group.consolegroup.location}"
+  resource_group_name	= "${azurerm_resource_group.consolegroup.name}"
 
   security_rule {
     name                       = "Allow-22"
