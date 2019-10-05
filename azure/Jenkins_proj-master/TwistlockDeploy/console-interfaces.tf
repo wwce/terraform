@@ -8,7 +8,7 @@ resource "azurerm_network_interface" "console" {
 		name							= "eth0"
 		subnet_id						= "${azurerm_subnet.console.id}"
 		private_ip_address_allocation 	= "Static"
-    private_ip_address = "${var.console_IP}"
+    private_ip_address = "${var.Console_IP}"
 		public_ip_address_id = "${azurerm_public_ip.console.id}"
 	}
 	depends_on = ["azurerm_public_ip.console"]
