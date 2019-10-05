@@ -26,14 +26,16 @@ import argparse
 import json
 import logging
 import os
+import pathlib
+import requests
+import shutil
 import subprocess
 import sys
 import time
+import urllib3
 import uuid
 import xml.etree.ElementTree as ET
 import xmltodict
-import requests
-import urllib3
 
 from azure.common import AzureException
 from azure.storage.file import FileService
@@ -49,17 +51,50 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _archive_dir = './WebInDeploy/bootstrap'
 _content_update_dir = './WebInDeploy/content_updates/'
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter('%(levelname)-8s %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                        datefmt='%m-%d %H:%M',
+                        filename='deploy.log',
+                        filemode='w')
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+logger = logging.getLogger(__name__)
 
 
 # global var to keep status output
 status_output = dict()
 
+def replace_string_in_file(filepath, old_string, new_string):
+    with open(filepath, 'r') as file:
+        filedata = file.read()
+
+    # Replace the target string
+    filedata = filedata.replace(old_string, new_string)
+
+    # Write the file out again
+    with open(filepath, 'w') as file:
+        file.write(filedata)
+
+def move_file(src_file, dest_file):
+    """
+
+    :param src_file:
+    :param dest_file:
+    :return:
+    """
+    logger.info('Moving file {} to {}'.format(src_file,dest_file))
+    try:
+        shutil.copy(src_file, dest_file)
+        return True
+    except IOError as e:
+        logger.info("Unable to copy file got error {}".format(e))
+        return
 
 def send_request(call):
 
@@ -545,8 +580,173 @@ def apply_tf(working_dir, vars, description):
 
     return (return_code, outputs)
 
+def get_twistlock_console_status(mgt_ip,timeout = 5):
 
-def main(username, password, rg_name, azure_region):
+    url = 'https://' + mgt_ip + ':8083/api/v1/_ping'
+
+    max_count = 30
+    count = 0
+    while True:
+        count = count + 1
+        time.sleep(30)
+        if count < max_count:
+            try:
+                response = requests.get(url, verify=False, timeout=timeout)
+                if response.status_code == 200:
+                    return True
+                elif response.status_code == 400:
+                    return True
+            except requests.exceptions.RequestException as err:
+                print("General Error", err)
+        else:
+            return
+
+def twistlock_signup(mgt_ip,username,password,timeout = 5):
+
+    # $ curl - k \
+    #   - H
+    # 'Content-Type: application/json' \
+    # - X
+    # POST \
+    # - d
+    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
+    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    url = 'https://' + mgt_ip + ':8083/api/v1/signup'
+    payload = {
+        "username": username,
+        "password": password
+    }
+    payload = json.dumps(payload)
+    headers = {'Content-Type': 'application/json'}
+    max_count = 30
+    count = 0
+    while True:
+        count = count + 1
+        if count < max_count:
+            try:
+                response = requests.post(url, data=payload, headers=headers, verify=False, timeout=timeout)
+                if response.status_code == 200:
+                    return 'Success'
+                elif response.status_code == 400:
+                    return 'Already initialised'
+            except requests.exceptions.RequestException as err:
+                print("General Error", err)
+        else:
+            return
+
+
+
+def twistlock_get_auth_token(mgt_ip,username,password,timeout = 5):
+    """
+    Generates the twistlock auth token for use in future requests
+    """
+    url = 'https://' + mgt_ip + ':8083/api/v1/authenticate'
+    payload = {
+        "username": username,
+        "password": password
+    }
+    headers = {'Content-Type': 'application/json'}
+    try:
+        payload = json.dumps(payload)
+        response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
+        response.raise_for_status()
+        if response.status_code == 200:
+            data = response.json()
+            logger.info('Successfully generated auth token')
+            return data.get('token')
+    except requests.exceptions.HTTPError as err:
+        logger.info('HTTP Error {}'.format(err))
+        return
+    except requests.exceptions.Timeout as errt:
+        logger.info('Timeout Error {}'.format(errt))
+        return
+    except requests.exceptions.RequestException as err:
+        logger.info("General Error", err)
+        return
+
+def twistlock_add_license(mgt_ip,token,license, timeout = 5):
+    """Adds the license key to Twistlock console"""
+    url = 'https://' + mgt_ip + ':8083/api/v1/settings/license'
+    payload = {"key": license}
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer }
+    logger.info('Url is {}\n Payload is {}\n Headers is{}'.format(url,payload,headers))
+    try:
+        payload = json.dumps(payload)
+        response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
+        response.raise_for_status()
+        if response.status_code == 200:
+            logger.info('Successfully added license')
+            return 'Success'
+    except requests.exceptions.HTTPError as err:
+        logger.info('HTTP Error {}'.format(err))
+        return
+    except requests.exceptions.Timeout as errt:
+        logger.info('Timeout Error {}'.format(errt))
+        return
+    except requests.exceptions.RequestException as err:
+        logger.info("General Error", err)
+        return
+
+def get_twistlock_policy_from_console(mgt_ip, token, timeout = 5):
+    """
+    Retrieves existing container policy as a list.
+    In order to update policies first download as a list and insert reomve
+    lines of policy
+
+    """
+    url = 'https://' + mgt_ip + ':8083/api/v1/policies/runtime/container'
+
+
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer}
+    try:
+        response = requests.get(url, headers= headers, verify=False, timeout=timeout)
+        if response.status_code == 200:
+            return response.content
+        elif response.status_code == 400:
+            return
+    except requests.exceptions.RequestException as err:
+        print("General Error", err)
+
+def get_twistlock_policy_from_file(filename):
+    """
+    loads the Jenkins policy from file:
+    """
+    with open(filename) as file:
+        json_rule = json.loads(file.read())
+
+        return(json_rule)
+
+def update_twistlock_policy(mgt_ip, token, policy, timeout=5):
+    """
+    Use put operation to update teh policy on the server
+    """
+    url = 'https://' + mgt_ip + ':8083/api/v1/policies/runtime/container'
+    data = policy
+
+    Bearer = "Bearer " + token
+    headers = {'Content-Type': 'application/json',
+               'Authorization': Bearer}
+    try:
+        response = requests.put(url, headers=headers, data=json.dumps(data), verify=False, timeout=timeout)
+        if response.status_code == 200:
+            return True
+        else:
+            return
+    except requests.exceptions.RequestException as err:
+        return
+
+def check_http_link(path):
+    """
+    Checks that the URL is valid
+    """
+    r = requests.head(path)
+    return r.status_code == requests.codes.ok
+
+def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_url):
 
     """
     Main function
@@ -576,10 +776,104 @@ def main(username, password, rg_name, azure_region):
     }
 
     # Set run_plan to TRUE is you wish to run terraform plan before apply
-    run_plan = False
+    run_plan = True
     kwargs = {"auto-approve": True}
 
+    #   File constants.
+    #   We are using template files for the webserver instance and console.
+    #   At the start of the run we copy the template file to the tf and then populate values with string replacement
+    #   Ensures that on each run we can update the tf file with latest input parameters
+
+    console_filename = './TwistlockDeploy/scripts/initialize_console.sh'
+    console_template = './TwistlockDeploy/initialize_console.templ'
+    jenkins_policy_filename = './TwistlockDeploy/twistlock_rule.js'
+
     #
+    #   Are we deploying Twistlock on this run?
+    #   Do we have a license string and a reachable link?
+    #
+
+    if twistlock_license_key and cdn_url:
+
+        if check_http_link(cdn_url):
+            logger.info('Link to tar file is valid. Lets continue')
+        else:
+            logger.info('The specified link to the Twistlock install software is not reachable')
+            sys.exit(1)
+
+        TwistlockDeploy_vars = {
+          'Admin_Username': username,
+          'Admin_Password': password,
+          'Azure_Region': azure_region,
+          'RG_Name': rg_name
+        }
+    #
+            # Setup the install script again
+        # Runs every time to pick up new version of code if required.
+        #
+
+        string_to_match = '<cdn-url>'
+        fcopy1=move_file(console_template, console_filename)
+        fcopy2=move_file(webservers_with_console_template, webservers_filename)
+
+        if fcopy1 and fcopy2:
+            logger.info('Created new console and webserver tf files')
+        else:
+            logger.info('Unable to create new console.tf and webservers.tf files')
+            sys.exit(1)
+
+
+        replace_string_in_file(console_filename, string_to_match, cdn_url)
+
+        return_code, console_deploy_output = apply_tf('./TwistlockDeploy', TwistlockDeploy_vars, 'TwistlockDeploy')
+
+        logger.debug('Got Return code for deploy TwistlockDeploy {}'.format(return_code))
+
+        # update_status('web_in_deploy_stdout', stdout)
+        update_status('console_deploy_output', console_deploy_output)
+
+        if return_code == 0:
+            update_status('console_deploy_output', 'success')
+            console_mgt_ip = console_deploy_output['CONSOLE-MGT']['value']
+
+            #
+            # Replace cdn url in console setup file with latest version
+            #
+        #
+        # Setup Twistlock Console
+        #
+        if get_twistlock_console_status(console_mgt_ip):
+            # Create initial user account
+            twistlock_signup(console_mgt_ip, username, password)
+            # Generate auth token from credentials
+            token = twistlock_get_auth_token(console_mgt_ip, username, password)
+            # Add license key
+            license_add_response = twistlock_add_license(console_mgt_ip, token, twistlock_license_key)
+            # Download container policy from console
+
+            jenkins_policy = get_twistlock_policy_from_file(jenkins_policy_filename)
+
+            # Upload additional Jenkins policy to server
+            update_twistlock_policy(console_mgt_ip, token, jenkins_policy)
+
+        else:
+            sys.exit(1)
+
+        if license_add_response == 'Success':
+            logger.info("Twistlock Console licensed and Ready")
+
+
+        #
+        # Now the console is up we can setup the webserver tf file
+        # the webserser.tf file will now has script to register with console using auth token
+
+        replace_string_in_file(webservers_filename, '<CONSOLE>', console_mgt_ip)
+        replace_string_in_file(webservers_filename, '<AUTHKEY>', token)
+
+    else:
+        logger.info('No twistlock install this time')
+        move_file(webservers_template, webservers_filename)
+
     return_code, outputs = apply_tf('./WebInBootstrap',WebInBootstrap_vars, 'WebInBootstrap')
 
     if return_code == 0:
@@ -720,11 +1014,21 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--password', help='Firewall Password', required=True)
     parser.add_argument('-r', '--resource_group', help='Resource Group', required=True)
     parser.add_argument('-j', '--azure_region', help='Azure Region', required=True)
+    parser.add_argument('-v', '--twistlock_key', help='Twistlock license key',required=False)
+    parser.add_argument('-t', '--twistlock_url', help='URL for latest twistlock version',required=False)
 
     args = parser.parse_args()
     username = args.username
     password = args.password
     resource_group = args.resource_group
     azure_region = args.azure_region
+    if args.twistlock_key is not None:
+        twistlock_license_key=args.twistlock_key
+    else:
+        twistlock_license_key=False
+    if args.twistlock_url is not None:
+        cdn_url = args.twistlock_url
+    else:
+        cdn_url=False
 
-    main(username, password, resource_group, azure_region)
+    main(username, password, resource_group, azure_region, twistlock_license_key, cdn_url)
