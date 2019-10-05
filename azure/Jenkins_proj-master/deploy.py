@@ -808,7 +808,7 @@ def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_ur
           'Admin_Username': username,
           'Admin_Password': password,
           'Azure_Region': azure_region,
-          'RG_Name': rg_name
+          'Console_RG_Name': rg_name
         }
         
         #
