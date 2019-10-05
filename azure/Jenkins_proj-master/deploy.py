@@ -785,7 +785,7 @@ def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_ur
     #   Ensures that on each run we can update the tf file with latest input parameters
 
     console_filename = './TwistlockDeploy/scripts/initialize_console.sh'
-    console_template = './TwistlockDeploy/initialize_console.templ'
+    console_template = './TwistlockDeploy/scripts/initialize_console.templ'
     jenkins_policy_filename = './TwistlockDeploy/twistlock_rule.js'
 
     #
