@@ -1,6 +1,6 @@
 data "template_file" "console" {
   
-  template = "${file("${path.root}${var.console_Initscript_Path}")}"
+  template = "${file("${path.root}${var.Console_Initscript_Path}")}"
 }
 data "template_cloudinit_config" "console" {
   gzip          = true
