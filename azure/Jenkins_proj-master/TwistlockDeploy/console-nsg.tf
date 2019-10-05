@@ -29,6 +29,6 @@ resource "azurerm_network_security_group" "Console_NSG" {
 
 }
 resource "azurerm_subnet_network_security_group_association" "Consolegroup" {
-  subnet_id                 = "${azurerm_subnet.Console.id}"
+  subnet_id                 = "${azurerm_subnet.console.id}"
   network_security_group_id = "${azurerm_network_security_group.Console_NSG.id}"
 }
