@@ -14,7 +14,7 @@ resource "azurerm_resource_group" "consolegroup" {
 # Create a virtual network in the resource group
 resource "azurerm_virtual_network" "console-vnet" {
 	name				= "console-vnet"
-	address_space		= ["${var.console_CIDR}"]
+	address_space		= ["${var.Console_CIDR}"]
 	location			= "${azurerm_resource_group.consolegroup.location}"
 	resource_group_name	= "${azurerm_resource_group.consolegroup.name}"
 }
