@@ -5,7 +5,7 @@ resource "random_id" "attack_resource_group" {
   byte_length = 2
 }
 resource "azurerm_resource_group" "attackgroup" {
-	name		= "${var.Attack_RG_Name}-${lower(random_id.attack_resource_group.hex)}"
+	name		= "${var.RG_Name}-${lower(random_id.attack_resource_group.hex)}"
 	location	= "${var.Azure_Region}"
 }
 
