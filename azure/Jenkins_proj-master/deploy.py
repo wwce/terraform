@@ -743,7 +743,7 @@ def check_http_link(path):
     """
     Checks that the URL is valid
     """
-    r = requests.head(path)
+    r = requests.head(path, verify=False)
     return r.status_code == requests.codes.ok
 
 def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_url):
