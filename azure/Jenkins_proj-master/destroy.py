@@ -97,7 +97,7 @@ def main (username, password):
     #
     # Delete state files WebInBootstrap
     #
-    delete_state_files('./TwistlockDeploy', tfstate_files)
+    delete_state_files('./TwistlockDeploy/', tfstate_files)
     print('Destroyed TwistlockDeploy Successfully')
 
     fpath = './WebInDeploy/' + tfstate_file
