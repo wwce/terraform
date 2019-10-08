@@ -603,14 +603,10 @@ def get_twistlock_console_status(mgt_ip,timeout = 5):
 
 def twistlock_signup(mgt_ip,username,password,timeout = 5):
 
-    # $ curl - k \
-    #   - H
-    # 'Content-Type: application/json' \
-    # - X
-    # POST \
-    # - d
-    # '{"username": "butterbean", "password": "<PASSWORD>"}' \
-    #         https: // < CONSOLE >: 8083 / api / v1 / signup
+    """
+
+    Creates the initial account.  Account is required to generate an auth token
+    """
     url = 'https://' + mgt_ip + ':8083/api/v1/signup'
     payload = {
         "username": username,
@@ -671,7 +667,7 @@ def twistlock_add_license(mgt_ip,token,license, timeout = 5):
     Bearer = "Bearer " + token
     headers = {'Content-Type': 'application/json',
                'Authorization': Bearer }
-    logger.info('Url is {}\n Payload is {}\n Headers is{}'.format(url,payload,headers))
+    # logger.info('Url is {}\n Payload is {}\n Headers is{}'.format(url,payload,headers))
     try:
         payload = json.dumps(payload)
         response = requests.post(url, data=payload, headers=headers, verify=False, timeout = timeout)
