@@ -83,6 +83,23 @@ def main (username, password):
     tfstate_file = 'terraform.tfstate'
     tfstate_files = ['terraform.tfstate', 'terraform.tfstate.backup']
 
+    #
+    # Delete Console
+    #
+    fpath = './TwistlockDeploy/' + tfstate_file
+    if os.path.isfile(fpath):
+        tf = Terraform(working_dir='./TwistlockDeploy')
+
+        console_rg_name = tf.output('Console_RG_Name')
+        delete_rg_cmd = 'group delete --name ' + console_rg_name + ' --yes'
+        az_cli(delete_rg_cmd)
+
+    #
+    # Delete state files WebInBootstrap
+    #
+    delete_state_files('./TwistlockDeploy', tfstate_files)
+    print('Destroyed TwistlockDeploy Successfully')
+
     fpath = './WebInDeploy/' + tfstate_file
     if os.path.isfile(fpath):
         tf = Terraform(working_dir='./WebInDeploy')
@@ -110,25 +127,10 @@ def main (username, password):
     #
     delete_state_files('./WebInFWConf/', tfstate_files)
 
-    tf = Terraform(working_dir='./TwistlockDeploy')
-    tf.cmd('init')
-    if run_plan:
-        print('Calling tf.plan')
-        tf.plan(capture_output=False)
-    return_code1, stdout, stderr = tf.cmd('destroy', capture_output=True, vars=vars, **kwargs)
-    # return_code1 =0
-    print('Got return code {}'.format(return_code1))
-    if return_code1 != 0:
-        logger.info("TwistlockDeploy destroyed")
-        print('Failed to Destroy TwistlockDeploy')
-        exit(1)
-    else:
-        #
-        # Delete state files WebInBootstrap
-        #
-        delete_state_files('./TwistlockDeploy/', tfstate_files)
-        print('Destroyed TwistlockDeploy Successfully')
-        exit(0)
+
+
+    exit(0)
+
         
 
 
