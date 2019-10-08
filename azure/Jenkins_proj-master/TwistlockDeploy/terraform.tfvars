@@ -6,7 +6,7 @@ Admin_Username = "<Admin Username>"
 
 Admin_Password = "<Admin Password>"
 
-Console_Initscript_Path = "/scripts/initialize_Console.sh"
+Console_Initscript_Path = "/scripts/initialize_console.sh"
 
 Console_CIDR = "10.2.0.0/16"
 
