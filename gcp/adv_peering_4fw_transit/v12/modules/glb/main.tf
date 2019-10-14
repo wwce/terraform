@@ -1,6 +1,6 @@
 resource "google_compute_global_forwarding_rule" "http" {
   count      = var.http_forward ? 1 : 0
-  name       = var.name
+  name       = "${var.name}-http"
   target     = google_compute_target_http_proxy.default[0].self_link
   ip_address = google_compute_global_address.default.address
   port_range = "80"
@@ -41,7 +41,7 @@ resource "google_compute_target_https_proxy" "default" {
 
 resource "google_compute_ssl_certificate" "default" {
   count       = var.ssl && !var.use_ssl_certificates ? 1 : 0
-  name_prefix = "${var.name}-certificate-"
+  name_prefix = "${var.name}-certificate"
   private_key = var.private_key
   certificate = var.certificate
 
@@ -58,7 +58,7 @@ resource "google_compute_url_map" "default" {
 
 resource "google_compute_backend_service" "default" {
   count           = length(var.backend_params)
-  name            = "${var.name}-backend-${count.index}"
+  name            = "${var.name}-${count.index}"
   port_name       = split(",", var.backend_params[count.index])[1]
   protocol        = var.backend_protocol
   timeout_sec     = split(",", var.backend_params[count.index])[3]
