@@ -17,7 +17,7 @@ module "vm_spoke1" {
   machine_type = "f1-micro"
   image        = "ubuntu-os-cloud/ubuntu-1604-lts"
   subnetworks  = [module.vpc_spoke1.subnetwork_self_link[0], module.vpc_spoke1.subnetwork_self_link[0]]
-  ssh_key      = "${var.ssh_user}:${var.ssh_key}"
+  #ssh_key      = "${var.ssh_user}:${var.ssh_key}"
   startup_script = file("${path.module}/scripts/webserver-startup.sh")
 
   internal_lb_create = 1
@@ -62,7 +62,7 @@ module "vm_spoke2" {
   machine_type = "f1-micro"
   image        = "ubuntu-os-cloud/ubuntu-1604-lts"
   subnetworks  = [module.vpc_spoke2.subnetwork_self_link[0]]
-  ssh_key      = "${var.ssh_user}:${var.ssh_key}"
+  #ssh_key      = "${var.ssh_user}:${var.ssh_key}"
 }
 
 resource "google_compute_network_peering" "trust_to_spoke2" {

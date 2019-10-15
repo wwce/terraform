@@ -24,18 +24,8 @@ variable "zones" {
   type = list(string)
 }
 
-variable "ssh_user" {
-  description = "SSH user for linux instances.  Default will use project keys."
-  default = ""  # Add colon to the end of username (i.e. ubuntu:).  This will format the metadata correctly.
-}
-
-variable "ssh_key" {
-  description = "SSH key for linux VMs.  Default will use project keys."
-  default = ""
-}
-
 variable "fw_panos" {
-  description = "VM-Series license and PAN-OS (ex: bundle1-819, bundle2-819, byol-819)"
+  description = "VM-Series license and PAN-OS (ie: bundle1-904, bundle2-904, byol-904)"
 }
 
 variable "fw_image" {
@@ -131,3 +121,13 @@ variable "spoke2_cidrs" {
 variable "spoke2_vms" {
   type = list(string)
 }
+
+# variable "ssh_user" {
+#   description = "SSH user for linux instances.  Default will use project keys."
+#   default = ""  # Add colon to the end of username (i.e. ubuntu:).  This will format the metadata correctly.
+# }
+
+# variable "ssh_key" {
+#   description = "SSH key for linux VMs.  Default will use project keys."
+#   default = ""
+# }
