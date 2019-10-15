@@ -9,7 +9,7 @@ resource "google_compute_instance" "vm" {
 
   metadata = {
     serial-port-enable = true
-    sshKeys            = var.ssh_key
+    #sshKeys            = var.ssh_key
   }
 
   network_interface {
