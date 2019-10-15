@@ -1,5 +1,5 @@
 resource "google_compute_health_check" "main" {
-  name = "${var.name}-check"
+  name = "${var.name}-check-0"
 
   tcp_health_check {
     port = var.health_check_port

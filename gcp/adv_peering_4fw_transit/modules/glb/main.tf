@@ -83,7 +83,7 @@ resource "google_compute_backend_service" "default" {
 
 resource "google_compute_http_health_check" "default" {
   count        = length(var.backend_params)
-  name         = "${var.name}-backend-${count.index}"
+  name         = "${var.name}-check-${count.index}"
   request_path = split(",", var.backend_params[count.index])[0]
   port         = split(",", var.backend_params[count.index])[2]
 }
