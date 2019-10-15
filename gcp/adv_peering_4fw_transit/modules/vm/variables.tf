@@ -8,10 +8,9 @@ variable "machine_type" {
 variable "zones" {
   type = list(string)
 }
-
 variable "ssh_key" {
+  default = ""
 }
-
 variable "image" {
 }
 

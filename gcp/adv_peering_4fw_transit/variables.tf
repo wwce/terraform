@@ -26,7 +26,7 @@ variable "zones" {
 
 variable "ssh_user" {
   description = "SSH user for linux instances.  Default will use project keys."
-  default = ""
+  default = ""  # Add colon to the end of username (i.e. ubuntu:).  This will format the metadata correctly.
 }
 
 variable "ssh_key" {

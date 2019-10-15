@@ -27,8 +27,7 @@ resource "google_compute_target_http_proxy" "default" {
   concat([
     var.url_map], google_compute_url_map.default.*.self_link),
   )[0]
-}
-
+} 
 # HTTPS proxy  when ssl is true
 resource "google_compute_target_https_proxy" "default" {
   count            = var.ssl ? 1 : 0
@@ -52,7 +51,7 @@ resource "google_compute_ssl_certificate" "default" {
 
 resource "google_compute_url_map" "default" {
   count           = var.create_url_map ? 1 : 0
-  name            = "${var.name}-url-map"
+  name            = "${var.name}"
   default_service = google_compute_backend_service.default[0].self_link
 }
 
