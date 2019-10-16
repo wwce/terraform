@@ -122,12 +122,7 @@ variable "spoke2_vms" {
   type = list(string)
 }
 
-# variable "ssh_user" {
-#   description = "SSH user for linux instances.  Default will use project keys."
-#   default = ""  # Add colon to the end of username (i.e. ubuntu:).  This will format the metadata correctly.
-# }
-
-# variable "ssh_key" {
-#   description = "SSH key for linux VMs.  Default will use project keys."
-#   default = ""
-# }
+variable "ssh_key" {
+   description = "SSH key for VMs.  Non-FW VMs will use project keys."
+   default = ""
+}
