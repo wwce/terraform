@@ -21,7 +21,7 @@ variable "bootstrap_bucket" {
   default = ""
 }
 
-variable "fw_key" {
+variable "ssh_key" {
   default = ""
 }
 

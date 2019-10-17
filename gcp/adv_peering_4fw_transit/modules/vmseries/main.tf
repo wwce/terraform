@@ -18,7 +18,7 @@ resource "google_compute_instance" "vmseries" {
     mgmt-interface-swap                  = var.mgmt_interface_swap
     vmseries-bootstrap-gce-storagebucket = var.bootstrap_bucket
     serial-port-enable                   = true
-    sshKeys                              = var.fw_key
+    sshKeys                              = var.ssh_key
   }
 
   service_account {
