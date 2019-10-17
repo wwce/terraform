@@ -22,6 +22,7 @@ variable "bootstrap_bucket" {
 }
 
 variable "ssh_key" {
+  default = ""
 }
 
 variable "public_lb_create" {
