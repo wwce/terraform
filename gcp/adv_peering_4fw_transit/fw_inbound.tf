@@ -18,7 +18,7 @@ module "fw_inbound" {
   subnetworks         = [module.vpc_untrust.subnetwork_self_link[0], module.vpc_mgmt.subnetwork_self_link[0], module.vpc_trust.subnetwork_self_link[0]]
   bootstrap_bucket    = module.bootstrap_inbound.bucket_name
   mgmt_interface_swap = "enable"
-  #ssh_key             = "admin:${var.ssh_key}"
+  ssh_key             = "admin:${var.ssh_key}"
   image               = "${var.fw_image}-${var.fw_panos}"
   nic0_public_ip      = true
   nic1_public_ip      = true
