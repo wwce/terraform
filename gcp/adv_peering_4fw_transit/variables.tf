@@ -127,6 +127,7 @@ variable "spoke2_vms" {
   type = list(string)
 }
 
+<<<<<<< HEAD
 
 variable "spoke_user" {
   description = "SSH user for spoke Linux VM.  Default will use project keys"
@@ -138,3 +139,9 @@ variable "spoke_key" {
   default = ""
 }
 
+=======
+variable "ssh_key" {
+   description = "SSH key for VMs.  Non-FW VMs will use project keys."
+   default = ""
+}
+>>>>>>> a4a5de2c01b53d1b4c00d53910d9e81876802692
