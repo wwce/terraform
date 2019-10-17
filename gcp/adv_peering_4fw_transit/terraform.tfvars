@@ -3,8 +3,11 @@
 # fw_panos    = "byol-819"
 # fw_panos    = "bundle1-819" 
 # fw_panos    = "bundle2-819"
-# ssh_key     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDOLMbuqj6fb08mo1Jz8JL9Wa/cNOhinm7jTiq+qdAlzRibAiY4UJoxkSlnlGOVYheA1DpBBVN3C6SwpkEUEX/mC35vTbHrXXLiUpM4KcnYNxQpW/Z0OXwzvJYydbHqU8KwvWt3/Qfjzaids2I7nXbJsbiMYW7Pri2/04SpPs/ibHX7VE+RvOJJG2IMZtD3r+CHltFn1AuL1VpZNoJQ5gWL4MbFuX/MvGkiD6rcBe9/XvuzSGE32Bl6zjc2sthwlWOE9pUyHk0hDLfqQunaOBg21id3MIXr/6Q4PjG1e3xWrf/KEqfBR47Q8fF4m1LIqzLYnGjR0jS1OCLa1lVKQbv5 admin"
+# fw_key      = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDOLMbuqj6fb08mo1Jz8JL9Wa/cNOhinm7jTiq+qdAlzRibAiY4UJoxkSlnlGOVYheA1DpBBVN3C6SwpkEUEX/mC35vTbHrXXLiUpM4KcnYNxQpW/Z0OXwzvJYydbHqU8KwvWt3/Qfjzaids2I7nXbJsbiMYW7Pri2/04SpPs/ibHX7VE+RvOJJG2IMZtD3r+CHltFn1AuL1VpZNoJQ5gWL4MbFuX/MvGkiD6rcBe9/XvuzSGE32Bl6zjc2sthwlWOE9pUyHk0hDLfqQunaOBg21id3MIXr/6Q4PjG1e3xWrf/KEqfBR47Q8fF4m1LIqzLYnGjR0jS1OCLa1lVKQbv5 admin"
 
+# If no spoke_user & key provided, build will use GCP project keys.
+# spoke_user  = "ubuntu"
+# spoke_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDOLMbuqj6fb08mo1Jz8JL9Wa/cNOhinm7jTiq+qdAlzRibAiY4UJoxkSlnlGOVYheA1DpBBVN3C6SwpkEUEX/mC35vTbHrXXLiUpM4KcnYNxQpW/Z0OXwzvJYydbHqU8KwvWt3/Qfjzaids2I7nXbJsbiMYW7Pri2/04SpPs/ibHX7VE+RvOJJG2IMZtD3r+CHltFn1AuL1VpZNoJQ5gWL4MbFuX/MvGkiD6rcBe9/XvuzSGE32Bl6zjc2sthwlWOE9pUyHk0hDLfqQunaOBg21id3MIXr/6Q4PjG1e3xWrf/KEqfBR47Q8fF4m1LIqzLYnGjR0jS1OCLa1lVKQbv5 ubuntu"
 #-------------------------------------------------------------------
 region            = "us-east4"
 zones             = ["us-east4-a", "us-east4-b"]

@@ -24,6 +24,11 @@ variable "zones" {
   type = list(string)
 }
 
+variable "fw_key" {
+  description = "SSH key for Firewall VM"
+  default = ""
+}
+
 variable "fw_panos" {
   description = "VM-Series license and PAN-OS (ie: bundle1-904, bundle2-904, byol-904)"
 }
@@ -122,7 +127,14 @@ variable "spoke2_vms" {
   type = list(string)
 }
 
-variable "ssh_key" {
-  description = "SSH key for linux VMs.  Default will use project keys."
+
+variable "spoke_user" {
+  description = "SSH user for spoke Linux VM.  Default will use project keys"
   default = ""
 }
+
+variable "spoke_key" {
+  description = "SSH key for spoke Linux VM.  Default will use project keys"
+  default = ""
+}
+
