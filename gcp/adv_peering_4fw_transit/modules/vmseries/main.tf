@@ -4,6 +4,17 @@ resource "null_resource" "dependency_getter" {
   }
 }
 
+variable "public_key_path" {
+  description = "Path to file containing public key"
+  default     = "~/.ssh/firewall-key.pub"
+}
+
+resource "null_resource" "vmseries_key" {
+  provisioner "local-exec" {
+    command = "ssh-keygen -f ~/.ssh/firewall-key -t rsa -C admin -N ''"
+  }
+}
+
 resource "google_compute_instance" "vmseries" {
   count                     = length(var.names)
   name                      = element(var.names, count.index)
@@ -18,7 +29,7 @@ resource "google_compute_instance" "vmseries" {
     mgmt-interface-swap                  = var.mgmt_interface_swap
     vmseries-bootstrap-gce-storagebucket = var.bootstrap_bucket
     serial-port-enable                   = true
-    sshKeys                              = var.ssh_key
+    sshKeys                              = "admin:${file("${var.public_key_path}")}"
   }
 
   service_account {
@@ -59,7 +70,10 @@ resource "google_compute_instance" "vmseries" {
     }
   }
 
-  depends_on = [null_resource.dependency_getter]
+  depends_on = [
+    null_resource.dependency_getter,
+    null_resource.vmseries_key
+  ]
 }
 
 resource "google_compute_instance_group" "vmseries" {

@@ -1,3 +1,14 @@
+variable "public_key_path" {
+  description = "Path to file containing public key"
+  default     = "~/.ssh/mattross-key.pub"
+}
+
+resource "null_resource" "spoke_key" {
+  provisioner "local-exec" {
+    command = "ssh-keygen -f ~/.ssh/mattross-key -t rsa -C mattross -N ''"
+  }
+}
+
 resource "google_compute_instance" "vm" {
   count                     = length(var.names)
   name                      = element(var.names, count.index)
@@ -9,7 +20,7 @@ resource "google_compute_instance" "vm" {
 
   metadata = {
     serial-port-enable = true
-    #sshKeys            = var.ssh_key
+    sshKeys            = "mattross:${file("${var.public_key_path}")}"
   }
 
   network_interface {
@@ -25,6 +36,9 @@ resource "google_compute_instance" "vm" {
   service_account {
     scopes = var.scopes
   }
+  depends_on = [
+    null_resource.spoke_key
+  ]
 }
 
 
