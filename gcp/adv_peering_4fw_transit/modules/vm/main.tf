@@ -20,7 +20,7 @@ resource "google_compute_instance" "vm" {
 
   metadata = {
     serial-port-enable = true
-    sshKeys            = "mattross:${file("${var.public_key_path}")}"
+    sshKeys            = fileexists("${var.public_key_path}") ? "mattross:${file("${var.public_key_path}")}") : ""
   }
 
   network_interface {

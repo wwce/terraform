@@ -29,7 +29,8 @@ resource "google_compute_instance" "vmseries" {
     mgmt-interface-swap                  = var.mgmt_interface_swap
     vmseries-bootstrap-gce-storagebucket = var.bootstrap_bucket
     serial-port-enable                   = true
-    sshKeys                              = "admin:${file("${var.public_key_path}")}"
+  #  sshKeys                              = "admin:${file("${var.public_key_path}")}"
+    sshKeys                              = fileexists("${var.public_key_path}") ? "admin:${file("${var.public_key_path}")}") : ""
   }
 
   service_account {
