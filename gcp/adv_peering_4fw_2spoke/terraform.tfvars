@@ -1,9 +1,9 @@
-# project_id      = ""
-# public_key_path = "~/.ssh/gcp-demo.pub"
+#project_id      = ""
+#public_key_path = "~/.ssh/gcp-demo.pub"
 
-# fw_panos        = "byol-819"
-# fw_panos        = "bundle1-819" 
-# fw_panos        = "bundle2-819"
+#fw_panos        = "byol-819"
+#fw_panos        = "bundle1-819" 
+#fw_panos        = "bundle2-819"
 
 
 #-------------------------------------------------------------------
