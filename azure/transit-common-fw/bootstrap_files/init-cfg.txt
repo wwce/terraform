@@ -1,0 +1,9 @@
+type=dhcp-client
+ip-address=
+default-gateway=
+netmask=
+ipv6-address=
+ipv6-default-gateway=
+dhcp-accept-server-hostname=yes
+dns-primary=8.8.8.8
+dns-secondary=4.2.2.2
