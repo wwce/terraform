@@ -4,20 +4,10 @@ Terraform creates 4 VM-Series firewalls that secure ingress/egress traffic from 
 
 Please see the complete guide for more information.
 
-### Overview
-* 5 x VPCs (mgmt, untrust, trust, spoke1, & spoke2) with relevant peering connections
-* 2 x VM-Series (BYOL / Bundle1 / Bundle2)
-* 2 x Ubuntu VM in spoke1 VPC (install Apache during creation)
-* 1 x Ubuntu VM in spoke2 VPC
-* 1 x GCP Public Load Balancer (VM-Series as backend)
-* 3 x GCP Internal Load Balancer
-  * Spoke1
-  * Default (handles outbound to internet)
-  * East-West (handles lateral traffic between spoke1 and spoke2)
-* 2 x GCP Bootstrap Buckets
+### Diagram
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_4fw_2spoke/diagram.png" width="250">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_4fw_2spoke/diagram.png" width="550">
 </p>
 
 
