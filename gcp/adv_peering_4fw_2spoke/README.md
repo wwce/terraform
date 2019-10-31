@@ -2,6 +2,8 @@
 
 Terraform creates 4 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to the internal load balancers.
 
+Please see the complete guide for more information.
+
 ### Overview
 * 5 x VPCs (mgmt, untrust, trust, spoke1, & spoke2) with relevant peering connections
 * 2 x VM-Series (BYOL / Bundle1 / Bundle2)
@@ -15,27 +17,22 @@ Terraform creates 4 VM-Series firewalls that secure ingress/egress traffic from 
 * 2 x GCP Bootstrap Buckets
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke/images/diagram.png" width="250">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_4fw_2spoke/diagram.png" width="250">
 </p>
 
 
 ### Prerequistes 
 1. Valid GCP Account
 
-After deployment, the firewalls' username and password are:
-     * **Username:** paloalto
-     * **Password:** Pal0Alt0@123
-
 ### How To
-
-*Step 1.*  Setup Project (all commands are run from Google Cloud Terminal or from local machine with terraform v12.0 installed)
+Setup Project (all commands are run from Google Cloud Terminal or from local machine with terraform v12.0 installed)
 ```
 	$ gcloud services enable compute.googleapis.com
 	$ ssh-keygen -f ~/.ssh/<keyname> -t rsa -C <comment>
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_4fw_2spoke
 ```
 
-*Step 2.* Run Build
+Run Build
 ```
 	# Edit terraform.tfvars to match project ID, SSH Key, and PAN-OS version and license.
 
@@ -43,7 +40,7 @@ After deployment, the firewalls' username and password are:
 	$ terraform apply
 ```
 
-*Part 3* Destroy Build
+Destroy Build
 ```
 	$ terraform destroy
 ```
