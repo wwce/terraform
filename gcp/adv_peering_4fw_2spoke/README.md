@@ -7,7 +7,7 @@ Please see the complete guide for more information.
 ### Diagram
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_4fw_2spoke/diagram.png" width="550">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_4fw_2spoke/diagram.png">
 </p>
 
 
