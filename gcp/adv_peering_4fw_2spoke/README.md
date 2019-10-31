@@ -2,7 +2,7 @@
 
 Terraform creates 4 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to the internal load balancers.
 
-Please see the complete guide for more information.
+Please see the deployment guide [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/gcp/adv_peering_4fw_2spoke/guide.pdf). for more information.
 
 ### Diagram
 </br>
