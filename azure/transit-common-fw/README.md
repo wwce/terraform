@@ -50,6 +50,7 @@ The following resources are deployed  Deployment resources can be added & remove
 3.  Run the build
 
 `# terraform init`
+
 `# terraform apply`
 
 ### Support Policy
