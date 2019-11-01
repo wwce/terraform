@@ -42,11 +42,13 @@ The following resources are deployed  Deployment resources can be added & remove
 
 ### How to Deploy
 1.  Pull repo onto machine with a Terraform installation.  If you do not have Terraform installed, you can run it through Azure's Cloud Terminal 
+
 `# git clone https://github.com/wwce/terraform; cd terraform/azure/transit-common-fw`
 
 2.  Edit terraform.tfvars file to match your environment.  If bootstrapping, `lines 2-5` can be set to the Azure Storage Account that has the bootstrap fileshare.  
 
 3.  Run the build
+
 `# terraform init`
 `# terraform apply`
 
