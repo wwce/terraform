@@ -42,16 +42,17 @@ The following resources are deployed  Deployment resources can be added & remove
 
 ### How to Deploy
 1.  Pull repo onto machine with a Terraform installation.  If you do not have Terraform installed, you can run it through Azure's Cloud Terminal 
-
-`# git clone https://github.com/wwce/terraform; cd terraform/azure/transit-common-fw`
+```
+git clone https://github.com/wwce/terraform; cd terraform/azure/transit-common-fw
+```
 
 2.  Edit terraform.tfvars file to match your environment.  If bootstrapping, `lines 2-5` can be set to the Azure Storage Account that has the bootstrap fileshare.  
 
 3.  Run the build
-
-`# terraform init`
-
-`# terraform apply`
+```
+terraform init
+terraform apply
+```
 
 ### Support Policy
 The guide in this directory and accompanied files are released under an as-is, best effort, support policy. These scripts should be seen as community supported and Palo Alto Networks will contribute our expertise as and when possible. We do not provide technical support or help in using or troubleshooting the components of the project through our normal support options such as Palo Alto Networks support teams, or ASC (Authorized Support Centers) partners and backline support options. The underlying product used (the VM-Series firewall) by the scripts or templates are still supported, but the support is only for the product functionality and not for help in deploying or using the template or script itself.
