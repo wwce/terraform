@@ -34,6 +34,8 @@ Web_Subnet_CIDR = "10.0.4.0/24"
 
 Attack_Subnet_CIDR = "10.1.1.0/24"
 
+Firewall_Subnet_CIDR = "10.0.5.0/24"
+
 FW_Mgmt_IP = "10.0.0.10"
 
 FW_Untrust_IP = "10.0.1.10"
