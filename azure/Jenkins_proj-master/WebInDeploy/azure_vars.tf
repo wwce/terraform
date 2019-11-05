@@ -17,6 +17,7 @@ variable "Trust_Subnet_CIDR" {}
 variable "AppGW_Subnet_CIDR" {}
 variable "Web_Subnet_CIDR" {}
 variable "Attack_Subnet_CIDR" {}
+variable "Firewall_Subnet_CIDR" {}
 variable "FW_Mgmt_IP" {}
 variable "FW_Untrust_IP" {}
 variable "FW_Trust_IP" {}
