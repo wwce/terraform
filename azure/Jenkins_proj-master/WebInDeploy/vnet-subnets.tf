@@ -51,3 +51,10 @@ resource "azurerm_subnet" "webservers" {
   virtual_network_name = "${azurerm_virtual_network.vnet.name}"
   address_prefix       = "${var.Web_Subnet_CIDR}"
 }
+
+resource "azurerm_subnet" "firewall" {
+  name                 = "AzureFirewallSubnet"
+  resource_group_name  = "${data.azurerm_resource_group.resourcegroup.name}"
+  virtual_network_name = "${azurerm_virtual_network.vnet.name}"
+  address_prefix       = "${var.Firewall_Subnet_CIDR}"
+}
