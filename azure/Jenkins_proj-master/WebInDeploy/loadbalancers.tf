@@ -26,16 +26,17 @@ resource "azurerm_application_gateway" "appgw1" {
     port = 80
   }
   frontend_ip_configuration {
-    name                 = "lbpublicipaddress1"
-    public_ip_address_id = "${azurerm_public_ip.appgw1.id}"
+    name                 	  = "lbipaddress1"
+    subnet_id		 	  = "${azurerm_subnet.loadbalancers.id}"
+    private_ip_address_allocation = "dynamic"
   }
   backend_address_pool {
-    name = "webservers"
+    name 	 = "webservers"
     ip_addresses = ["${var.Web_IP}"]
   }
   http_listener {
     name                           = "http"
-    frontend_ip_configuration_name = "lbpublicipaddress1"
+    frontend_ip_configuration_name = "lbipaddress1"
     frontend_port_name             = "http"
     protocol                       = "Http"
   }
@@ -82,8 +83,9 @@ resource "azurerm_application_gateway" "appgw2" {
     port = 80
   }
   frontend_ip_configuration {
-    name                 = "lbpublicipaddress2"
-    public_ip_address_id = "${azurerm_public_ip.appgw2.id}"
+    name                 	  = "lbpublicipaddress2"
+    subnet_id		 	  = "${azurerm_subnet.loadbalancers.id}"
+    private_ip_address_allocation = "dynamic"
   }
   backend_address_pool {
     name = "firewalls"
