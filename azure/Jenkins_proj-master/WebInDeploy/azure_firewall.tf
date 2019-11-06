@@ -23,7 +23,7 @@ resource "azurerm_firewall_nat_rule_collection" "app1dnat" {
     destination_ports     = [ "80", ]
     destination_addresses = [ "${azurerm_public_ip.appgw1.ip_address}", ]
     protocols             = [ "TCP", ]
-    translated_address    = local.dnat_rules[count.index].translated_address
+    translated_address    = "10.0.3.8"
     translated_port       = "80"
   }
 }
@@ -53,7 +53,7 @@ resource "azurerm_firewall_nat_rule_collection" "app2dnat" {
     destination_ports     = [ "80", ]
     destination_addresses = [ "${azurerm_public_ip.appgw2.ip_address}", ]
     protocols             = [ "TCP", ]
-    translated_address    = local.dnat_rules[count.index].translated_address
+    translated_address    = "10.0.3.9"
     translated_port       = "80"
   }
 }
