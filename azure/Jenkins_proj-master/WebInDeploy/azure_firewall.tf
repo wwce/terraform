@@ -26,8 +26,17 @@ resource "azurerm_firewall_nat_rule_collection" "app1dnat" {
     translated_address    = "10.0.3.8"
     translated_port       = "80"
   }
+  rule {
+    name                  = "app1dnat2"
+    source_addresses      = [ "*", ]
+    destination_ports     = [ "81", ]
+    destination_addresses = [ "${azurerm_public_ip.appgw1.ip_address}", ]
+    protocols             = [ "TCP", ]
+    translated_address    = "10.0.3.9"
+    translated_port       = "80"
+  }
 }
-
+/* Temporarily disabling until the TF provider supports multi-IP on the Azure FW
 resource "azurerm_firewall" "app2-azure-firewall" {
   name                = "app2-azure-firewall"
   resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
@@ -57,3 +66,4 @@ resource "azurerm_firewall_nat_rule_collection" "app2dnat" {
     translated_port       = "80"
   }
 }
+*/
