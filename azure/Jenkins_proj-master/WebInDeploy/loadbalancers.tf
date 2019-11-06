@@ -28,7 +28,8 @@ resource "azurerm_application_gateway" "appgw1" {
   frontend_ip_configuration {
     name                 	  = "lbipaddress1"
     subnet_id		 	  = "${azurerm_subnet.loadbalancers.id}"
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "static"
+    private_ip_address 		  = "10.0.3.8"
   }
   backend_address_pool {
     name 	 = "webservers"
@@ -85,7 +86,8 @@ resource "azurerm_application_gateway" "appgw2" {
   frontend_ip_configuration {
     name                 	  = "lbpublicipaddress2"
     subnet_id		 	  = "${azurerm_subnet.loadbalancers.id}"
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "static"
+    private_ip_address 		  = "10.0.3.9"
   }
   backend_address_pool {
     name = "firewalls"
