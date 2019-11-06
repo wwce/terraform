@@ -12,7 +12,7 @@ resource "azurerm_firewall" "app1-azure-firewall" {
 
 resource "azurerm_firewall_nat_rule_collection" "app1dnat" {
   name                = "app1dnat"
-  azure_firewall_name = azurerm_firewall.app1-azure-firewall.name
+  azure_firewall_name = "${azurerm_firewall.app1-azure-firewall.name}"
   resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   priority            = 100
   action              = "Dnat"
@@ -42,7 +42,7 @@ resource "azurerm_firewall" "app2-azure-firewall" {
 
 resource "azurerm_firewall_nat_rule_collection" "app2dnat" {
   name                = "app2dnat"
-  azure_firewall_name = azurerm_firewall.app2-azure-firewall.name
+  azure_firewall_name = "${azurerm_firewall.app2-azure-firewall.name}"
   resource_group_name = "${data.azurerm_resource_group.resourcegroup.name}"
   priority            = 100
   action              = "Dnat"
