@@ -5,7 +5,7 @@ resource "azurerm_firewall" "app1-azure-firewall" {
 
   ip_configuration {
     name                 = "app1configuration"
-    subnet_id            = "${azurerm_subnet.AzureFirewallSubnet.id}"
+    subnet_id            = "${azurerm_subnet.firewall.id}"
     public_ip_address_id = "${azurerm_public_ip.appgw1.id}"
   }
 }
@@ -35,7 +35,7 @@ resource "azurerm_firewall" "app2-azure-firewall" {
 
   ip_configuration {
     name                 = "app2configuration"
-    subnet_id            = "${azurerm_subnet.AzureFirewallSubnet.id}"
+    subnet_id            = "${azurerm_subnet.firewall.id}"
     public_ip_address_id = "${azurerm_public_ip.appgw2.id}"
   }
 }
