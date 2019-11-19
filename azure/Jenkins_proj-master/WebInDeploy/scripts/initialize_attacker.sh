@@ -7,7 +7,7 @@ cd /var/tmp
 echo "version: '3'" > docker-compose.yml
 echo "services:" >> docker-compose.yml
 echo "  attacker:" >> docker-compose.yml
-echo "    image: pglynn/kali:latest" >> docker-compose.yml
+echo "    image: pglynn/kali-azure:latest" >> docker-compose.yml
 echo "    ports:" >> docker-compose.yml
 echo "      - \"443:443\"" >> docker-compose.yml
 echo "      - \"5000:5000\"" >> docker-compose.yml
