@@ -29,7 +29,8 @@ def main(attack_vector: str) -> None:
         target = outputs['NATIVE-DNS']['value']
     elif attack_vector == 'panos':
         print('Using PAN-OS protected attack vector...\n')
-        target = outputs['ALB-DNS']['value']
+        temp = outputs['NATIVE-DNS']['value']
+        target = temp + ':81'
     else:
         print('malformed outputs!')
         target = '127.0.0.1'
