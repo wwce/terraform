@@ -35,11 +35,32 @@ variable "PANFWRegionMap" {
     "us-west-2" = "ami-02717fd397ffa94c3"
   }
 }
-
+variable "PanoramaRegionMap" {
+  type = "map"
+  #Panorama 8.1.2
+  default = {
+    "ap-northeast-1" = "ami-08e8bded936bbd795"
+    "ap-northeast-2" = "ami-0569a43a1ab4864e0"
+    "ap-south-1" = "ami-01e194040c88ec7f7"
+    "ap-southeast-1" = "ami-05946a342e4f38c79"
+    "ap-southeast-2" = "ami-060009b850df3908c"
+    "ca-central-1" = "ami-042b6efd5f827ea88"
+    "eu-central-1" = "ami-0d4a11e11365c9bae"
+    "eu-north-1" = "ami-0d274936829f13359"
+    "eu-west-1" = "ami-06a1715befd746fe4"
+    "eu-west-2" = "ami-03a4a370ee5442bac"
+    "eu-west-3" = "ami-0637f615e0f748d62"
+    "sa-east-1" = "ami-091669d04559b7056"
+    "us-east-1" = "ami-0fd6fc67d9f2e7750"
+    "us-east-2" = "ami-013c503f1741aa646"
+    "us-west-1" = "ami-02e821dd4b602e9ec"
+    "us-west-2" = "ami-0403335c2e31d2a81"
+  }
+}
 variable "UbuntuRegionMap" {
   type = "map"
 
-  #Ubuntu Server 16.04 LTS (HVM)
+  #Ubuntu Server 18.04 LTS (HVM)
   default = {
     "ap-northeast-1" = "ami-014cc8d7cb6d26dc8"
     "ap-northeast-2" = "ami-004b3430b806f3b1a"

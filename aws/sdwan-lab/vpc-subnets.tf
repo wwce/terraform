@@ -7,6 +7,9 @@ provider "aws" {
 # Declare the data sources
 data "aws_availability_zones" "available" {}
 
+resource "random_id" "sdwan" {
+  byte_length = 3
+}
 resource "aws_vpc" "SDWAN" {
   cidr_block       = "${var.VPCCIDR}"
   instance_tenancy = "default"
