@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "hub-fw-bootstrap-bucket" {
 #  bucket     = "hub-fw-${lower(random_id.hub-fw-bucket_prefix.hex)}"
 #  acl        = "private"
 #  key        = "config/bootstrap.xml"
-#  source     = "hub-fw-bootstrap/bootstrap.xml"
+#  source     = "/dev/null"
 #}
 
 resource "aws_s3_bucket_object" "hub-fw-init-cft_txt" {
