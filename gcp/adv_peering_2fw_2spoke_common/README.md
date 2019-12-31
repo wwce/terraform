@@ -7,7 +7,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 ### Diagram
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/diagrams/diagram.png">
 </p>
 
 
