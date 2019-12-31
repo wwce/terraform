@@ -4,6 +4,7 @@ variable project_id {
 
 variable auth_file {
   description = "GCP Project auth file"
+  default     = ""
 }
 
 variable regions {
