@@ -1,4 +1,4 @@
-## 4 x VM-Series / 2 x Spoke VPCs via Advanced Peering / ILBNH
+## 2 x VM-Series / Internal LB / Public LB / 2 x Spoke VPCs
 
 Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to the internal load balancers.
 
