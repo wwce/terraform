@@ -18,7 +18,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 Setup Project (all commands are run from Google Cloud Terminal or from local machine with terraform v12.0 installed)
 ```
 	$ gcloud services enable compute.googleapis.com
-	$ ssh-keygen -f ~/.ssh/<keyname> -t rsa -C <comment>
+	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 
