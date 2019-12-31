@@ -1,11 +1,11 @@
-variable name" {
+variable name {
 }
 
-variable health_check_port" {
+variable health_check_port {
   default = "22"
 }
 
-variable backends" {
+variable backends {
   description = "Map backend indices to list of backend maps."
   type = map(list(object({
     group    = string
@@ -13,25 +13,25 @@ variable backends" {
   })))
 }
 
-variable subnetworks" {
+variable subnetworks {
   type = list(string)
 }
 
-variable ip_address" {
+variable ip_address {
   default = null
 }
 
-variable ip_protocol" {
+variable ip_protocol {
   default = "TCP"
 }
-variable all_ports" {
+variable all_ports {
   type = bool
 }
-variable ports" {
+variable ports {
   type    = list(string)
   default = []
 }
 
-variable network" {
+variable network {
   default = null
 }
