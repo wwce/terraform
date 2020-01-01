@@ -24,13 +24,12 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 ```
 2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
 ```
-project_id      = "my-project-id-12345"     # Your project ID for the deployment
+project_id      = "my-project-id-012345"    # Your project ID for the deployment
 public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 
-#---Uncomment one for VM-Series licensing ---
-#fw_panos        = "byol-904"
-fw_panos        = "bundle1-904"
-#fw_panos        = "bundle2-904"
+#fw_panos        = "byol-904"               # Uncomment for PAN-OS 9.0.4 - BYOL
+**fw_panos        = "bundle1-904"**            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
+#fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
 ```
 3.  Deploy
 ```
