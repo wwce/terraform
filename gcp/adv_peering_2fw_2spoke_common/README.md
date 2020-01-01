@@ -12,25 +12,27 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 
 ### Prerequistes 
-1. Valid GCP Account
+1. Valid GCP Account with Project
+2. Access to GCP Cloud Terminal or to a machine with Terraform 12 installation
 
 ### How To
-Setup Project (all commands are run from Google Cloud Terminal or from local machine with terraform v12.0 installed)
+1.  Open GCP Cloud Terminal and run the following:
 ```
 	$ gcloud services enable compute.googleapis.com
 	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
+2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
 
-Run Build
+3.  Deploy build
 ```
-	# Edit terraform.tfvars to match project ID, SSH Key, and PAN-OS version and license.
-
 	$ terraform init
 	$ terraform apply
 ```
 
-Destroy Build
+### Clean Up
+
+Run the below commands to delete the deployment
 ```
 	$ terraform destroy
 ```

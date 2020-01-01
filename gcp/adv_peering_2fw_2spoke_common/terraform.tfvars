@@ -1,8 +1,9 @@
-#project_id      = ""
-#public_key_path = "~/.ssh/gcp-demo.pub"
+#project_id      = ""                        # Your project ID for the deployment
+#public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 
+#---Select one for VM-Series licensing---
 #fw_panos        = "byol-904"
-#fw_panos        = "bundle1-904" 
+#fw_panos        = "bundle1-904"
 #fw_panos        = "bundle2-904"
 
 
@@ -40,4 +41,3 @@ fw_machine_type   = "n1-standard-4"
 
 extlb_name          = "vmseries-extlb"
 intlb_name          = "vmseries-intlb"
-
