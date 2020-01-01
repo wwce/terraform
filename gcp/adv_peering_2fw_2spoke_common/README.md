@@ -16,7 +16,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 ## How to Deploy
 
-### 1. Setup Build
+### 1. Setup & Download Build
 In your project, open GCP Cloud Terminal and run the following.
 ```
 $ gcloud services enable compute.googleapis.com
@@ -44,7 +44,7 @@ $ terraform init
 $ terraform apply
 ```
 
-## Destroy Build
+## How to Destroy
 Run the following to destroy the build and remove the SSH key created in step 1.
 ```
 $ terraform destroy
