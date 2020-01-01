@@ -23,11 +23,15 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
-</br>
-<p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="937.5" height="177">
-</p>
+```
+project_id      = "my-project-id-12345"     # Your project ID for the deployment
+public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 
+#---Uncomment one for VM-Series licensing ---
+#fw_panos        = "byol-904"
+fw_panos        = "bundle1-904"
+#fw_panos        = "bundle2-904"
+```
 3.  Deploy
 ```
 	$ terraform init
