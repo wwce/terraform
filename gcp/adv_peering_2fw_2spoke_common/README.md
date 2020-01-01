@@ -11,17 +11,18 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 </p>
 
 
-### Prerequistes 
+### 1. Prerequistes 
 1. Valid GCP Account with Project
 2. Access to GCP Cloud Terminal or to a machine with Terraform 12 installation
 
-### Set Up
+### 2. How to Deploy
 1.  Open GCP Cloud Terminal and run the following:
 ```
 	$ gcloud services enable compute.googleapis.com
 	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
+
 2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
 ```
 project_id      = "my-project-id-012345"    # Your project ID for the deployment
@@ -31,13 +32,14 @@ public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
 #fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
 ```
+
 3.  Deploy
 ```
 	$ terraform init
 	$ terraform apply
 ```
 
-### Clean Up
+### 3. Clean Up
 Run the following to destroy the build.
 ```
 	$ rm ~/.ssh/gcp-demo*
