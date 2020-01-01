@@ -4,26 +4,31 @@ Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic from 
 
 Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/gcp/adv_peering_2fw_2spoke_common/guide.pdf) for more information.
 
-### Diagram
 </br>
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/diagram.png">
 </p>
 
 
-### 1. Prerequistes 
+### Prerequistes 
 * Valid GCP Account with Project
 * Access to GCP Cloud Terminal or to a machine with Terraform 12 installation
 
-### 2. How to Deploy
-1.  Open GCP Cloud Terminal and run the following:
+### How to Deploy
+1.  In GCP Cloud Terminal run the following:
 ```
 	$ gcloud services enable compute.googleapis.com
 	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 
-2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
+2.  Edit **terraform.tfvars**
+
+```
+	$ vi terraform.tfvars
+```
+
+3.  Uncomment and set values for project_id (your project ID), public_key_path (key created in step 1), & fw_panos (select 1 for firewall PAN-OS license)
 ```
 project_id      = "my-project-id-012345"    # Your project ID for the deployment
 public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
