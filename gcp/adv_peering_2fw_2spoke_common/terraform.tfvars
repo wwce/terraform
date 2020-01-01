@@ -1,10 +1,9 @@
-#project_id      = ""                        # Your project ID for the deployment
-#public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
+#project_id      = ""                      # Your project ID for the deployment
+#public_key_path = "~/.ssh/gcp-demo.pub"   # Your SSH Key
 
-#---Select one for VM-Series licensing---
-#fw_panos        = "byol-904"
-#fw_panos        = "bundle1-904"
-#fw_panos        = "bundle2-904"
+#fw_panos        = "byol-904"              # Uncomment for PAN-OS 9.0.4 - BYOL
+#fw_panos        = "bundle1-904"           # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
+#fw_panos        = "bundle2-904"           # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
 
 
 #-------------------------------------------------------------------
