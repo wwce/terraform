@@ -16,7 +16,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 ## How to Deploy
 
-### Setup Build
+### 1. Setup Build
 In your project, open GCP Cloud Terminal and run the following.
 ```
 $ gcloud services enable compute.googleapis.com
@@ -24,7 +24,7 @@ $ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 $ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 
-### Edit Variables
+### 2. Edit terraform.tfvars
 
 Open terraform.tfvars and edit variables (lines 1-4) to match your Project ID, SSH Key (from step 1), and VM-Series type.
 
@@ -38,22 +38,14 @@ Your terraform.tfvars should look similar to this before proceeding.
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
 </p>
 
-```
-	project_id      = "my-project-id-012345"    # Your project ID for the deployment
-	public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
-
-	#fw_panos        = "byol-904"               # Uncomment for PAN-OS 9.0.4 - BYOL
-	fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
-	#fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
-```
-
-### Deploy Build
+### 3. Deploy Build
 ```
 $ terraform init
 $ terraform apply
 ```
 
-### Destroy Build
+## Destroy Build
+Run the following to destroy the build and remove the SSH key created in step 1.
 ```
 $ terraform destroy
 $ rm ~/.ssh/gcp-demo*
