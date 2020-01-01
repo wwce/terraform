@@ -33,6 +33,11 @@ $ vi terraform.tfvars
 ```
 
 Your terraform.tfvars should look similar to this before proceeding.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png">
+</p>
+
 ```
 	project_id      = "my-project-id-012345"    # Your project ID for the deployment
 	public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
@@ -50,8 +55,8 @@ $ terraform apply
 
 ### Destroy Build
 ```
-	$ terraform destroy
-	$ rm ~/.ssh/gcp-demo*
+$ terraform destroy
+$ rm ~/.ssh/gcp-demo*
 ```
 
 ## Support Policy
