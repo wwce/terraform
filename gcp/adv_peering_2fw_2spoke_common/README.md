@@ -19,33 +19,33 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 ### Setup Build
 In your project, open GCP Cloud Terminal and run the following.
 ```
-	$ gcloud services enable compute.googleapis.com
-	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
-	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
+$ gcloud services enable compute.googleapis.com
+$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
+$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 
-### Edit Build Variables
+### Edit Variables
 
-Open terraform.tfvars and edit values for your Project ID, SSH Key (from step 1), and the PAN-OS version and license type.
+Open terraform.tfvars and edit variables (lines 1-4) to match your Project ID, SSH Key (from step 1), and VM-Series type.
 
 ```
-	$ vi terraform.tfvars
+$ vi terraform.tfvars
 ```
 
 Your terraform.tfvars should look similar to this before proceeding.
 ```
-project_id      = "my-project-id-012345"    # Your project ID for the deployment
-public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
+	project_id      = "my-project-id-012345"    # Your project ID for the deployment
+	public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 
-#fw_panos        = "byol-904"               # Uncomment for PAN-OS 9.0.4 - BYOL
-fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
-#fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
+	#fw_panos        = "byol-904"               # Uncomment for PAN-OS 9.0.4 - BYOL
+	fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
+	#fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
 ```
 
 ### Deploy Build
 ```
-	$ terraform init
-	$ terraform apply
+$ terraform init
+$ terraform apply
 ```
 
 ### Destroy Build
