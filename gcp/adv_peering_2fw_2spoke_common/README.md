@@ -35,7 +35,7 @@ $ vi terraform.tfvars
 Your terraform.tfvars should look similar to this before proceeding.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width=1054 height=186 >
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
 </p>
 
 ```
