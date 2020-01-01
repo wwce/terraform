@@ -32,7 +32,7 @@ $ vi terraform.tfvars
 ```
 
 <p align="center">
-**_Your terraform.tfvars should look like this before proceeding._**
+<b>Your terraform.tfvars should look like this before proceeding.</b>
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
 </p>
 
