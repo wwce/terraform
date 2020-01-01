@@ -1,4 +1,4 @@
-## 2 x VM-Series / Internal LB / Public LB / 2 x Spoke VPCs
+# 2 x VM-Series / Internal LB / Public LB / 2 x Spoke VPCs
 
 Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to internal load balancers.
 
@@ -10,31 +10,25 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 </p>
 
 
-### Prerequistes 
+## Prerequistes 
 * Valid GCP Account with Project
 * Access to GCP Cloud Terminal or to a machine with a Terraform 12 installation
 
 ### How to Deploy
-1.  Open GCP Cloud Terminal and run:
+1.  In your project, open GCP Cloud Terminal and run:
 ```
 	$ gcloud services enable compute.googleapis.com
 	$ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 </br>
-2.  Open `terraform.tfvars`
-
+2.  Open terraform.tfvars
 ```
 	$ vi terraform.tfvars
 ```
 </br>
 
-3.  Uncomment and set values for:
-
-* project_id (your project ID)
-* public_key_path (key created in step 1)
-* fw_panos (select 1 for firewall PAN-OS license)
-
+3.  Set values for your Project ID, SSH Key (from step 1), and the VM-Series PAN-OS version and license type. 
 ```
 project_id      = "my-project-id-012345"    # Your project ID for the deployment
 public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
@@ -53,8 +47,8 @@ fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG 
 ### 3. Clean Up
 Run the following to destroy the build.
 ```
-	$ rm ~/.ssh/gcp-demo*
 	$ terraform destroy
+	$ rm ~/.ssh/gcp-demo*
 ```
 
 ## Support Policy
