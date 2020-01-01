@@ -14,6 +14,8 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 * Valid GCP Account with existing project
 * Access to GCP Cloud Terminal or to a machine with a Terraform 12 installation
 
+</br>
+
 ## How to Deploy
 ### 1. Setup & Download Build
 In your project, open GCP Cloud Terminal and run the following.
@@ -22,8 +24,6 @@ $ gcloud services enable compute.googleapis.com
 $ ssh-keygen -f ~/.ssh/gcp-demo -t rsa -C gcpdemo
 $ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
-
-</br>
 
 ### 2. Edit terraform.tfvars
 Open terraform.tfvars and edit variables (lines 1-4) to match your Project ID, SSH Key (from step 1), and VM-Series type.
@@ -36,8 +36,6 @@ $ vi terraform.tfvars
 <b>Your terraform.tfvars should look like this before proceeding</b>
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
 </p>
-
-</br>
 
 ### 3. Deploy Build
 ```
