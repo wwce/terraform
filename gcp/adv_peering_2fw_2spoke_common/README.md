@@ -45,8 +45,7 @@ $ terraform apply
 ```
 
   </br>
-  </br>
-  </br>
+
 ## How to Destroy
 Run the following to destroy the build and remove the SSH key created in step 1.
 ```
