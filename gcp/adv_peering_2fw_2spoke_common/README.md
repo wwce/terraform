@@ -7,7 +7,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 ### Diagram
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/diagrams/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/diagram.png">
 </p>
 
 
@@ -15,7 +15,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 1. Valid GCP Account with Project
 2. Access to GCP Cloud Terminal or to a machine with Terraform 12 installation
 
-### How To
+### Set Up
 1.  Open GCP Cloud Terminal and run the following:
 ```
 	$ gcloud services enable compute.googleapis.com
@@ -23,8 +23,12 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
+</br>
+<p align="center">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png">
+</p>
 
-3.  Deploy build
+3.  Deploy
 ```
 	$ terraform init
 	$ terraform apply
@@ -34,6 +38,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 Run the below commands to delete the deployment
 ```
+	$ rm ~/.ssh/gcp-demo*
 	$ terraform destroy
 ```
 
