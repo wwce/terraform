@@ -22,13 +22,15 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 	$ git clone https://github.com/wwce/terraform; cd terraform/gcp/adv_peering_2fw_2spoke_common
 ```
 </br>
-2.  Edit **terraform.tfvars**
+2.  Open `terraform.tfvars`
 
 ```
 	$ vi terraform.tfvars
 ```
 </br>
+
 3.  Uncomment and set values for:
+
 * project_id (your project ID)
 * public_key_path (key created in step 1)
 * fw_panos (select 1 for firewall PAN-OS license)
