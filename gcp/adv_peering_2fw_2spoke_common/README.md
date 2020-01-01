@@ -25,7 +25,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 2.  Edit **terraform.tfvars** (lines 1-4) to match your project ID, SSH Key, and PAN-OS version and license.
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="937.5" height="177">
 </p>
 
 3.  Deploy
