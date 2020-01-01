@@ -1,6 +1,6 @@
-# 2 x VM-Series / Internal LB / Public LB / 2 x Spoke VPCs
+# 2 x VM-Series / Public LB / Internal LB / 2 x Spoke VPCs
 
-Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to internal load balancers.
+Terraform creates 2 VM-Series firewalls that secure ingress/egress traffic from spoke VPCs.  The spoke VPCs are connected (via VPC Peering) to the VM-Series trust VPC. All TCP/UDP traffic originating from the spokes is routed to internal load balancers in the trust VPC.
 
 Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/gcp/adv_peering_2fw_2spoke_common/guide.pdf) for more information.
 
@@ -51,6 +51,8 @@ Run the following to destroy the build and remove the SSH key created in step 1.
 $ terraform destroy
 $ rm ~/.ssh/gcp-demo*
 ```
+
+</br>
 
 ## Support Policy
 The guide in this directory and accompanied files are released under an as-is, best effort, support policy. These scripts should be seen as community supported and Palo Alto Networks will contribute our expertise as and when possible. We do not provide technical support or help in using or troubleshooting the components of the project through our normal support options such as Palo Alto Networks support teams, or ASC (Authorized Support Centers) partners and backline support options. The underlying product used (the VM-Series firewall) by the scripts or templates are still supported, but the support is only for the product functionality and not for help in deploying or using the template or script itself.
