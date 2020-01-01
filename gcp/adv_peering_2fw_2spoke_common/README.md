@@ -28,7 +28,7 @@ project_id      = "my-project-id-012345"    # Your project ID for the deployment
 public_key_path = "~/.ssh/gcp-demo.pub"     # Your SSH Key
 
 #fw_panos        = "byol-904"               # Uncomment for PAN-OS 9.0.4 - BYOL
-**fw_panos        = "bundle1-904"**            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
+fw_panos        = "bundle1-904"             # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 1
 #fw_panos        = "bundle2-904"            # Uncomment for PAN-OS 9.0.4 - PAYG Bundle 2
 ```
 3.  Deploy
