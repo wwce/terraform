@@ -11,7 +11,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 
 ## Prerequistes 
-* Valid GCP Account with Project
+* Valid GCP Account with existing project
 * Access to GCP Cloud Terminal or to a machine with a Terraform 12 installation
 
 ## How to Deploy
@@ -32,7 +32,7 @@ Open terraform.tfvars and edit variables (lines 1-4) to match your Project ID, S
 $ vi terraform.tfvars
 ```
 
-Your terraform.tfvars should look similar to this before proceeding.
+**_Your terraform.tfvars should look like this before proceeding._**
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/gcp/adv_peering_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
@@ -44,9 +44,9 @@ $ terraform init
 $ terraform apply
 ```
 
-</br>
-</br>
-</br>
+  </br>
+  </br>
+  </br>
 ## How to Destroy
 Run the following to destroy the build and remove the SSH key created in step 1.
 ```
