@@ -110,7 +110,7 @@ resource "google_compute_route" "eastwest" {
 
 #-----------------------------------------------------------------------------------------------
 # Outputs to terminal
-output EXTLB-LB {
+output EXT-LB {
   value = "http://${module.lb_inbound.forwarding_rule_ip_address}"
 }
 
