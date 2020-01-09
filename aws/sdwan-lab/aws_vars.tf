@@ -1,6 +1,13 @@
 variable "aws_region" {}
 #variable "aws_access_key" {}
 #variable "aws_secret_key" {}
+variable "SD-WAN-HUB-FW" {}
+variable "SD-WAN-HUB-SVR" {}
+variable "SD-WAN-ROUTER-JITTER" {}
+variable "SD-WAN-BRANCH25-FW" {}
+variable "SD-WAN-BRANCH50-FW" {}
+variable "SD-WAN-BRANCH25-IWS" {}
+variable "SD-WAN-BRANCH50-IWS" {}
 variable "VPCCIDR" {}
 variable "SD-WAN-MGT" {}
 variable "SD-WAN-WAN1" {}

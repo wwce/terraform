@@ -90,7 +90,7 @@ resource "aws_instance" "branch50-fw" {
 
   iam_instance_profile = "${aws_iam_instance_profile.branch50-fw-bootstrapinstanceprofile.name}"
   ebs_optimized        = true
-  ami                  = "${var.PANFWRegionMap[var.aws_region]}"
+  ami                  = "${var.SD-WAN-BRANCH50-FW}"
   instance_type        = "m5.4xlarge"
 
   ebs_block_device {
@@ -123,5 +123,5 @@ resource "aws_instance" "branch50-fw" {
     network_interface_id = "${aws_network_interface.branch50-fw-mpls.id}"
   }
 
-  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.branch50-fw-bootstrap-bucket.bucket}")))}"
+#  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.branch50-fw-bootstrap-bucket.bucket}")))}"
 }

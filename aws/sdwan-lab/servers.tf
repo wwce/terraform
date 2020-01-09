@@ -7,7 +7,7 @@ resource "aws_network_interface" "SD-WAN-Branch25-IWS" {
 
 resource "aws_instance" "SD-WAN-Branch25-IWS" {
   # instance_initiated_shutdown_behavior = "stop"
-  ami           = "${var.UbuntuRegionMap[var.aws_region]}"
+  ami           = "${var.SD-WAN-BRANCH25-IWS}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false
@@ -40,7 +40,7 @@ resource "aws_network_interface" "SD-WAN-Branch50-IWS" {
 
 resource "aws_instance" "SD-WAN-Branch50-IWS" {
   # instance_initiated_shutdown_behavior = "stop"
-  ami           = "${var.UbuntuRegionMap[var.aws_region]}"
+  ami           = "${var.SD-WAN-BRANCH50-IWS}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false
@@ -73,7 +73,7 @@ resource "aws_network_interface" "SD-WAN-Hub254-SVR" {
 
 resource "aws_instance" "SD-WAN-Hub254-SVR" {
   # instance_initiated_shutdown_behavior = "stop"
-  ami           = "${var.UbuntuRegionMap[var.aws_region]}"
+  ami           = "${var.SD-WAN-HUB-SVR}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false
@@ -141,7 +141,7 @@ resource "aws_network_interface" "SD-WAN-Router-Jitter-MPLS" {
 
 resource "aws_instance" "SD-WAN-Router-Jitter" {
   # instance_initiated_shutdown_behavior = "stop"
-  ami           = "${var.UbuntuRegionMap[var.aws_region]}"
+  ami           = "${var.SD-WAN-ROUTER-JITTER}"
   instance_type = "m5.4xlarge"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false

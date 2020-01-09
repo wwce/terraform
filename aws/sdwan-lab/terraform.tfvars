@@ -1,4 +1,18 @@
-aws_region = "us-east-1"
+aws_region = "eu-west-1"
+
+SD-WAN-HUB-FW = "ami-017d1ea4c1b1078ae"
+
+SD-WAN-HUB-SVR = "ami-04a91de248eab22ea"
+
+SD-WAN-ROUTER-JITTER = "ami-0228a0bb61ce54230"
+
+SD-WAN-BRANCH25-FW = "ami-0e4897c0dc8a72905"
+
+SD-WAN-BRANCH50-FW = "ami-040d690f64cfe477d"
+
+SD-WAN-BRANCH25-IWS = "ami-07e4d468a47905df3"
+
+SD-WAN-BRANCH50-IWS = "ami-0738f0192b2fc93ea"
 
 VPCCIDR = "100.64.0.0/16"
 
