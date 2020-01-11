@@ -1,6 +1,7 @@
 variable "aws_region" {}
 #variable "aws_access_key" {}
 #variable "aws_secret_key" {}
+variable "VPC-Name" {}
 variable "SD-WAN-HUB-FW" {}
 variable "SD-WAN-HUB-SVR" {}
 variable "SD-WAN-ROUTER-JITTER" {}

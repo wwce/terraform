@@ -15,7 +15,7 @@ resource "aws_vpc" "SDWAN" {
   instance_tenancy = "default"
 
   tags {
-    Name = "SDWAN"
+    Name = "${var.VPC-Name}"
   }
 }
 

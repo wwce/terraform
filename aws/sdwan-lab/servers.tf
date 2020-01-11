@@ -1,12 +1,18 @@
+resource "aws_network_interface" "SD-WAN-Branch25-MGT" {
+  subnet_id         = "${aws_subnet.SD-WAN-MGT.id}"
+  security_groups   = ["${aws_security_group.allow-all.id}"]
+  source_dest_check = false
+  private_ips       = ["100.64.0.249"]
+}
+
 resource "aws_network_interface" "SD-WAN-Branch25-IWS" {
   subnet_id         = "${aws_subnet.SD-WAN-Branch25.id}"
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
-  #private_ips       = ["${var.SD-WAN-Branch25-IWS}"]
+  private_ips       = ["100.64.25.50"]
 }
 
 resource "aws_instance" "SD-WAN-Branch25-IWS" {
-  # instance_initiated_shutdown_behavior = "stop"
   ami           = "${var.SD-WAN-BRANCH25-IWS}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
@@ -18,28 +24,30 @@ resource "aws_instance" "SD-WAN-Branch25-IWS" {
 
   network_interface {
     device_index         = 0
-    network_interface_id = "${aws_network_interface.SD-WAN-Branch25-IWS.id}"
+    network_interface_id = "${aws_network_interface.SD-WAN-Branch25-MGT.id}"
   }
 
-  #user_data = "${base64encode(join("", list(
-  # "#! /bin/bash\n",
-  #        "sudo cd /var/tmp\n",
-  #        "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
-  #        "sudo chmod 755 initialize_webserver.sh &&\n",
-  #        "sudo bash ./initialize_webserver.sh\n"
-  # )))
-  #}"
+  network_interface {
+    device_index         = 1
+    network_interface_id = "${aws_network_interface.SD-WAN-Branch25-IWS.id}"
+  }
+}
+
+resource "aws_network_interface" "SD-WAN-Branch50-MGT" {
+  subnet_id         = "${aws_subnet.SD-WAN-MGT.id}"
+  security_groups   = ["${aws_security_group.allow-all.id}"]
+  source_dest_check = false
+  private_ips       = ["100.64.0.49"]
 }
 
 resource "aws_network_interface" "SD-WAN-Branch50-IWS" {
   subnet_id         = "${aws_subnet.SD-WAN-Branch50.id}"
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
-  #private_ips       = ["${var.SD-WAN-Branch50-IWS}"]
+  private_ips       = ["100.64.50.50"]
 }
 
 resource "aws_instance" "SD-WAN-Branch50-IWS" {
-  # instance_initiated_shutdown_behavior = "stop"
   ami           = "${var.SD-WAN-BRANCH50-IWS}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
@@ -51,50 +59,48 @@ resource "aws_instance" "SD-WAN-Branch50-IWS" {
 
   network_interface {
     device_index         = 0
-    network_interface_id = "${aws_network_interface.SD-WAN-Branch50-IWS.id}"
+    network_interface_id = "${aws_network_interface.SD-WAN-Branch50-MGT.id}"
   }
 
-  #user_data = "${base64encode(join("", list(
-  # "#! /bin/bash\n",
-  #        "sudo cd /var/tmp\n",
-  #        "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
-  #        "sudo chmod 755 initialize_webserver.sh &&\n",
-  #        "sudo bash ./initialize_webserver.sh\n"
-  # )))
-  #}"
+  network_interface {
+    device_index         = 1
+    network_interface_id = "${aws_network_interface.SD-WAN-Branch50-IWS.id}"
+  }
 }
 
-resource "aws_network_interface" "SD-WAN-Hub254-SVR" {
+resource "aws_network_interface" "SD-WAN-Hub-SVR-MGT" {
+  subnet_id         = "${aws_subnet.SD-WAN-MGT.id}"
+  security_groups   = ["${aws_security_group.allow-all.id}"]
+  source_dest_check = false
+  private_ips       = ["100.64.0.149"]
+}
+
+resource "aws_network_interface" "SD-WAN-Hub-SVR" {
   subnet_id         = "${aws_subnet.SD-WAN-Hub.id}"
   security_groups   = ["${aws_security_group.allow-all.id}"]
   source_dest_check = false
-  #private_ips       = ["${var.SD-WAN-Hub254-SVR}"]
+  private_ips       = ["100.64.255.50"]
 }
 
-resource "aws_instance" "SD-WAN-Hub254-SVR" {
-  # instance_initiated_shutdown_behavior = "stop"
+resource "aws_instance" "SD-WAN-Hub-SVR" {
   ami           = "${var.SD-WAN-HUB-SVR}"
   instance_type = "t2.large"
   key_name      = "${var.ServerKeyName}"
   monitoring    = false
 
   tags {
-    Name = "SD-WAN-Hub254-SVR"
+    Name = "SD-WAN-Hub-SVR"
   }
 
   network_interface {
     device_index         = 0
-    network_interface_id = "${aws_network_interface.SD-WAN-Hub254-SVR.id}"
+    network_interface_id = "${aws_network_interface.SD-WAN-Hub-SVR-MGT.id}"
   }
 
-  #user_data = "${base64encode(join("", list(
-  # "#! /bin/bash\n",
-  #        "sudo cd /var/tmp\n",
-  #        "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
-  #        "sudo chmod 755 initialize_webserver.sh &&\n",
-  #        "sudo bash ./initialize_webserver.sh\n"
-  # )))
-  #}"
+  network_interface {
+    device_index         = 1
+    network_interface_id = "${aws_network_interface.SD-WAN-Hub-SVR.id}"
+  }
 }
 
 resource "aws_network_interface" "SD-WAN-Router-Jitter-MGT" {
@@ -155,37 +161,28 @@ resource "aws_instance" "SD-WAN-Router-Jitter" {
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-MGT.id}"
   }
 
-network_interface {
+  network_interface {
     device_index         = 1
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-WAN1.id}"
   }
 
-network_interface {
+  network_interface {
     device_index         = 2
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-WAN2.id}"
   }
 
-network_interface {
+  network_interface {
     device_index         = 3
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-WAN3.id}"
   }
 
-network_interface {
+  network_interface {
     device_index         = 4
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-WAN4.id}"
   }
 
-network_interface {
+  network_interface {
     device_index         = 5
     network_interface_id = "${aws_network_interface.SD-WAN-Router-Jitter-MPLS.id}"
   }
-
-  #user_data = "${base64encode(join("", list(
-  # "#! /bin/bash\n",
-  #        "sudo cd /var/tmp\n",
-  #        "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
-  #        "sudo chmod 755 initialize_webserver.sh &&\n",
-  #        "sudo bash ./initialize_webserver.sh\n"
-  # )))
-  #}"
 }

@@ -1,5 +1,7 @@
 aws_region = "eu-west-1"
 
+VPC-Name = "SDWAN01"
+
 SD-WAN-HUB-FW = "ami-017d1ea4c1b1078ae"
 
 SD-WAN-HUB-SVR = "ami-04a91de248eab22ea"
@@ -32,6 +34,6 @@ SD-WAN-Branch25 = "100.64.25.0/24"
 
 SD-WAN-Branch50 = "100.64.50.0/24"
 
-SD-WAN-Hub = "100.64.254.0/24"
+SD-WAN-Hub = "100.64.255.0/24"
 
 ServerKeyName = "AWS-Lab-Pair"
