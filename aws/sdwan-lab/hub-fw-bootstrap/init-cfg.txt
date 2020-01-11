@@ -1,2 +1,0 @@
-dns-primary=8.8.8.8
-dns-secondary=8.8.4.4
