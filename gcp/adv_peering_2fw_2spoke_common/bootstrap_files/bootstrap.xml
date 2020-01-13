@@ -351,7 +351,7 @@
                     </bfd>
                     <interface ptpl="gcp-common">ethernet1/2</interface>
                     <metric ptpl="gcp-common">10</metric>
-                    <destination ptpl="gcp-common">10.10.1.0/24</destination>
+                    <destination ptpl="gcp-common">10.1.0.0/24</destination>
                     <route-table ptpl="gcp-common">
                       <unicast ptpl="gcp-common"/>
                     </route-table>
@@ -370,7 +370,7 @@
                     </bfd>
                     <interface ptpl="gcp-common">ethernet1/2</interface>
                     <metric ptpl="gcp-common">10</metric>
-                    <destination ptpl="gcp-common">10.10.2.0/24</destination>
+                    <destination ptpl="gcp-common">10.2.0.0/24</destination>
                     <route-table ptpl="gcp-common">
                       <unicast ptpl="gcp-common"/>
                     </route-table>
