@@ -1,5 +1,5 @@
 ## Transit Architecture: Common Firewall with 2 Spoke VNETs
-This is a Terraform build that creates a transit VNET with VM-Series firewalls (2) to secure north-south and east-west traffic for 2 spoke VNETs connected to the transit via VNET peering.
+This is a Terraform build that creates a transit VNET with VM-Series firewalls (2) to secure north-south and east-west traffic for 2 spoke VNETs connected to the transit VNET via VNET peering.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit-common-fw/diagram.png">
