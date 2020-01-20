@@ -6,8 +6,8 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 </br>
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit_vnet_2fw_2spoke_common/images/diagram.png">
-</p>
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit_2fw_2spoke_common/images/diagram.png">
+</p> 
 
 
 ## Prerequistes 
@@ -36,8 +36,8 @@ $ vi terraform.tfvars
 
 <p align="center">
 <b>Your terraform.tfvars should look like this before proceeding</b>
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit_vnet_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
-</p>
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit_2fw_2spoke_common/images/tfvars.png" width="75%" height="75%" >
+</p>    
 
 ### 3. Deploy Build
 ```
