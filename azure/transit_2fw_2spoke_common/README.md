@@ -2,7 +2,7 @@
 
 Terraform creates 2 VM-Series firewalls that secure all ingress/egress traffic from 2 spoke VNETs.  The spoke VNETs are connected (via VNET Peering) to the transit VNET. All traffic originating from the spokes is routed to an internal load balancer in the transit VNET's trust subnet.
 
-Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/azure/transit_vnet_2fw_2spoke_common/GUIDE.pdf) for more information.
+Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/azure/transit_2fw_2spoke_common/GUIDE.pdf) for more information.
 
 </br>
 <p align="center">
