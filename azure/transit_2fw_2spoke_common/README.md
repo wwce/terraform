@@ -1,6 +1,6 @@
 # 2 x VM-Series / Public LB / Internal LB / 2 x Spoke VNETs
 
-Terraform creates 2 VM-Series firewalls that secure all ingress/egress traffic from 2 spoke VNETs.  The spoke VNETs are connected (via VNET Peering) to the transit VNET. All traffic originating from the spokes is routed to an internal load balancer in the transit VNET's trust subnet.
+Terraform creates 2 VM-Series firewalls deployed in a transit VNET with two connected spoke VNETs (via VNET peering).  The VM-Series firewalls secure all ingress/egress to and from the spoke VNETs.  All traffic originating from the spokes is routed to an internal load balancer in the transit VNET's trust subnet.  All inbound traffic from the internet is sent through a public load balancer.
 
 Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/azure/transit_2fw_2spoke_common/GUIDE.pdf) for more information.
 
@@ -18,7 +18,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 
 ## How to Deploy
 ### 1. Setup & Download Build
-In the Azure Portal, open Azure Cloud Shell and run the following (BASH ONLY).
+In the Azure Portal, open Azure Cloud Shell and run the following **BASH ONLY!**.
 ```
 # Accept VM-Series EULA for desired license type (BYOL, Bundle1, or Bundle2)
 $ az vm image terms accept --urn paloaltonetworks:vmseries1:<byol><bundle1><bundle2>:9.0.1
