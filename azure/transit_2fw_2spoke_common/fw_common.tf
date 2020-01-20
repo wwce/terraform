@@ -116,6 +116,6 @@ output MGMT-FW2 {
   value = "https://${module.common_fw.nic0_public_ip[1]}"
 }
 
-output SPOKE2-SSH {
+output SSH-TO-SPOKE2 {
   value = "ssh ${var.spoke_username}@${module.common_extlb.public_ip[0]}"
 }
