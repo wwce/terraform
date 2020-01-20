@@ -1,7 +1,7 @@
 location      = "eastus"
 #fw_license   = "byol"                                                       # Uncomment 1 fw_license to select VM-Series licensing mode
 #fw_license   = "bundle1"
-fw_license    = "bundle2"
+#fw_license    = "bundle2"
 global_prefix = ""                                                           # Prefix to add to all resource groups created.  This is useful to create unique resource groups within a shared Azure subscription
 
 # -----------------------------------------------------------------------
