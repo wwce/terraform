@@ -2,7 +2,7 @@
 This is a Terraform build that creates a transit VNET with VM-Series firewalls (2) to secure north-south and east-west traffic for 2 spoke VNETs connected to the transit VNET via VNET peering.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit-common-fw/diagram.png">
+<img src="https://raw.githubusercontent.com/wwce/terraform/master/azure/transit_2fw_2spoke_common/diagram.png">
 </p>
 
 ### Overview
@@ -43,7 +43,7 @@ The following resources are deployed  Deployment resources can be added & remove
 ### How to Deploy
 1.  Pull repo onto machine with a Terraform installation.  If you do not have Terraform installed, you can run it through Azure's Cloud Terminal 
 ```
-git clone https://github.com/wwce/terraform; cd terraform/azure/transit-common-fw
+git clone https://github.com/wwce/terraform; cd terraform/azure/transit_2fw_2spoke_common
 ```
 
 2.  Edit `terraform.tfvars` file to match your environment.  If bootstrapping, `lines 2-5` can be set to the Azure Storage Account that has the bootstrap fileshare.  
