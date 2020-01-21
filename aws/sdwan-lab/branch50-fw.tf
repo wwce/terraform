@@ -81,10 +81,10 @@ resource "aws_network_interface" "branch50-fw-mpls" {
   private_ips       = ["100.64.5.50"]
 }
 
-resource "aws_eip_association" "branch50-fw-mgt-Association" {
-  network_interface_id = "${aws_network_interface.branch50-fw-mgt.id}"
-  allocation_id        = "${aws_eip.branch50-fw-mgt.id}"
-}
+#resource "aws_eip_association" "branch50-fw-mgt-Association" {
+#  network_interface_id = "${aws_network_interface.branch50-fw-mgt.id}"
+#  allocation_id        = "${aws_eip.branch50-fw-mgt.id}"
+#}
 
 #Deploys the firewalls
 

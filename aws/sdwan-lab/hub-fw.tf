@@ -81,10 +81,10 @@ resource "aws_network_interface" "hub-fw-mpls" {
   private_ips       = ["100.64.5.254"]
 }
 
-resource "aws_eip_association" "hub-fw-mgt-Association" {
-  network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
-  allocation_id        = "${aws_eip.hub-fw-mgt.id}"
-}
+#resource "aws_eip_association" "hub-fw-mgt-Association" {
+#  network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
+#  allocation_id        = "${aws_eip.hub-fw-mgt.id}"
+#}
 
 #Deploys the firewalls
 
