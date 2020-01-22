@@ -81,10 +81,10 @@ resource "aws_network_interface" "branch50-fw-mpls" {
   private_ips       = ["100.64.5.50"]
 }
 
-#resource "aws_eip_association" "branch50-fw-mgt-Association" {
-#  network_interface_id = "${aws_network_interface.branch50-fw-mgt.id}"
-#  allocation_id        = "${aws_eip.branch50-fw-mgt.id}"
-#}
+resource "aws_eip_association" "branch50-fw-mgt-Association" {
+  network_interface_id = "${aws_network_interface.branch50-fw-mgt.id}"
+  allocation_id        = "${aws_eip.branch50-fw-mgt.id}"
+}
 
 #Deploys the firewalls
 
@@ -99,6 +99,8 @@ resource "aws_instance" "branch50-fw" {
   ebs_optimized        = true
   ami                  = "${var.SD-WAN-BRANCH50-FW}"
   instance_type        = "m5.4xlarge"
+  depends_on           = ["aws_internet_gateway.SDWAN-IGW"]
+
 
   ebs_block_device {
     device_name           = "/dev/xvda"
@@ -134,5 +136,5 @@ resource "aws_instance" "branch50-fw" {
     device_index         = 4
     network_interface_id = "${aws_network_interface.branch50-fw-mpls.id}"
   }
-#  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.branch50-fw-bootstrap-bucket.bucket}")))}"
+  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.branch50-fw-bootstrap-bucket.bucket}")))}"
 }

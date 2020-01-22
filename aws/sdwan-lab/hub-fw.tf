@@ -81,10 +81,10 @@ resource "aws_network_interface" "hub-fw-mpls" {
   private_ips       = ["100.64.5.254"]
 }
 
-#resource "aws_eip_association" "hub-fw-mgt-Association" {
-#  network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
-#  allocation_id        = "${aws_eip.hub-fw-mgt.id}"
-#}
+resource "aws_eip_association" "hub-fw-mgt-Association" {
+  network_interface_id = "${aws_network_interface.hub-fw-mgt.id}"
+  allocation_id        = "${aws_eip.hub-fw-mgt.id}"
+}
 
 #Deploys the firewalls
 
@@ -99,6 +99,7 @@ resource "aws_instance" "hub-fw" {
   ebs_optimized        = true
   ami                  = "${var.SD-WAN-HUB-FW}"
   instance_type        = "m5.4xlarge"
+  depends_on           = ["aws_internet_gateway.SDWAN-IGW"]
 
   ebs_block_device {
     device_name           = "/dev/xvda"
@@ -134,5 +135,5 @@ resource "aws_instance" "hub-fw" {
     device_index         = 4
     network_interface_id = "${aws_network_interface.hub-fw-mpls.id}"
   }
-#  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.hub-fw-bootstrap-bucket.bucket}")))}"
+  user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.hub-fw-bootstrap-bucket.bucket}")))}"
 }
