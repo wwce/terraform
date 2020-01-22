@@ -2,15 +2,15 @@ aws_region = "eu-west-1"
 
 VPC-Name = "SDWAN01"
 
-SD-WAN-HUB-FW = "ami-017d1ea4c1b1078ae"
+SD-WAN-HUB-FW = "ami-06eb7061108f6fcb7"
 
 SD-WAN-HUB-SVR = "ami-04a91de248eab22ea"
 
 SD-WAN-ROUTER-JITTER = "ami-0228a0bb61ce54230"
 
-SD-WAN-BRANCH25-FW = "ami-0e4897c0dc8a72905"
+SD-WAN-BRANCH25-FW = "ami-06eb7061108f6fcb7"
 
-SD-WAN-BRANCH50-FW = "ami-040d690f64cfe477d"
+SD-WAN-BRANCH50-FW = "ami-06eb7061108f6fcb7"
 
 SD-WAN-BRANCH25-IWS = "ami-07e4d468a47905df3"
 
