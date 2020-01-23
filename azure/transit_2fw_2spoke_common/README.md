@@ -24,7 +24,7 @@ In the Azure Portal, open Azure Cloud Shell and run the following **BASH ONLY!**
 $ az vm image terms accept --urn paloaltonetworks:vmseries1:<byol><bundle1><bundle2>:9.0.1
 
 # Download repo & change directories to the Terraform build
-$ git clone https://github.com/wwce/terraform; cd terraform/azure/transit_vnet_2fw_2spoke_common
+$ git clone https://github.com/wwce/terraform; cd terraform/azure/transit_2fw_2spoke_common
 ```
 
 ### 2. Edit terraform.tfvars
