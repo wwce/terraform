@@ -24,14 +24,14 @@ trust_cidr        = ["192.168.2.0/24"]
 
 spoke1_vpc        = "spoke1-vpc"
 spoke1_subnets    = ["spoke1-subnet1"]
-spoke1_cidrs      = ["10.10.1.0/24"]
+spoke1_cidrs      = ["10.1.0.0/24"]
 spoke1_vms        = ["spoke1-vm1", "spoke1-vm2"]
 spoke1_ilb        = "spoke1-intlb"
-spoke1_ilb_ip     = "10.10.1.100"
+spoke1_ilb_ip     = "10.1.0.100"
 
 spoke2_vpc        = "spoke2-vpc"
 spoke2_subnets    = ["spoke2-subnet1"]
-spoke2_cidrs      = ["10.10.2.0/24"]
+spoke2_cidrs      = ["10.2.0.0/24"]
 spoke2_vms        = ["spoke2-vm1"]
 spoke_user        = "demo"
 
