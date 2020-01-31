@@ -100,7 +100,7 @@ resource "google_compute_route" "default" {
 
 resource "google_compute_route" "eastwest" {
   name         = "${var.intlb_name}-eastwest"
-  dest_range   = "10.10.0.0/16"
+  dest_range   = "10.0.0.0/8"
   network      = module.vpc_trust.vpc_self_link
   next_hop_ilb = module.lb_outbound.forwarding_rule[1]
   priority     = 99
