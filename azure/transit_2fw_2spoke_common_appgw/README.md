@@ -2,8 +2,9 @@
 
 This is an extension of the Terraform template located at [**transit_2fw_2spoke_common**](https://github.com/wwce/terraform/tree/master/azure/transit_2fw_2spoke_common).
 
-Terraform creates 2 VM-Series firewalls deployed in a transit VNET with two connected spoke VNETs (via VNET peering).  The VM-Series firewalls secure all ingress/egress to and from the spoke VNETs.  All traffic originating from the spokes is routed to an internal load balancer in the transit VNET's trust subnet.  All inbound traffic from the internet is sent through a public load balancer or an application gateway (both are deployed).
+Terraform creates 2 VM-Series firewalls deployed in a transit VNET with two connected spoke VNETs (via VNET peering).  The VM-Series firewalls secure all ingress/egress to and from the spoke VNETs.  All traffic originating from the spokes is routed to an internal load balancer in the transit VNET's trust subnet.  All inbound traffic from the internet is sent through a public load balancer or an application gateway (both are deployed). The Application Gateway is configured to load balance HTTP traffic on port 80.
 
+N.B. - The template can take 15+ minutes to complete due to the Application Gateway deployment time. When complete, the FQDN of the Application Gateway is included in the output.
 
 Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/master/azure/transit_2fw_2spoke_common/GUIDE.pdf) for more information.
 
