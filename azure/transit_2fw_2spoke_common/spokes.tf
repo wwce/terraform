@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "spoke1_rg" {
 
 module "spoke1_vnet" {
   source                      = "./modules/spoke_vnet/"
-  name                   = "${var.spoke1_prefix}-vnet"
+  name                        = "${var.spoke1_prefix}-vnet"
   address_space               = var.spoke1_vnet_cidr
   subnet_prefixes             = var.spoke1_subnet_cidrs
   remote_vnet_rg              = azurerm_resource_group.transit.name
