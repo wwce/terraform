@@ -25,7 +25,7 @@ Prior to deployment, update terraform.tfvars with the following information:
 
 By default, the deployment is into us-ashburn-1. This may be altered by changing the relevant variables in terraform.tfvars.
 
-The folder fw-config contains sample configuration files for the FW. These configuration files have HA pre-configured, allow SSH access to the server, and permit all outbound access to the internet. The username is 'admin' and the password is 'Pal0Alt0@123', which should be changed immediately.
+The folder fw-configs contains sample configuration files for the FW. These configuration files have HA pre-configured, allow SSH access to the server, and permit all outbound access to the internet. The username is 'admin' and the password is 'Pal0Alt0@123', which should be changed immediately.
 
 ## Support Policy
 These files are released under an as-is, best effort, support policy. These scripts should be seen as community supported and Palo Alto Networks will contribute our expertise as and when possible. We do not provide technical support or help in using or troubleshooting the components of the project through our normal support options such as Palo Alto Networks support teams, or ASC (Authorized Support Centers) partners and backline support options. The underlying product used (the VM-Series firewall) by the scripts or templates are still supported, but the support is only for the product functionality and not for help in deploying or using the template or script itself.
