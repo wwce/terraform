@@ -10,6 +10,7 @@ Terraform creates an instance of Panorama in a new Resource Group.
 You will need to determine the available versions of Panorama using the Azure CLI. The following command will show the Panorama versions currently available 
 
 bash-4.3# az vm image list -p paloaltonetworks -f panorama --all
+```
 [
   {
     "offer": "panorama",
@@ -33,7 +34,7 @@ bash-4.3# az vm image list -p paloaltonetworks -f panorama --all
     "version": "9.1.1"
   }
 ]
-
+```
 ## How to Deploy
 ### 1. Setup & Download Build
 In the Azure Portal, open Azure Cloud Shell and run the following command (**BASH ONLY!**):
