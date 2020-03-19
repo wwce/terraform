@@ -18,7 +18,7 @@ variable "subnetworks" {
 }
 
 variable "ip_address" {
-  default = ""
+  default = null
 }
 
 variable "ip_protocol" {
