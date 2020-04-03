@@ -8,7 +8,8 @@
             <superuser>yes</superuser>
           </role-based>
         </permissions>
-        <phash>$1$wwxsrwnj$iF9ygH7ULXOeWwCOVNneF/</phash>
+        <phash>$1$afhulhyx$P9pkv4/MiYY070qlWmN.v0</phash>
+        <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFERmRyZmRqUUFSL2NnelVSRTYwLzFKbHFoWXEra3FIeGNxMlpOTTR5VkRobVZ3K2dnUXBxTWQwdG8yRmRZeXV4bUhHdVF4bGFMQkp4UDBtcW5LU3A2eUhqZ2orMTRHK29oYVpKbW5Bd3A2YXVkbXVHVkVEMnliVmZvcGc2dlh3WVdIaFdsSlk3N25ESStxQ1U1blRlMjlZNlpvU29PYmJZWkFqZjY5TXRBUzF2blEwZHduUzk2MEo4ZGdoWjMxK2Z5bTFWdDB5WFlmZ0JPYU4yK0JiK0dRa1dreEQ3UHErUEVYd3EvdysyajZ3d3ZmbEVGQVVkNXNMejh2TzBVMDBEYVZiVFVvMkFoR1VRZndlNVJsTDNTQzdzaTRQdDdYMWVsK2swTW54ZzMyUkt6UFM0ZHd6emYxRklJR2VhYVNnbVFNMGRuQ0hxYjNnMzdzWWpybWFVSGo=</public-key>
       </entry>
     </users>
   </mgt-config>
@@ -491,6 +492,28 @@ n01P4VF6sz5Qsdu49743ja4rd68E/Vd+SQoSroZArOwjLE+dNItiPwgL217HQQqx
                   <service>any</service>
                   <disabled>no</disabled>
                 </entry>
+                <entry name="inbound-nat" uuid="6ab15c5f-ccb9-4990-9fdb-018ec575b7f9">
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <interface-address>
+                        <interface>ethernet1/2</interface>
+                      </interface-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                  <to>
+                    <member>trust</member>
+                  </to>
+                  <from>
+                    <member>tunnel-zone</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <service>any</service>
+                </entry>
               </rules>
             </nat>
             <security>
@@ -526,6 +549,36 @@ n01P4VF6sz5Qsdu49743ja4rd68E/Vd+SQoSroZArOwjLE+dNItiPwgL217HQQqx
                   <action>allow</action>
                   <log-start>yes</log-start>
                   <disabled>no</disabled>
+                </entry>
+                <entry name="allow-in" uuid="e1f8c20f-2a03-463f-90cf-aa64d618328f">
+                  <to>
+                    <member>trust</member>
+                  </to>
+                  <from>
+                    <member>tunnel-zone</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
                 </entry>
               </rules>
             </security>
