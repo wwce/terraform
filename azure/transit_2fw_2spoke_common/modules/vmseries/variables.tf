@@ -16,6 +16,11 @@ variable subnet_trust {
 variable avset_name {
 }
 
+variable avset_fault_domain_count {
+  default = 2
+}
+
+
 variable panos {
 }
 
