@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 120;
 until sudo apt-get update; do echo "Retrying"; sleep 2; done
 until sudo apt-get install -y php; do echo "Retrying"; sleep 2; done
 until sudo apt-get install -y apache2; do echo "Retrying"; sleep 2; done
