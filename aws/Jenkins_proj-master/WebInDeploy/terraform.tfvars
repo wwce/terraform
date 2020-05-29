@@ -28,8 +28,6 @@ aws_region = "Region Here"
 
 ServerKeyName = "Keypair Here"
 
-bootstrap_s3bucket = "Unique S3 Bucketname"
-
 aws_access_key = "AWS Key"
 
 aws_secret_key = "AWS Secret Key"

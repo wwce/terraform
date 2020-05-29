@@ -1,0 +1,16 @@
+variable "Billing_Account" {}
+variable "Victim_Project_Name" {}
+variable "Attacker_Project_Name" {}
+variable "GCP_Region" {}
+variable "GCP_Zone" {}
+variable "Management_Subnet_CIDR" {}
+variable "Untrust_Subnet_CIDR" {}
+variable "Trust_Subnet_CIDR" {}
+variable "Attacker_Subnet_CIDR" {}
+variable "FW_Mgmt_IP" {}
+variable "FW_Untrust_IP" {}
+variable "FW_Trust_IP" {}
+variable "WebLB_IP" {}
+variable "Webserver_IP1" {}
+variable "Webserver_IP2" {}
+variable "Attacker_IP" {}

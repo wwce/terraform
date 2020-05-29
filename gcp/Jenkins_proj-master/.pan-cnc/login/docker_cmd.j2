@@ -1,0 +1,25 @@
+To authenticate to GCP, please run the following command:
+
+Make sure you have a .config directory in you home directory
+On either OSX or Windows if the .config directory does not exist in your home directory:
+
+command from terminal or powershell in user home directory:
+mkdir .config
+
+
+Mac OSX- From a terminal window:
+docker run -ti --rm -v $HOME/.config:/root/.config google/cloud-sdk gcloud auth application-default login
+
+Windows- from a powershell:
+docker run -ti -p 8888:80 --rm -v /c/Users/%USERNAME%/.config:/root/.config google/cloud-sdk gcloud auth application-default login
+
+This command will display a link that you should copy into your browser. This will then display a verification
+code that you use to authenticate this machine.
+
+
+For more information, see the Google Cloud SDK guide here:
+
+https://cloud.google.com/sdk/gcloud/
+
+And for more information on authenticating, see here:
+https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login

@@ -1,0 +1,33 @@
+virtualMachineRG = "<Name of resource group to create>"
+
+Location = "<Target Azure region>"
+
+virtualNetworkName = "<Virtual Network Name>"
+
+addressPrefix = "<VNet CIDR>"
+
+subnetName = "<Subnet name in the VNet>"
+
+subnet = "<Subnet CIDR>"
+
+publicIpAddressName = "<Panorama public IP address name>"
+
+networkInterfaceName = "<Panorama network interface name>"
+
+networkSecurityGroupName = "<Network Security Group (NSG) name>"
+
+diagnosticsStorageAccountName = "<Diagnostics Storage Account name>"
+
+diagnosticsStorageAccountTier = "<Diagnostics Storage Account tier>"
+
+diagnosticsStorageAccountReplication = "<Diagnostics Storage Account replication>"
+
+virtualMachineName = "<Panorama VM name>"
+
+virtualMachineSize = "<Panorama VM size>"
+
+panoramaVersion = "<Panorama Version>"
+
+adminUsername = "<Admin Username>"
+
+adminPassword = "<Admin Password>"

@@ -1,0 +1,10 @@
+variable Billing_Account {}
+variable Base_Project_Name {}
+variable Public_Key_Path {}
+variable GCP_Region {}
+variable Management_Subnet_CIDR {}
+variable Untrust_Subnet_CIDR {}
+variable Trust_Subnet_CIDR {}
+variable FW_Machine_Type {}
+variable FW_PanOS {}
+variable FW_Image {}

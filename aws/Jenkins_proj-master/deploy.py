@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
 """
-Paloaltonetworks deploy.py
+# Copyright (c) 2018, Palo Alto Networks
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-This software is provided without support, warranty, or guarantee.
-Use at your own risk.
+# Author: Justin Harris jharris@paloaltonetworks.com
 
 Usage
 
 python deploy.py -u <fwusername> -p'<fwpassword> -k <aws_key> -s <aws_secret> -r <aws_region>
-
-Contents of json dict
-
-{"WebInDeploy": "Success", "WebInFWConf": "Success", "waf_conf": "Success"}
-`"""
-
+"""
 import argparse
 import json
 import logging
@@ -25,16 +31,17 @@ import xml.etree.ElementTree as ET
 
 import requests
 import urllib3
+import xmltodict
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from pandevice import firewall
-from pandevice import updater
+from collections import OrderedDict
 from python_terraform import Terraform
 
 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)-8s %(message)s')
@@ -47,8 +54,16 @@ status_output = dict()
 
 
 def send_request(call):
+    """
+    Handles sending requests to API
+    :param call: url
+    :return: Retruns result of call. Will return response for codes between 200 and 400.
+             If 200 response code is required check value in response
+    """
+    headers = {'Accept-Encoding': 'None', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
     try:
-        r = requests.get(call, verify=False, timeout=5)
+        r = requests.get(call, headers=headers, verify=False, timeout=5)
         r.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         '''
@@ -73,148 +88,225 @@ class DeployRequestException(Exception):
     pass
 
 
+
+def walkdict(dict, match):
+    """
+    Finds a key in a dict or nested dict and returns the value associated with it
+    :param d: dict or nested dict
+    :param key: key value
+    :return: value associated with key
+    """
+    for key, v in dict.items():
+        if key == match:
+            jobid = v
+            return jobid
+        elif isinstance(v, OrderedDict):
+            found = walkdict(v, match)
+            if found is not None:
+                return found
+
+
+
+def check_pending_jobs(fwMgtIP, api_key):
+    type = "op"
+    cmd = "<show><jobs><all></all></jobs></show>"
+    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+    key = 'result'
+    jobs = ''
+    try:
+        r = send_request(call)
+        logger.info('Got response {} to request for content upgrade '.format(r.text))
+        dict = xmltodict.parse(r.text)
+        if isinstance(dict, OrderedDict):
+            jobs = walkdict(dict, key)
+        else:
+            logger.info('Didnt get a dict')
+        if not jobs:
+            # No jobs pending
+            return False
+        else:
+            # Jobs pending
+            return True
+
+    except:
+        logger.info('Didnt get response to check pending jobs')
+        return False
+
+
 def update_fw(fwMgtIP, api_key):
+    """
+    Applies latest AppID, Threat and AV updates to firewall after launch
+    :param fwMgtIP: Firewall management IP
+    :param api_key: API key
+
+    """
     # # Download latest applications and threats
+
     type = "op"
     cmd = "<request><content><upgrade><download><latest></latest></download></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("failed to get jobid this time.  Try again")
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        print("Download latest Applications and Threats update - " + str(jobid))
+    getjobid = 0
+    jobid = ''
+    key = 'job'
+
+    # FIXME - Remove Duplicate code for parsing jobid
+
+    while getjobid == 0:
+        try:
+            r = send_request(call)
+            logger.info('Got response {} to request for content upgrade '.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    jobid = walkdict(dict, key)
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
+
+    # FIXME - Remove Duplicate code for showing job status
+
     completed = 0
     while (completed == 0):
-        time.sleep(10)
+        time.sleep(45)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
         try:
             r = send_request(call)
+            logger.info('Got Response {} to show jobs '.format(r.text))
         except:
             DeployRequestException
             logger.debug("failed to get jobid this time.  Try again")
         else:
             tree = ET.fromstring(r.text)
-
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug("APP+TP download Status - " + str(tree[0][0][5].text))
-                completed = 1
+            if tree.attrib['status'] == 'success':
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP download Complete ")
+                        completed = 1
+                    print("Download latest Applications and Threats update")
+                    status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
+                except:
+                    logger.info('Checking job is complete')
+                    completed = 1
             else:
-                print("Download latest Applications and Threats update")
-                status = "APP+TP download Status - " + str(tree[0][0][5].text) + " " + str(
-                    tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
+                logger.info('Unable to determine job status')
+                completed = 1
 
-    # Install latest applications and threats without committing
-    time.sleep(1)
+    # Install latest content update
     type = "op"
     cmd = "<request><content><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></content></request>"
     call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested content install but got response{}".format(r))
-    else:
-        print("request for content upgrade response was {}".format(r.text))
-        tree = ET.fromstring(r.text)
-        if tree.attrib['status'] == 'success':
-            '''
-            Check that we were able to schedule the install
-            Valid response would contain
-            <response status="success">
-            Invalid response would contain
-            <response status="error">
-            '''
-            jobid = tree[0][1].text
-            print("Install latest Applications and Threats update - " + str(jobid))
+    getjobid = 0
+    jobid = ''
+    key = 'job'
 
-            completed = 0
-            while (completed == 0):
-                time.sleep(10)
-                call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
-                    fwMgtIP, jobid, api_key)
-                r = send_request(call)
-                tree = ET.fromstring(r.text)
-
-                if (tree[0][0][5].text == 'FIN'):
-                    logger.debug("APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                        tree[0][0][12].text) + "% complete")
-                    completed = 1
-                else:
-                    print("tree value {}".format(tree[0][0][5].text))
-                    status = "APP+TP install Status - " + str(tree[0][0][5].text) + " " + str(
-                        tree[0][0][12].text) + "% complete"
-                    print('{0}\r'.format(status))
+    while getjobid == 0:
+        try:
+            r = send_request(call)
+            logger.info('Got response {} to request for content upgrade '.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
         else:
-            logger.debug("Unable to schedule install")
-
-    # download latest anti-virus update
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    try:
-        r = send_request(call)
-    except:
-        DeployRequestException
-        logger.debug("Requested AV download but got response{}".format(DeployRequestException))
-    else:
-        tree = ET.fromstring(r.text)
-        jobid = tree[0][1].text
-        logger.debug("Got Jobid {} for download latest Anti-Virus update".format(str(jobid)))
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    jobid = walkdict(dict, key)
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
 
     completed = 0
     while (completed == 0):
-        time.sleep(10)
+        time.sleep(45)
         call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (fwMgtIP, jobid, api_key)
-        r = send_request(call)
-
-        tree = ET.fromstring(r.text)
-        if (tree[0][0][5].text == 'FIN'):
-            logger.debug(
-                "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-            completed = 1
-        else:
-            status = "AV download Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-            print('{0}\r'.format(status))
-
-    # install latest anti-virus update without committing
-    type = "op"
-    cmd = "<request><anti-virus><upgrade><install><version>latest</version><commit>no</commit></install></upgrade></anti-virus></request>"
-    call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
-    r = send_request(call)
-    tree = ET.fromstring(r.text)
-    if tree.attrib['status'] == 'success':
-        '''
-        Check that we were able to schedule the install
-        Valid response would contain
-        <response status="success">
-        Invalid response would contain
-        <response status="error">
-        '''
-        jobid = tree[0][1].text
-        print("Install latest Anti-Virus update - " + str(jobid))
-
-        completed = 0
-        while (completed == 0):
-            time.sleep(10)
-            call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
-                fwMgtIP, jobid, api_key)
+        try:
             r = send_request(call)
+            logger.info('Got Response {} to show jobs '.format(r.text))
+        except:
+            DeployRequestException
+            logger.debug("failed to get jobid this time.  Try again")
+        else:
             tree = ET.fromstring(r.text)
-
-            if (tree[0][0][5].text == 'FIN'):
-                logger.debug(
-                    "AV install Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete")
-                completed = 1
+            if tree.attrib['status'] == 'success':
+                try:
+                    if (tree[0][0][5].text == 'FIN'):
+                        logger.debug("APP+TP Install Complete ")
+                        completed = 1
+                    print("Install latest Applications and Threats update")
+                    status = "APP+TP Install Status - " + str(tree[0][0][5].text) + " " + str(
+                        tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
+                except:
+                    logger.info('Checking job is complete')
+                    completed = 1
             else:
-                status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
-                print('{0}\r'.format(status))
-    else:
-        logger.debug("Unable to schedule install")
+                logger.info('Unable to determine job status')
+                completed = 1
+
+
+    # Download latest anti-virus update without committing
+    getjobid = 0
+    jobid = ''
+    type = "op"
+    cmd = "<request><anti-virus><upgrade><download><latest></latest></download></upgrade></anti-virus></request>"
+    key = 'job'
+    while getjobid == 0:
+        try:
+            call = "https://%s/api/?type=%s&cmd=%s&key=%s" % (fwMgtIP, type, cmd, api_key)
+            r = send_request(call)
+            logger.info('Got response to request AV install {}'.format(r.text))
+        except:
+            DeployRequestException
+            logger.info("Didn't get http 200 response.  Try again")
+        else:
+            try:
+                dict = xmltodict.parse(r.text)
+                if isinstance(dict, OrderedDict):
+                    jobid = walkdict(dict, key)
+            except Exception as err:
+                logger.info("Got exception {} trying to parse jobid from Dict".format(err))
+            if not jobid:
+                logger.info('Got http 200 response but didnt get jobid')
+                time.sleep(30)
+            else:
+                getjobid = 1
+
+    completed = 0
+    while (completed == 0):
+        time.sleep(45)
+        call = "https://%s/api/?type=op&cmd=<show><jobs><id>%s</id></jobs></show>&key=%s" % (
+            fwMgtIP, jobid, api_key)
+        r = send_request(call)
+        tree = ET.fromstring(r.text)
+        logger.debug('Got response for show job {}'.format(r.text))
+        if tree.attrib['status'] == 'success':
+            try:
+                if (tree[0][0][5].text == 'FIN'):
+                    logger.info("AV install Status Complete ")
+                    completed = 1
+                else:
+                    status = "Status - " + str(tree[0][0][5].text) + " " + str(tree[0][0][12].text) + "% complete"
+                    print('{0}\r'.format(status))
+            except:
+                logger.info('Could not parse output from show jobs, with jobid {}'.format(jobid))
+                completed = 1
+        else:
+            logger.info('Unable to determine job status')
+            completed = 1
 
 
 def getApiKey(hostname, username, password):
@@ -232,8 +324,8 @@ def getApiKey(hostname, username, password):
 
 
         except DeployRequestException as updateerr:
-            logger.info("No response from FW. Wait 20 secs before retry")
-            time.sleep(10)
+            logger.info("No response from FW. Wait 30 secs before retry")
+            time.sleep(30)
             continue
 
         else:
@@ -242,50 +334,6 @@ def getApiKey(hostname, username, password):
             logger.debug("Response to get_api is {}".format(response))
             return api_key
 
-
-# def getFirewallStatus(fwMgtIP, api_key):
-#     """
-#     Gets the firewall status by sending the API request show chassis status.
-#     :param fwMgtIP:  IP Address of firewall interface to be probed
-#     :param api_key:  Panos API key
-#     """
-#     global gcontext
-#
-#     cmd = urllib.request.Request(
-#         "https://" + fwMgtIP + "/api/?type=op&cmd=<show><chassis-ready></chassis-ready></show>&key=" + api_key)
-#     # Send command to fw and see if it times out or we get a response
-#     logger.info("Sending command 'show chassis status' to firewall")
-#     try:
-#         response = urllib.request.urlopen(cmd, data=None, context=gcontext, timeout=5).read()
-#
-#     except urllib.error.URLError:
-#         logger.debug("No response from FW. So maybe not up!")
-#         return 'no'
-#         # sleep and check again?
-#     else:
-#         logger.debug("Got response to 'show chassis status' {}".format(response))
-#
-#     resp_header = ET.fromstring(response)
-#     logger.debug('Response header is {}'.format(resp_header))
-#
-#     if resp_header.tag != 'response':
-#         logger.debug("Did not get a valid 'response' string...maybe a timeout")
-#         return 'cmd_error'
-#
-#     if resp_header.attrib['status'] == 'error':
-#         logger.debug("Got an error for the command")
-#         return 'cmd_error'
-#
-#     if resp_header.attrib['status'] == 'success':
-#         # The fw responded with a successful command execution. So is it ready?
-#         for element in resp_header:
-#             if element.text.rstrip() == 'yes':
-#                 logger.info("FW Chassis is ready to accept configuration and connections")
-#                 return 'yes'
-#             else:
-#                 logger.info("FW Chassis not ready, still waiting for dataplane")
-#                 time.sleep(10)
-#                 return 'almost'
 
 def getFirewallStatus(fwIP, api_key):
     fwip = fwIP
@@ -398,7 +446,53 @@ def getServerStatus(IP):
     return 'server_down'
 
 
-def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_bucket):
+def apply_tf(working_dir, vars, description):
+    """
+    Handles terraform operations and returns variables in outputs.tf as a dict.
+    :param working_dir: Directory that contains the tf files
+    :param vars: Additional variables passed in to override defaults equivalent to -var
+    :param description: Description of the deployment for logging purposes
+    :return:    return_code - 0 for success or other for failure
+                outputs - Dictionary of the terraform outputs defined in the outputs.tf file
+
+    """
+    # Set run_plan to TRUE is you wish to run terraform plan before apply
+    run_plan = False
+    kwargs = {"auto-approve": True}
+
+    # Class Terraform uses subprocess and setting capture_output to True will capture output
+    capture_output = kwargs.pop('capture_output', False)
+
+    if capture_output is True:
+        stderr = subprocess.PIPE
+        stdout = subprocess.PIPE
+    else:
+        # if capture output is False, then everything will essentially go to stdout and stderrf
+        stderr = sys.stderr
+        stdout = sys.stdout
+
+    start_time = time.asctime()
+    print('Starting Deployment at {}\n'.format(start_time))
+
+    # Create Bootstrap
+
+    tf = Terraform(working_dir=working_dir)
+
+    tf.cmd('init')
+    if run_plan:
+        # print('Calling tf.plan')
+        tf.plan(capture_output=False)
+
+    return_code, stdout, stderr = tf.apply(vars=vars, capture_output=capture_output,
+                                           skip_plan=True, **kwargs)
+    outputs = tf.output()
+
+    logger.debug('Got Return code {} for deployment of  {}'.format(return_code, description))
+
+    return (return_code, outputs)
+
+
+def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair):
     username = username
     password = password
     aws_access_key = aws_access_key
@@ -407,20 +501,14 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     ec2_key_pair = ec2_key_pair
     albDns = ''
     nlbDns = ''
-    fwMgt = ''
-
-    default_vars = {
-        'aws_access_key': aws_access_key,
-        'aws_secret_key': aws_secret_key,
-        'aws_region': aws_region
-    }
+    fwMgtIP = ''
 
     WebInDeploy_vars = {
         'aws_access_key': aws_access_key,
         'aws_secret_key': aws_secret_key,
         'aws_region': aws_region,
         'ServerKeyName': ec2_key_pair,
-        'bootstrap_s3bucket': bootstrap_bucket
+        # 'bootstrap_s3bucket': bootstrap_bucket
     }
 
     waf_conf_vars = {
@@ -437,110 +525,73 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         'aws_secret_key': aws_secret_key,
         'aws_region': aws_region,
         'ServerKeyName': ec2_key_pair,
-        'mgt-ipaddress-fw1': fwMgt,
+        'mgt-ipaddress-fw1': fwMgtIP,
         'nlb-dns': nlbDns,
         'username': username,
         'password': password
     }
 
-    # Set run_plan to TRUE is you wish to run terraform plan before apply
+    # # Set run_plan to TRUE is you wish to run terraform plan before apply
+
     run_plan = False
+
     kwargs = {"auto-approve": True}
 
-    # Class Terraform uses subprocess and setting capture_output to True will capture output
-    capture_output = kwargs.pop('capture_output', False)
+    #
+    return_code, web_in_deploy_output = apply_tf('./WebInDeploy', WebInDeploy_vars, 'WebInDeploy')
 
-    if capture_output is True:
-        stderr = subprocess.PIPE
-        stdout = subprocess.PIPE
-    else:
-        # if capture output is False, then everything will essentially go to stdout and stderrf
-        stderr = sys.stderr
-        stdout = sys.stdout
-        start_time = time.asctime()
-        print(f'Starting Deployment at {start_time}\n')
-
-    # Build Infrastructure
-
-    tf = Terraform(working_dir='./WebInDeploy')
-
-    tf.cmd('init')
-    if run_plan:
-        # print('Calling tf.plan')
-        tf.plan(capture_output=False, var=WebInDeploy_vars)
-
-    return_code1, stdout, stderr = tf.apply(var=WebInDeploy_vars, capture_output=capture_output, skip_plan=True,
-                                            **kwargs)
-
-    web_in_deploy_output = tf.output()
-
-    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code1))
+    logger.debug('Got Return code for deploy WebInDeploy {}'.format(return_code))
 
     # update_status('web_in_deploy_stdout', stdout)
     update_status('web_in_deploy_output', web_in_deploy_output)
 
-    if return_code1 != 0:
+    if return_code == 0:
+        update_status('web_in_deploy_status', 'success')
+        albDns = web_in_deploy_output['ALB-DNS']['value']
+        fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
+        nlbDns = web_in_deploy_output['NLB-DNS']['value']
+        fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
+        logger.info("Got these values from output of WebInDeploy \n\n")
+        logger.info("AppGateway address is {}".format(albDns))
+        logger.info("Internal loadbalancer address is {}".format(nlbDns))
+        logger.info("Firewall Mgt address is {}".format(fwMgtIP))
+
+    else:
         logger.info("WebInDeploy failed")
         update_status('web_in_deploy_status', 'error')
-        update_status('web_in_deploy_stderr', stderr)
         print(json.dumps(status_output))
         exit(1)
-    else:
-        update_status('web_in_deploy_status', 'success')
 
-    albDns = tf.output('ALB-DNS')
-    fwMgt = tf.output('MGT-IP-FW-1')
-    nlbDns = tf.output('NLB-DNS')
-    fwMgtIP = fwMgt
-
-    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
+    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgtIP
     WebInFWConf_vars['nlb-dns'] = nlbDns
 
     WebInDeploy_vars['alb_dns'] = albDns
     WebInDeploy_vars['nlb-dns'] = nlbDns
-
     #
     # Apply WAF Rules
     #
+    return_code, waf_conf_out = apply_tf('./waf_conf', waf_conf_vars, 'Waf_conf')
 
-    tf = Terraform(working_dir='./waf_conf')
-    tf.cmd('init')
-    kwargs = {"auto-approve": True}
-    logger.info("Applying WAF config to App LB")
-
-    if run_plan:
-        tf.plan(capture_output=capture_output, var=vars, **kwargs)
-
-    return_code3, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,
-                                            var=waf_conf_vars, **kwargs)
-
-    waf_conf_out = tf.output()
+    logger.debug('Got Return code for deploy waf_conf {}'.format(return_code))
 
     update_status('waf_conf_output', waf_conf_out)
     # update_status('waf_conf_stdout', stdout)
-    # update_status('waf_conf_stderr', stderr)
-
-    logger.debug('Got Return code to deploy waf_conf {}'.format(return_code3))
-
-    if return_code3 != 0:
+    # update_status('waf_conf_stderr', stderr
+    logger.debug('Got Return code to deploy waf_conf {}'.format(return_code))
+    if return_code == 0:
+        update_status('waf_conf_status', 'success')
+    else:
         logger.info("waf_conf failed")
         update_status('waf_conf_status', 'error')
-        update_status('waf_conf_stderr', stderr)
         print(json.dumps(status_output))
         exit(1)
-    else:
-        update_status('waf_conf_status', 'success')
-
-    logger.info("Got these values from output of first run\n\n")
-    logger.info("ALB address is {}".format(albDns))
-    logger.info("nlb address is {}".format(nlbDns))
-    logger.info("Firewall Mgt address is {}".format(fwMgt))
 
     #
     # Check firewall is up and running
     # #
-
     api_key = getApiKey(fwMgtIP, username, password)
+
+    #FIXME Add timeout after 3 minutes
 
     while True:
         err = getFirewallStatus(fwMgtIP, api_key)
@@ -565,56 +616,30 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     logger.debug('Giving the FW another 10 seconds to fully come up to avoid race conditions')
     time.sleep(10)
     fw = firewall.Firewall(hostname=fwMgtIP, api_username=username, api_password=password)
+
     logger.info("Updating firewall with latest content pack")
 
     update_fw(fwMgtIP, api_key)
-    updateHandle = updater.ContentUpdater(fw)
-
-    # updateHandle.download(fw)
-    # logger.info("Waiting 3 minutes for content update to download")
-    # time.sleep(210)
-    # updateHandle.install()
 
     #
     # Configure Firewall
     #
 
-    tf = Terraform(working_dir='./WebInFWConf')
-    tf.cmd('init')
-    kwargs = {"auto-approve": True}
+    return_code, web_in_fw_conf_out = apply_tf('./WebInFWConf', WebInFWConf_vars, 'WebInFWConf')
 
-    logger.info("Applying addtional config to firewall")
+    if return_code == 0:
+        update_status('web_in_fw_conf', 'success')
+        logger.info("WebInFWConf success")
 
-    WebInFWConf_vars['mgt-ipaddress-fw1'] = fwMgt
-
-    if run_plan:
-        tf.plan(capture_output=capture_output, var=WebInFWConf_vars)
-
-    # update initial vars with generated fwMgt ip
-
-    return_code2, stdout, stderr = tf.apply(capture_output=capture_output, skip_plan=True,
-                                            var=WebInFWConf_vars, **kwargs)
-
-    web_in_fw_conf_out = tf.output()
-
-    update_status('web_in_fw_conf_output', web_in_fw_conf_out)
-    # update_status('web_in_fw_conf_stdout', stdout)
-
-    logger.debug('Got Return code for deploy WebInFwConf {}'.format(return_code2))
-
-    if return_code2 != 0:
-        logger.error("WebFWConfy failed")
-        update_status('web_in_fw_conf_status', 'error')
-        update_status('web_in_fw_conf_stderr', stderr)
+    else:
+        logger.info("WebInFWConf failed")
+        update_status('web_in_deploy_status', 'error')
         print(json.dumps(status_output))
         exit(1)
-    else:
-        update_status('web_in_fw_conf_status', 'success')
 
     logger.info("Commit changes to firewall")
 
     fw.commit()
-    logger.info("waiting for commit")
     time.sleep(60)
     logger.info("waiting for commit")
 
@@ -623,8 +648,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
     #
 
     logger.info('Checking if Jenkins Server is ready')
-
-    # FIXME - add outputs for all 3 dirs
 
     res = getServerStatus(albDns)
 
@@ -636,9 +659,6 @@ def main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key
         logger.info('Jenkins Server is down')
         logger.info('\n\n   ### Deployment Complete ###')
 
-    # dump out status to stdout
-    print(json.dumps(status_output))
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get Terraform Params')
@@ -648,7 +668,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--aws_secret_key', help='AWS Secret', required=True)
     parser.add_argument('-r', '--aws_region', help='AWS Region', required=True)
     parser.add_argument('-c', '--aws_key_pair', help='AWS EC2 Key Pair', required=True)
-    parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
+    # parser.add_argument('-b', '--s3_bootstrap_bucket', help='AWS S3 Bootstrap bucket', required=True)
 
     args = parser.parse_args()
     username = args.username
@@ -657,6 +677,6 @@ if __name__ == '__main__':
     aws_secret_key = args.aws_secret_key
     aws_region = args.aws_region
     ec2_key_pair = args.aws_key_pair
-    bootstrap_s3bucket = args.s3_bootstrap_bucket
+    # bootstrap_s3bucket = args.s3_bootstrap_bucket
 
-    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair, bootstrap_s3bucket)
+    main(username, password, aws_access_key, aws_secret_key, aws_region, ec2_key_pair)

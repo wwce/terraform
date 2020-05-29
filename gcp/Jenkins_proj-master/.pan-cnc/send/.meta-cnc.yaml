@@ -1,0 +1,45 @@
+name: gcp_jenkins_send
+# label used for menu selection
+label: GCP Jenkins Security Framework Step 3 Send Command
+
+description: >
+  This Skillet will allow you to interact and send commands to the exploited Jenkins system.
+# type of skillet (panos or panorama or template or terraform)
+type: python3
+
+# more complex skillets may express a dependency on another skillet that should be loaded before this one.
+# For example, a set of skillets may build off of a single 'golden config' that contains shared configuration
+# As this skillet is very simple, there is no need to build on another one.
+extends:
+
+# Labels allow grouping and type specific options and are generally only used in advanced cases
+labels:
+  collection: GCP Jenkins Security Framework
+
+# variables define the things an operator may customize in this skillet. Things like DNS servers, NTP addresses, etc
+# may be customized for each deployment. Each variable will be rendered as a form field in the panhandler application
+variables:
+  - name: cli
+    description: Command to Send
+    default: cat /etc/passwd
+    type_hint: dropdown
+    dd_list:
+      - key: "whoami & ps -ef--- Show who you are logged in as and running processes"
+        value: "whoami && ps -ef"
+      - key: "cat /etc/passwd--- show the contents of the passwd file"
+        value: "cat /etc/passwd"
+      - key: "netstat -a---- showing active tcp sessions"
+        value: "netstat -a"
+      - key: "netstat -tn 2>/dev/null |grep :443--- Show active tcp session on port 443"
+        value: "netstat -tn 2>/dev/null |grep :443"
+  - name: manual_cli
+    description: Manual Command to Send
+    default: ''
+    type_hint: text
+# Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
+# determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
+# to load and parse. Jinja2 style variables will be variable interpolated using the values of the 'variables' defined
+# in the 'variables' section.
+snippets:
+  - name: payload
+    file: ../../send_command.py

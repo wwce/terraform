@@ -1,0 +1,43 @@
+name: gke_k8s_EW_inspection
+
+# label should be a human readable label that conveys what this skillet will do
+label: GCP 4-node k8s cluster with VM-Series Firewall
+
+description: This skillet deploys a 4-node GCP k8s cluster with a VM-Series Firewall for both N/S and E/W Inspection. This is the base deployment used in the Ignite 19 k8s HOW lab.  There is also a guide that walks through deploying a 2 tier container application and Prisma Public Cloud API scanning.
+
+# type instructs Panhandler how to consume this skillet
+type: terraform
+
+# extends allows you to include other skillets along with this one
+extends:
+
+# labels allow extensible configuration options per skillet type. For example, lables can be used to
+# group multiple skillets of the same type (pan-os skillets labeled as version: 9.0 for example)
+labels:
+  collection: GCP K8s Prisma API
+
+
+# Variables will be presented to the user via the Panhandler GUI. These values will then be passed to
+# the terraform binary as '--var' options, thus overriding any tfvars entries.
+# Variable names MUST match the names of the defined terraform variables
+variables:
+  - name: container-ver
+    description: GCP Container Ver
+    default: 1.11.10-gke.4
+    type_hint: gcloud container get-server-config --zone us-central1
+  - name: my_gcp_project
+    description: GCP Project
+    default: djs-gcp-2018
+    type_hint: project id
+  - name: region
+    description: GCP Region
+    default: us-central1
+    type_hint: text
+  - name: zone
+    description: GCP Zone
+    default: us-central1-a
+    type_hint: text
+  - name: credentials_file_path
+    description: Path to the JSON file used to describe your account credentials
+    default: djs-gcp-2018-creds.json
+    type_hint: text

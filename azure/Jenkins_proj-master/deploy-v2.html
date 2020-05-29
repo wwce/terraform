@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module deploy-v2</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>deploy-v2</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jharris/Documents/PycharmProjects/terraform/azure/Jenkins_proj-master/deploy-v2.py">/Users/jharris/Documents/PycharmProjects/terraform/azure/Jenkins_proj-master/deploy-v2.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;Palo&nbsp;Alto&nbsp;Networks<br>
+#<br>
+#&nbsp;Permission&nbsp;to&nbsp;use,&nbsp;copy,&nbsp;modify,&nbsp;and/or&nbsp;distribute&nbsp;this&nbsp;software&nbsp;for&nbsp;any<br>
+#&nbsp;purpose&nbsp;with&nbsp;or&nbsp;without&nbsp;fee&nbsp;is&nbsp;hereby&nbsp;granted,&nbsp;provided&nbsp;that&nbsp;the&nbsp;above<br>
+#&nbsp;copyright&nbsp;notice&nbsp;and&nbsp;this&nbsp;permission&nbsp;notice&nbsp;appear&nbsp;in&nbsp;all&nbsp;copies.<br>
+#<br>
+#&nbsp;THE&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;"AS&nbsp;IS"&nbsp;AND&nbsp;THE&nbsp;AUTHOR&nbsp;DISCLAIMS&nbsp;ALL&nbsp;WARRANTIES<br>
+#&nbsp;WITH&nbsp;REGARD&nbsp;TO&nbsp;THIS&nbsp;SOFTWARE&nbsp;INCLUDING&nbsp;ALL&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF<br>
+#&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;AUTHOR&nbsp;BE&nbsp;LIABLE&nbsp;FOR<br>
+#&nbsp;ANY&nbsp;SPECIAL,&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;OR&nbsp;CONSEQUENTIAL&nbsp;DAMAGES&nbsp;OR&nbsp;ANY&nbsp;DAMAGES<br>
+#&nbsp;WHATSOEVER&nbsp;RESULTING&nbsp;FROM&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA&nbsp;OR&nbsp;PROFITS,&nbsp;WHETHER&nbsp;IN&nbsp;AN<br>
+#&nbsp;ACTION&nbsp;OF&nbsp;CONTRACT,&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHER&nbsp;TORTIOUS&nbsp;ACTION,&nbsp;ARISING&nbsp;OUT&nbsp;OF<br>
+#&nbsp;OR&nbsp;IN&nbsp;CONNECTION&nbsp;WITH&nbsp;THE&nbsp;USE&nbsp;OR&nbsp;PERFORMANCE&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE.<br>
+&nbsp;<br>
+#&nbsp;Author:&nbsp;Justin&nbsp;Harris&nbsp;jharris@paloaltonetworks.com<br>
+&nbsp;<br>
+Usage<br>
+&nbsp;<br>
+python&nbsp;deploy.py&nbsp;-u&nbsp;&lt;fwusername&gt;&nbsp;-p&lt;fwpassword&gt;&nbsp;-r&lt;resource&nbsp;group&gt;&nbsp;-j&lt;region&gt;</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="xml.etree.ElementTree.html">xml.etree.ElementTree</a><br>
+<a href="argparse.html">argparse</a><br>
+<a href="pandevice.firewall.html">pandevice.firewall</a><br>
+<a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="logging.html">logging</a><br>
+<a href="os.html">os</a><br>
+<a href="requests.html">requests</a><br>
+<a href="subprocess.html">subprocess</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+<a href="time.html">time</a><br>
+<a href="urllib3.html">urllib3</a><br>
+<a href="uuid.html">uuid</a><br>
+</td><td width="25%" valign=top><a href="xmltodict.html">xmltodict</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#Exception">builtins.Exception</a>(<a href="builtins.html#BaseException">builtins.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="deploy-v2.html#DeployRequestException">DeployRequestException</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DeployRequestException">class <strong>DeployRequestException</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Common&nbsp;base&nbsp;class&nbsp;for&nbsp;all&nbsp;non-exit&nbsp;exceptions.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="deploy-v2.html#DeployRequestException">DeployRequestException</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="DeployRequestException-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="DeployRequestException-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>helper&nbsp;for&nbsp;pickle</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="DeployRequestException-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="DeployRequestException-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#DeployRequestException-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-apply_tf"><strong>apply_tf</strong></a>(working_dir, vars, description)</dt><dd><tt>Handles&nbsp;terraform&nbsp;operations&nbsp;and&nbsp;returns&nbsp;variables&nbsp;in&nbsp;outputs.tf&nbsp;as&nbsp;a&nbsp;dict.<br>
+:param&nbsp;working_dir:&nbsp;Directory&nbsp;that&nbsp;contains&nbsp;the&nbsp;tf&nbsp;files<br>
+:param&nbsp;vars:&nbsp;Additional&nbsp;variables&nbsp;passed&nbsp;in&nbsp;to&nbsp;override&nbsp;defaults&nbsp;equivalent&nbsp;to&nbsp;-var<br>
+:param&nbsp;description:&nbsp;Description&nbsp;of&nbsp;the&nbsp;deployment&nbsp;for&nbsp;logging&nbsp;purposes<br>
+:return:&nbsp;&nbsp;&nbsp;&nbsp;return_code&nbsp;-&nbsp;0&nbsp;for&nbsp;success&nbsp;or&nbsp;other&nbsp;for&nbsp;failure<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputs&nbsp;-&nbsp;Dictionary&nbsp;of&nbsp;the&nbsp;terraform&nbsp;outputs&nbsp;defined&nbsp;in&nbsp;the&nbsp;outputs.tf&nbsp;file</tt></dd></dl>
+ <dl><dt><a name="-create_azure_fileshare"><strong>create_azure_fileshare</strong></a>(share_prefix, account_name, account_key)</dt><dd><tt>Generate&nbsp;a&nbsp;unique&nbsp;share&nbsp;name&nbsp;to&nbsp;avoid&nbsp;overlaps&nbsp;in&nbsp;shared&nbsp;infra<br>
+:param&nbsp;share_prefix:<br>
+:param&nbsp;account_name:<br>
+:param&nbsp;account_key:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-getApiKey"><strong>getApiKey</strong></a>(hostname, username, password)</dt><dd><tt>Generates&nbsp;a&nbsp;Paloaltonetworks&nbsp;api&nbsp;key&nbsp;from&nbsp;username&nbsp;and&nbsp;password&nbsp;credentials<br>
+:param&nbsp;hostname:&nbsp;Ip&nbsp;address&nbsp;of&nbsp;firewall<br>
+:param&nbsp;username:<br>
+:param&nbsp;password:<br>
+:return:&nbsp;api_key&nbsp;API&nbsp;key&nbsp;for&nbsp;firewall</tt></dd></dl>
+ <dl><dt><a name="-getFirewallStatus"><strong>getFirewallStatus</strong></a>(fwIP, api_key)</dt></dl>
+ <dl><dt><a name="-getServerStatus"><strong>getServerStatus</strong></a>(IP)</dt><dd><tt>Gets&nbsp;the&nbsp;server&nbsp;status&nbsp;by&nbsp;sending&nbsp;an&nbsp;HTTP&nbsp;request&nbsp;and&nbsp;checking&nbsp;for&nbsp;a&nbsp;200&nbsp;response&nbsp;code</tt></dd></dl>
+ <dl><dt><a name="-main"><strong>main</strong></a>(username, password, rg_name, azure_region)</dt><dd><tt>Main&nbsp;function<br>
+:param&nbsp;username:<br>
+:param&nbsp;password:<br>
+:param&nbsp;rg_name:&nbsp;Resource&nbsp;group&nbsp;name&nbsp;prefix<br>
+:param&nbsp;azure_region:&nbsp;Region<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-send_request"><strong>send_request</strong></a>(call)</dt><dd><tt>Handles&nbsp;sending&nbsp;requests&nbsp;to&nbsp;API<br>
+:param&nbsp;call:&nbsp;url<br>
+:return:&nbsp;Retruns&nbsp;result&nbsp;of&nbsp;call.&nbsp;Will&nbsp;return&nbsp;response&nbsp;for&nbsp;codes&nbsp;between&nbsp;200&nbsp;and&nbsp;400.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;200&nbsp;response&nbsp;code&nbsp;is&nbsp;required&nbsp;check&nbsp;value&nbsp;in&nbsp;response</tt></dd></dl>
+ <dl><dt><a name="-update_fw"><strong>update_fw</strong></a>(fwMgtIP, api_key)</dt><dd><tt>Applies&nbsp;latest&nbsp;AppID,&nbsp;Threat&nbsp;and&nbsp;AV&nbsp;updates&nbsp;to&nbsp;firewall&nbsp;after&nbsp;launch<br>
+:param&nbsp;fwMgtIP:&nbsp;Firewall&nbsp;management&nbsp;IP<br>
+:param&nbsp;api_key:&nbsp;API&nbsp;key</tt></dd></dl>
+ <dl><dt><a name="-update_status"><strong>update_status</strong></a>(key, value)</dt><dd><tt>For&nbsp;tracking&nbsp;purposes.&nbsp;&nbsp;Write&nbsp;responses&nbsp;to&nbsp;file.<br>
+:param&nbsp;key:<br>
+:param&nbsp;value:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-walkdict"><strong>walkdict</strong></a>(d, key)</dt><dd><tt>Finds&nbsp;a&nbsp;key&nbsp;in&nbsp;a&nbsp;dict&nbsp;or&nbsp;nested&nbsp;dict&nbsp;and&nbsp;returns&nbsp;the&nbsp;value&nbsp;associated&nbsp;with&nbsp;it<br>
+:param&nbsp;d:&nbsp;dict&nbsp;or&nbsp;nested&nbsp;dict<br>
+:param&nbsp;key:&nbsp;key&nbsp;value<br>
+:return:&nbsp;value&nbsp;associated&nbsp;with&nbsp;key</tt></dd></dl>
+ <dl><dt><a name="-write_status_file"><strong>write_status_file</strong></a>(message_dict)</dt><dd><tt>Writes&nbsp;the&nbsp;deployment&nbsp;state&nbsp;to&nbsp;a&nbsp;dict&nbsp;and&nbsp;outputs&nbsp;to&nbsp;file&nbsp;for&nbsp;status&nbsp;tracking</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>formatter</strong> = &lt;logging.Formatter object&gt;<br>
+<strong>handler</strong> = &lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;<br>
+<strong>logger</strong> = &lt;RootLogger root (INFO)&gt;<br>
+<strong>status_output</strong> = {}</td></tr></table>
+</body></html>

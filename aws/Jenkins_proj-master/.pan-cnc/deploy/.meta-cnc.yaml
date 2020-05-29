@@ -17,7 +17,7 @@ extends:
 
 # Labels allow grouping and type specific options and are generally only used in advanced cases
 labels:
-  collection: Jenkins Security Framework
+  collection: AWS Jenkins Security Framework
 
 # variables define the things an operator may customize in this skillet. Things like DNS servers, NTP addresses, etc
 # may be customized for each deployment. Each variable will be rendered as a form field in the panhandler application
@@ -40,15 +40,39 @@ variables:
     type_hint: password
   - name: aws_region
     description: AWS Region
-    default: us-east-2
-    type_hint: text
+    type_hint: dropdown
+    dd_list:
+      - key: "us-west-1--- N.California"
+        value: "us-west-1"
+      - key: "us-west-2--- Oregon"
+        value: "us-west-2"
+      - key: "us-east-1--- N.Virginia"
+        value: "us-east-1"
+      - key: "us-east-2--- Ohio"
+        value: "us-east-2"
+      - key: "ca-central-1--- Canada Central"
+        value: "ca-central-1"
+      - key: "eu-west-1--- Ireland"
+        value: "eu-west-1"
+      - key: "eu-west-2--- London"
+        value: "eu-west-2"
+      - key: "eu-central-1--- Frankfurt"
+        value: "eu-central-1"
+      - key: "ap-east-1--- Hong Kong"
+        value: "ap-east-1"
+      - key: "ap-northeast-1--- Tokyo"
+        value: "ap-northeast-1"
+      - key: "ap-southeast-1--- Singapore"
+        value: "ap-southeast-1"
+      - key: "ap-southeast-2--- Sydney"
+        value: "ap-southeast-2"
+      - key: "ap-south-1--- Mumbai"
+        value: "ap-south-1"
+      - key: "sa-east-1--- Sao Paulo"
+        value: "sa-east-1"
   - name: aws_key_pair
     description: AWS Key Pair
     default: us-east-2-kp
-    type_hint: text
-  - name: s3_bootstrap_bucket
-    description: S3 Bootstrap Bucket
-    default: unique_value
     type_hint: text
 
 # Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath

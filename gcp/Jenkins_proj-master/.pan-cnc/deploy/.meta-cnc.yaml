@@ -1,0 +1,88 @@
+name: gcp_jenkins_exp
+# label used for menu selection
+label: GCP Jenkins Security Framework Step 1 Infrastructure Deployment Build
+
+description: >
+  This skillet deploys the Security Framework Azure Jenkins Exploit Protection environment.  The template deploy the Following:
+  GCP Projects, VPC's, Route Tables, Subnets, Availability Zones, Load Balancers and Native Security tools WAF and Network Security Groups.
+  The Template will also deploy Palo Alto Networks Firewall with security posture.
+# type of skillet (panos or panorama or template or terraform)
+type: python3
+
+# more complex skillets may express a dependency on another skillet that should be loaded before this one.
+# For example, a set of skillets may build off of a single 'golden config' that contains shared configuration
+# As this skillet is very simple, there is no need to build on another one.
+extends:
+
+# Labels allow grouping and type specific options and are generally only used in advanced cases
+labels:
+  collection: GCP Jenkins Security Framework
+
+# variables define the things an operator may customize in this skillet. Things like DNS servers, NTP addresses, etc
+# may be customized for each deployment. Each variable will be rendered as a form field in the panhandler application
+variables:
+  - name: username
+    description: FW Username
+    default: admin
+    type_hint: text
+  - name: password
+    description: FW Password
+    default:
+    type_hint: password
+  - name: GCP_Region
+    description: GCP Region
+    default: us-central1
+    type_hint: dropdown
+    dd_list:                                                                                                      
+     - key: "US-Central-1 (Iowa)"                                                                                        
+       value: "us-central1"                                                                                       
+     - key: "US-East-1 (South Carolina)"                                                                                           
+       value: "us-east1"                                                                                          
+     - key: "US-East-4 (Virginia)"                                                                                           
+       value: "us-east4"                                                                                          
+     - key: "US-West-1 (Oregon)"                                                                                           
+       value: "us-west1"                                                                                          
+     - key: "US-West-2 (California)"                                                                                           
+       value: "us-west2"                                                                                          
+     - key: "Europe-North-1 (Finland)"                                                                                      
+       value: "europe-north1"                                                                                     
+     - key: "Europe-West-1 (Belgium)"                                                                                       
+       value: "europe-west1"                                                                                      
+     - key: "Europe-West-2 (UK)"                                                                                       
+       value: "europe-west2"                                                                                      
+     - key: "Europe-West-3 (Germany)"                                                                                       
+       value: "europe-west3"                                                                                      
+     - key: "Europe-West-4 (Netherlands)"                                                                                       
+       value: "europe-west4"                                                                                      
+     - key: "Europe-West-6 (Switzerland)"                                                                                       
+       value: "europe-west6"                                                                                      
+     - key: "North-America-Northeast-1 (Canada)"                                                                           
+       value: "northamerica-northeast1"                                                                           
+     - key: "South-America-East-1 (Brazil)"                                                                                
+       value: "southamerica-east1"                                                                                
+     - key: "Asia-East-1 (Taiwan)"                                                                                         
+       value: "asia-east1"                                                                                        
+     - key: "Asia-East-2 (Hong Kong)"                                                                                         
+       value: "asia-east2"                                                                                        
+     - key: "Asia-Northeast-1 (Tokyo)"                                                                                    
+       value: "asia-northeast1"                                                                                   
+     - key: "Asia-Northeast-2 (Osaka)"                                                                                    
+       value: "asia-northeast2"                                                                                   
+     - key: "Asia-South-1 (India)"                                                                                        
+       value: "asia-south1"                                                                                       
+     - key: "Asia-Southeast-1 (Singapore)"                                                                                    
+       value: "asia-southeast1"                                                                                   
+     - key: "Australia-Southeast-1 (Australia)"                                                                               
+       value: "australia-southeast1"
+  - name: Billing_Account
+    description: GCP Billing Account
+    default:
+    type_hint: text
+
+# Snippets is an ordered list of configuration xml fragments that will be pushed to the PAN-OS NGFW. The xpath
+# determines where in the configuration hierarchy the xml fragment will be set. 'file' indicates the name of the file
+# to load and parse. Jinja2 style variables will be variable interpolated using the values of the 'variables' defined
+# in the 'variables' section.
+snippets:
+  - name: script
+    file: ../../deploy.py

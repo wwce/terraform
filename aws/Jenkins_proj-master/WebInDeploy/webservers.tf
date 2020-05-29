@@ -28,17 +28,10 @@ resource "aws_instance" "web1" {
 
   user_data = "${base64encode(join("", list(
    "#! /bin/bash\n",
-          "sudo su\n",
-          "apt-get update\n",
-          "apt-get update\n",
-          "apt install docker.io python3-pip build-essential libssl-dev libffi-dev -y --force-yes\n",
-          "pip3 install docker-compose\n",
-          "cd /var/tmp\n",
-          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/Dockerfile\n",
-          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/docker-compose.yml\n",
-          "wget https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/jenkins/jenkins.sh\n",
-          "docker-compose build\n",
-          "docker-compose up -d\n"
+          "sudo cd /var/tmp\n",
+          "sudo wget -O initialize_webserver.sh https://raw.githubusercontent.com/wwce/terraform/master/aws/Jenkins_proj-master/WebInDeploy/scripts/initialize_webserver.sh\n",
+          "sudo chmod 755 initialize_webserver.sh &&\n",
+          "sudo bash ./initialize_webserver.sh\n"
    )))
    }"
 }

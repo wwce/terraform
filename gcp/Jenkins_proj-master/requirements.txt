@@ -1,0 +1,12 @@
+google-api-core==1.11.1
+google-auth==1.6.3
+google-cloud-core==1.0.1
+google-cloud-storage==1.16.1
+google-resumable-media==0.3.2
+googleapis-common-protos==1.6.0
+pan-python==0.14.0
+pandevice==0.11.0  
+python-terraform==0.10.0
+requests==2.21.0
+urllib3==1.24.2
+xmltodict==0.12.0
