@@ -11,7 +11,7 @@ attrs==19.1.0
 autobahn==19.3.3
 Automat==0.7.0
 azure-batch==6.0.0
-azure-cli==2.8.0
+azure-cli==2.0.63
 azure-cli-acr==2.2.5
 azure-cli-acs==2.3.22
 azure-cli-advisor==2.0.0
