@@ -1,11 +1,5 @@
 # ********** RESOURCE GROUP **********
 
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  version = "~> 1.x"
-  features {}
-}
-
 # Create a resource group
 resource "random_id" "console_resource_group" {
   byte_length = 2
