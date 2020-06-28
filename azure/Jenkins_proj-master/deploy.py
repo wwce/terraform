@@ -911,7 +911,7 @@ def main(username, password, rg_name, azure_region,twistlock_license_key, cdn_ur
     update_status('web_in_deploy_output', web_in_deploy_output)
     if return_code == 0:
         update_status('web_in_deploy_status', 'success')
-        albDns = web_in_deploy_output['ALB-DNS']['value']
+        albDns = web_in_deploy_output['NATIVE-DNS']['value']
         fwMgt = web_in_deploy_output['MGT-IP-FW-1']['value']
         nlbDns = web_in_deploy_output['NLB-DNS']['value']
         fwMgtIP = web_in_deploy_output['MGT-IP-FW-1']['value']
