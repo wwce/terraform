@@ -1,8 +1,3 @@
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  version = "~> 1.x"
-  features {}
-}
 
 data "azurerm_resource_group" "resourcegroup" {
   name = "${var.RG_Name}"
