@@ -26,6 +26,11 @@ resource "azurerm_route_table" "webservers" {
   location            = "${azurerm_resource_group.resourcegroup.location}"
   resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
   route {
+    name           = "attacker"
+    address_prefix = "azurerm_public_ip.attacker.ip_address"
+    next_hop_type  = "internet"
+  }
+  route {
     name           = "internet"
     address_prefix = "0.0.0.0/0"
     next_hop_type  = "VirtualAppliance"
