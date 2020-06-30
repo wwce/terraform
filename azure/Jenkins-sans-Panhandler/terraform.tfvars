@@ -1,5 +1,11 @@
 RG_Name = "<Base RG Name>"
 
+FW_SKU = "<FW SKU to deploy - byol, bundle1, bundle2>"
+
+PANOS_Version = "<Preferred PANOS version - must exist in Azure>"
+
+Server_Version = "<Version of Ubuntu to deploy>"
+
 Azure_Region = "<Region>"
 
 Admin_Username = "<Admin Username>"
