@@ -14,7 +14,7 @@ resource "azurerm_virtual_machine" "firewall" {
 	vm_size								= "Standard_D3_v2"
 
   plan {
-    name = "bundle2"
+    name = "${var.FW_SKU}"
     publisher = "paloaltonetworks"
     product = "vmseries1"
   }
@@ -22,8 +22,8 @@ resource "azurerm_virtual_machine" "firewall" {
 	storage_image_reference	{
 		publisher 	= "paloaltonetworks"
 		offer		= "vmseries1"
-		sku		= "bundle2"
-		version		= "8.1.0"
+		sku		= "${var.FW_SKU}"
+		version		= "${var.PANOS_Version}"
 	}
 
 	storage_os_disk {

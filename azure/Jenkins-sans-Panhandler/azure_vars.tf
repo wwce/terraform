@@ -1,4 +1,7 @@
 variable "RG_Name" {}
+variable "FW_SKU" {}
+variable "PANOS_Version" {}
+variable "Server_Version" {}
 variable "Azure_Region" {}
 variable "Admin_Username" {}
 variable "Admin_Password" {}

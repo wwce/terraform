@@ -20,7 +20,7 @@ resource "azurerm_virtual_machine" "webserver" {
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
+    sku       = "${var.Server_Version}"
     version   = "latest"
   }
 
