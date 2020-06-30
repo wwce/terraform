@@ -2,7 +2,7 @@
 
 # Create a resource group
 resource "azurerm_resource_group" "attackgroup" {
-	name		= "${var.RG_Name}-${random_pet.prefix.id}"
+	name		= "${var.RG_Name}-${random_pet.red_team.id}"
 	location	= "${var.Azure_Region}"
 }
 
