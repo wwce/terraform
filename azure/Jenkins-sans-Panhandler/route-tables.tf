@@ -27,7 +27,7 @@ resource "azurerm_route_table" "webservers" {
   resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
   route {
     name           = "attacker"
-    address_prefix = "${azurerm_public_ip.attacker.ip_address}"
+    address_prefix = "${azurerm_public_ip.attacker.ip_address}/32"
     next_hop_type  = "internet"
   }
   route {
