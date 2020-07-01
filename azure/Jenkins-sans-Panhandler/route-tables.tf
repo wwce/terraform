@@ -28,13 +28,13 @@ resource "azurerm_route_table" "webservers" {
   route {
     name           = "attacker"
     address_prefix = "${azurerm_public_ip.attacker.ip_address}/32"
-    next_hop_type  = "internet"
+    next_hop_type  = "VirtualAppliance"
+    next_hop_in_ip_address  = "${azurerm_firewall.app1-azure-firewall.ip_configuration[0].private_ip_address}"
   }
   route {
     name           = "internet"
     address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
-    next_hop_in_ip_address  = "${azurerm_firewall.app1-azure-firewall.ip_configuration[0].private_ip_address}"
+    next_hop_type  = "internet"
   }
 }
 
