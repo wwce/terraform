@@ -3,14 +3,10 @@ services:
   - docker:dind
 
 stages:
-  - build
   - test
-  - docker_test
-  - push
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  TEST_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH-test"
   GIT_SUBMODULE_STRATEGY: recursive
 
 cache:
@@ -19,17 +15,6 @@ cache:
     - env/
     - .tox/
 
-before_script:
-  - pwd
-  - ls
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
-docker-build:
-  stage: build
-  script:
-    - docker pull $TEST_IMAGE || true
-    - docker build --pull --cache-from $TEST_IMAGE -t "$TEST_IMAGE" .
-    - docker push $TEST_IMAGE
 
 test:
   image: python:3.8-slim
@@ -46,34 +31,3 @@ test:
   script:
     - tox -e py38, flake8-gcp, flake8-aws, flake8-azure
 
-docker_test:
-  variables:
-    GIT_STRATEGY: none
-
-  image: $TEST_IMAGE
-  stage: docker_test
-  before_script:
-    - source env/bin/activate
-    - pip install tox
-  script:
-    - cd /app
-    - ls -al
-    - tox -e docker_env --workdir=$CI_PROJECT_DIR/.tox
-
-push_dev:
-  stage: push
-  script:
-    - docker pull $TEST_IMAGE
-    - docker tag $TEST_IMAGE "$CI_REGISTRY_IMAGE:dev"
-    - docker push "$CI_REGISTRY_IMAGE:dev"
-  only:
-    - develop
-
-push_master:
-  stage: push
-  script:
-    - docker pull $TEST_IMAGE
-    - docker tag $TEST_IMAGE "$CI_REGISTRY_IMAGE:latest"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
-  only:
-    - master
