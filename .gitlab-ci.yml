@@ -22,6 +22,7 @@ test:
     - python3 -m venv env
     - source env/bin/activate
     - apt update && apt-get install -y --no-install-recommends git
+    - apt get install gcc
     - pip install --upgrade pip
     - pip install -r gcp/Jenkins_proj-master/requirements.txt
     - pip install -r aws/Jenkins_proj-master/requirements.txt
