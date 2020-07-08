@@ -1,4 +1,6 @@
-image: python3-dev:latest
+image: docker:latest
+services:
+  - docker:dind
 
 stages:
   - test
@@ -15,17 +17,18 @@ cache:
 
 
 test:
+  image: python:3.8-slim
   stage: test
   before_script:
     - python -V
-    - python3-devel -m venv env
+    - python3 -m venv env
     - source env/bin/activate
     - apt update && apt-get install -y --no-install-recommends git
-    - apt-get install -y gcc
+    - apt-get install gcc
     - pip install --upgrade pip
     - pip install -r gcp/Jenkins_proj-master/requirements.txt
     - pip install -r aws/Jenkins_proj-master/requirements.txt
-    - pip install -r azure/Jenkins_proj-master/requirements.txt
+    # - pip install -r azure/Jenkins_proj-master/requirements.txt
 
     - pip install tox flake8
 
