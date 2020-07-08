@@ -1,0 +1,34 @@
+image: docker:latest
+
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+    paths:
+        - .cache/pip
+        - env/
+
+before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    
+    docker-build:
+    stage: build
+    script:
+        - docker pull $TEST_IMAGE || true
+        - docker build --pull --cache-from $TEST_IMAGE -t "$TEST_IMAGE" .
+        - docker push $TEST_IMAGE
+
+test:
+    image: python:3.8-slim
+    stage: test
+    before_script:
+        - python -V
+        - python3 -m venv env
+        - source env/bin/activate
+        - apt update && apt-get install -y --no-install-recommends git
+        - pip install --upgrade pip
+        - pip install tox flake8
+    
+    script:
+        - tox -e py38, flake8
+        - python testing/python_test/python_example.py
