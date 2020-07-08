@@ -32,5 +32,6 @@ test:
     - pip install tox flake8
 
   script:
-    - tox -e py38, flake8-gcp, flake8-aws, flake8-azure
+    - flake8-gcp
+    - flake8-aws
 
