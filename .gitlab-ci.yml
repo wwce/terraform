@@ -33,9 +33,6 @@ test:
         - python3 -m venv env
         - source env/bin/activate
         - apt update && apt-get install -y --no-install-recommends git
-        - pip install --upgrade pip
-        - pip install tox flake8
     
     script:
-        - tox -e py38, flake8
         - python testing/python_test/python_example.py
