@@ -1,4 +1,4 @@
-image: python:latest
+image: python3-dev:latest
 
 stages:
   - test
