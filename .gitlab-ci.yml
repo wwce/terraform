@@ -27,7 +27,7 @@ test:
     - pip install --upgrade pip
     - pip install -r gcp/Jenkins_proj-master/requirements.txt
     - pip install -r aws/Jenkins_proj-master/requirements.txt
-    - pip install -r azure/Jenkins_proj-master/requirements.txt
+    # - pip install -r azure/Jenkins_proj-master/requirements.txt
 
     - pip install tox flake8
 
