@@ -15,7 +15,7 @@ cache:
 
 
 test:
-  image: python:3.8-slim
+  image: python:3.8-devel
   stage: test
   before_script:
     - python -V
