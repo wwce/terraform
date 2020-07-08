@@ -20,6 +20,7 @@ cache:
     - .tox/
 
 before_script:
+  - pwd
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
 docker-build:
@@ -33,7 +34,6 @@ test:
   image: python:3.8-slim
   stage: test
   before_script:
-    - pwd
     - python -V
     - python3 -m venv env
     - source env/bin/activate
