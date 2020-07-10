@@ -33,7 +33,7 @@ test:
     - pip install tox flake8
 
   script:
-    # - flake8 gcp/
-    # - flake8 aws/
+    - flake8 gcp/
+    - flake8 aws/
     - flake8 azure/
 
