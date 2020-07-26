@@ -126,4 +126,8 @@ resource "aws_instance" "pa-vm1" {
   }
 
   user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", "${aws_s3_bucket.bootstrap_bucket.bucket}")))}"
+
+  depends_on = [
+    "aws_s3_bucket_object.content",
+  ]
 }
