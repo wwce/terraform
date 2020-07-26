@@ -1382,7 +1382,7 @@
               <ip-netmask>10.0.1.10</ip-netmask>
             </entry>
             <entry name="AWS-Int-NLB">
-              <fqdn>int-nlb-a879477a42d47a70.elb.us-west-2.amazonaws.com</fqdn>
+              <fqdn>int-nlb.blue-team.local</fqdn>
               <description>AWS Int NLB Address</description>
             </entry>
           </address>
