@@ -149,25 +149,4 @@ resource "aws_wafv2_web_acl" "waf_acl" {
 
   }
 
-  rule {
-    name     = "admin_remote_ipset"
-    priority = 6
-
-    action {
-      block {}
-    }
-
-    statement {
-      ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.admin_remote_ipset.arn
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "admin_remote_ipset"
-      sampled_requests_enabled   = true
-    }
-  }
-
 }

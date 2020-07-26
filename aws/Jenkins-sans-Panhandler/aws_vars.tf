@@ -69,7 +69,3 @@ variable "UbuntuRegionMap" {
 variable "ip_blacklist" {
   type = "list"
 }
-
-variable "admin_remote_ipset" {
-  type = "list"
-}
