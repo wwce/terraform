@@ -12,3 +12,4 @@ echo "    ports:" >> docker-compose.yml
 echo "      - \"443:443\"" >> docker-compose.yml
 echo "      - \"5000:5000\"" >> docker-compose.yml
 docker-compose up -d
+usermod -aG docker ubuntu
