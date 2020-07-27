@@ -15,3 +15,4 @@ echo "    ports:" >> docker-compose.yml
 echo "      - \"50000:50000\"" >> docker-compose.yml
 echo "      - \"8080:8080\"" >> docker-compose.yml
 docker-compose up -d
+usermod -aG docker ubuntu
