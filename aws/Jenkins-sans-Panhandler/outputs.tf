@@ -10,10 +10,6 @@ output "Native-ALB" {
   value = "${aws_lb.native-alb.dns_name}"
 }
 
-output "Internal-NLB" {
-  value = "${aws_lb.int-nlb.dns_name}"
-}
-
 output "Attacker-IP" {
   value = "${aws_eip.red_team.public_ip}"
 }
