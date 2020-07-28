@@ -740,7 +740,7 @@
           <timezone>UTC</timezone>
           <update-server>updates.paloaltonetworks.com</update-server>
           <server-verification>yes</server-verification>
-          <login-banner>Gold 1.0 - PANOS 8.0</login-banner>
+          <login-banner>Gold 1.0 - PANOS 9.0</login-banner>
           <dns-setting>
             <servers>
               <primary>10.0.0.2</primary>
@@ -812,6 +812,7 @@
                 </dhcp-client>
               </type>
               <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFERmRyZmRqUUFSL2NnelVSRTYwLzFKbHFoWXEra3FIeGNxMlpOTTR5VkRobVZ3K2dnUXBxTWQwdG8yRmRZeXV4bUhHdVF4bGFMQkp4UDBtcW5LU3A2eUhqZ2orMTRHK29oYVpKbW5Bd3A2YXVkbXVHVkVEMnliVmZvcGc2dlh3WVdIaFdsSlk3N25ESStxQ1U1blRlMjlZNlpvU29PYmJZWkFqZjY5TXRBUzF2blEwZHduUzk2MEo4ZGdoWjMxK2Z5bTFWdDB5WFlmZ0JPYU4yK0JiK0dRa1dreEQ3UHErUEVYd3EvdysyajZ3d3ZmbEVGQVVkNXNMejh2TzBVMDBEYVZiVFVvMkFoR1VRZndlNVJsTDNTQzdzaTRQdDdYMWVsK2swTW54ZzMyUkt6UFM0ZHd6emYxRklJR2VhYVNnbVFNMGRuQ0hxYjNnMzdzWWpybWFVSGogQVdTLUxhYi1QYWly</public-key>
+              <dns-primary>169.254.169.253</dns-primary>
             </initcfg>
           </management>
           <ctd>
@@ -1162,6 +1163,8 @@
                   <application>
                     <member>web-browsing</member>
                     <member>jenkins</member>
+                    <member>ssh</member>
+                    <member>ssl</member>
                   </application>
                   <service>
                     <member>service-http</member>
@@ -1353,7 +1356,7 @@
                     </dynamic-ip-and-port>
                   </source-translation>
                   <dynamic-destination-translation>
-                    <translated-address>AWS-Int-NLB</translated-address>
+                    <translated-address>10.0.2.50</translated-address>
                     <translated-port>8080</translated-port>
                   </dynamic-destination-translation>
                   <disabled>no</disabled>
@@ -1378,10 +1381,6 @@
             </entry>
             <entry name="fw-untrust">
               <ip-netmask>10.0.1.10</ip-netmask>
-            </entry>
-            <entry name="AWS-Int-NLB">
-              <fqdn>int-nlb.blue-team.local</fqdn>
-              <description>AWS Int NLB Address</description>
             </entry>
           </address>
           <external-list>
