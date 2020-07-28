@@ -22,6 +22,8 @@ fw1_trust_ip = "10.0.2.10"
 
 fw1_mgmt_ip = "10.0.0.10"
 
+content_bucket = "security-framework-us-west-2"
+
 blue_team_cidr = "10.0.0.0/16"
 
 aws_region = "us-west-2"
