@@ -42,10 +42,27 @@ resource "aws_s3_bucket_object" "license" {
   source     = "/dev/null"
 }
 
+#resource "aws_s3_bucket_object" "content" {
+#  bucket     = "security-framework-${random_pet.blue_team.id}"
+#  depends_on = ["aws_s3_bucket.bootstrap_bucket"]
+#  acl        = "private"
+#  key        = "content/panupv2-all-contents-8286-6150"
+#  source     = "bootstrap/panupv2-all-contents-8286-6150"
+#}
+
 resource "aws_s3_bucket_object" "content" {
   bucket     = "security-framework-${random_pet.blue_team.id}"
   depends_on = ["aws_s3_bucket.bootstrap_bucket"]
   acl        = "private"
   key        = "content/"
   source     = "/dev/null"
+}
+
+resource "null_resource" "populate_content" {
+  provisioner "local-exec" {
+    command = "aws s3 cp --recursive s3://${var.content_bucket}/ s3://security-framework-${random_pet.blue_team.id}/content"
+  }
+  depends_on = [
+    "aws_s3_bucket_object.content",
+  ]
 }
