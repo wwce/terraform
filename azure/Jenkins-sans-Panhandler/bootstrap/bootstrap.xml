@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<config urldb="paloaltonetworks" version="8.1.0">
+<config urldb="paloaltonetworks" version="9.0.0">
   <mgt-config>
     <users>
       <entry name="admin">
@@ -10,6 +10,14 @@
           </role-based>
         </permissions>
         <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFDR3ZDNHZmYk1JbXVSSTlnNGx5SkJRQ0NNSUFjZk0wemVMM2VFM0REdlRkRmYrYzZLOHVJUlRwUk01MHo0TVEwTXd1TEo0Rk1iclQ5ZVRsaEZaZitYcjVBZzJ2R2xIRE9zcEEwSWtmbzZXaTBwYnQ1d1hYV1YwOCs1Tk9GRkpXNm13YThvWUV3RUtHZWlDTEJnRWMyRTgzaXo3alNiNkRST3hXakxDOWVkZmR0ZmNTSzhlNW1kbmRZUkVMK3ZoaSt1QUZac0RpTEhMWGNpeFlaU0xML0xvcmIzK2hnOVdsejQwR0IwMmVsRk1Oc3hJSFdzVUQxMDFVelJzWWFxYWVVWjRuNDlxOVhtc1ZxazVkbHRhcTdtYitWNTZqaVBvVG1wZGNjNjZycGtqWFNjK2NFWGMzaitNbUFRd1F5RkFjbDI2dzlGb3pvUmo4MmY0REx3SncwaEIgamZyYW5rbGluMg==</public-key>
+      </entry>
+      <entry name="fwadmin">
+        <phash>$1$fvxpusvs$RYWLxPb8IJMlnQsrPYd4q.</phash>
+        <permissions>
+          <role-based>
+            <superuser>yes</superuser>
+          </role-based>
+        </permissions>
       </entry>
     </users>
   </mgt-config>
@@ -452,7 +460,33 @@
     <entry name="localhost.localdomain">
       <network>
         <interface>
-          <ethernet/>
+          <ethernet>
+            <entry name="ethernet1/2">
+              <layer3>
+                <adjust-tcp-mss>
+                  <enable>no</enable>
+                </adjust-tcp-mss>
+                <dhcp-client>
+                  <enable>yes</enable>
+                  <create-default-route>no</create-default-route>
+                </dhcp-client>
+              </layer3>
+              <comment>Web interface</comment>
+            </entry>
+            <entry name="ethernet1/1">
+              <layer3>
+                <interface-management-profile>Allow ping</interface-management-profile>
+                <adjust-tcp-mss>
+                  <enable>no</enable>
+                </adjust-tcp-mss>
+                <dhcp-client>
+                  <enable>yes</enable>
+                  <create-default-route>no</create-default-route>
+                </dhcp-client>
+              </layer3>
+              <comment>External interface</comment>
+            </entry>
+          </ethernet>
         </interface>
         <profiles>
           <monitor-profile>
@@ -536,7 +570,21 @@
               <strip-mptcp-option>global</strip-mptcp-option>
             </entry>
           </zone-protection-profile>
-          <interface-management-profile/>
+          <interface-management-profile>
+            <entry name="Allow ping">
+              <ping>yes</ping>
+              <telnet>no</telnet>
+              <ssh>no</ssh>
+              <http>no</http>
+              <http-ocsp>no</http-ocsp>
+              <https>no</https>
+              <snmp>no</snmp>
+              <response-pages>no</response-pages>
+              <userid-service>no</userid-service>
+              <userid-syslog-listener-ssl>no</userid-syslog-listener-ssl>
+              <userid-syslog-listener-udp>no</userid-syslog-listener-udp>
+            </entry>
+          </interface-management-profile>
         </profiles>
         <ike>
           <crypto-profiles>
@@ -643,57 +691,69 @@
           </crypto-profiles>
         </ike>
         <qos>
-          <profile>
-            <entry name="default">
-              <class>
-                <entry name="class1">
-                  <priority>real-time</priority>
-                </entry>
-                <entry name="class2">
-                  <priority>high</priority>
-                </entry>
-                <entry name="class3">
-                  <priority>high</priority>
-                </entry>
-                <entry name="class4">
-                  <priority>medium</priority>
-                </entry>
-                <entry name="class5">
-                  <priority>medium</priority>
-                </entry>
-                <entry name="class6">
-                  <priority>low</priority>
-                </entry>
-                <entry name="class7">
-                  <priority>low</priority>
-                </entry>
-                <entry name="class8">
-                  <priority>low</priority>
-                </entry>
-              </class>
-            </entry>
-          </profile>
+          <profile/>
         </qos>
         <virtual-router>
           <entry name="default">
-            <admin-dists/>
-            <interface/>
+            <admin-dists>
+              <static>10</static>
+              <static-ipv6>10</static-ipv6>
+              <ospf-int>30</ospf-int>
+              <ospf-ext>110</ospf-ext>
+              <ospfv3-int>30</ospfv3-int>
+              <ospfv3-ext>110</ospfv3-ext>
+              <ibgp>200</ibgp>
+              <ebgp>20</ebgp>
+              <rip>120</rip>
+            </admin-dists>
+            <interface>
+              <member>ethernet1/1</member>
+              <member>ethernet1/2</member>
+            </interface>
+            <routing-table>
+              <ip>
+                <static-route>
+                  <entry name="default">
+                    <destination>0.0.0.0/0</destination>
+                    <interface>ethernet1/1</interface>
+                    <nexthop>
+                      <ip-address>10.0.1.1</ip-address>
+                    </nexthop>
+                    <metric>10</metric>
+                    <route-table>
+                      <unicast/>
+                    </route-table>
+                  </entry>
+                  <entry name="internal">
+                    <destination>10.0.4.0/24</destination>
+                    <interface>ethernet1/2</interface>
+                    <nexthop>
+                      <ip-address>10.0.2.1</ip-address>
+                    </nexthop>
+                    <metric>10</metric>
+                    <route-table>
+                      <unicast/>
+                    </route-table>
+                  </entry>
+                </static-route>
+              </ip>
+            </routing-table>
           </entry>
         </virtual-router>
       </network>
       <deviceconfig>
         <system>
-          <hostname>WebFW1</hostname>
+          <hostname>pa-vm</hostname>
           <timezone>UTC</timezone>
           <update-server>updates.paloaltonetworks.com</update-server>
           <server-verification>yes</server-verification>
           <dns-setting>
             <servers>
-              <primary>10.0.0.2</primary>
-              <secondary>10.0.0.2</secondary>
+              <primary>8.8.8.8</primary>
+              <secondary>8.8.4.4</secondary>
             </servers>
           </dns-setting>
-          <login-banner>Gold 1.0 - PANOS 8.0</login-banner>
+          <login-banner>Gold 1.0 - PANOS 9.0</login-banner>
           <service>
             <disable-telnet>yes</disable-telnet>
             <disable-http>yes</disable-http>
@@ -750,6 +810,8 @@
           <management>
             <hostname-type-in-syslog>FQDN</hostname-type-in-syslog>
             <initcfg>
+              <hostname>pa-vm</hostname>
+              <username>fwadmin</username>
               <type>
                 <dhcp-client>
                   <send-hostname>yes</send-hostname>
@@ -758,7 +820,6 @@
                   <accept-dhcp-domain>no</accept-dhcp-domain>
                 </dhcp-client>
               </type>
-              <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFDR3ZDNHZmYk1JbXVSSTlnNGx5SkJRQ0NNSUFjZk0wemVMM2VFM0REdlRkRmYrYzZLOHVJUlRwUk01MHo0TVEwTXd1TEo0Rk1iclQ5ZVRsaEZaZitYcjVBZzJ2R2xIRE9zcEEwSWtmbzZXaTBwYnQ1d1hYV1YwOCs1Tk9GRkpXNm13YThvWUV3RUtHZWlDTEJnRWMyRTgzaXo3alNiNkRST3hXakxDOWVkZmR0ZmNTSzhlNW1kbmRZUkVMK3ZoaSt1QUZac0RpTEhMWGNpeFlaU0xML0xvcmIzK2hnOVdsejQwR0IwMmVsRk1Oc3hJSFdzVUQxMDFVelJzWWFxYWVVWjRuNDlxOVhtc1ZxazVkbHRhcTdtYitWNTZqaVBvVG1wZGNjNjZycGtqWFNjK2NFWGMzaitNbUFRd1F5RkFjbDI2dzlGb3pvUmo4MmY0REx3SncwaEIgamZyYW5rbGluMg==</public-key>
               <dns-primary>8.8.8.8</dns-primary>
               <dns-secondary>8.8.4.4</dns-secondary>
             </initcfg>
@@ -839,14 +900,64 @@
             </entry>
           </application>
           <application-group/>
-          <zone/>
-          <service/>
+          <zone>
+            <entry name="TRUST">
+              <network>
+                <layer3>
+                  <member>ethernet1/2</member>
+                </layer3>
+              </network>
+              <enable-user-identification>no</enable-user-identification>
+            </entry>
+            <entry name="UNTRUST">
+              <network>
+                <layer3>
+                  <member>ethernet1/1</member>
+                </layer3>
+              </network>
+              <enable-user-identification>no</enable-user-identification>
+            </entry>
+          </zone>
+          <service>
+            <entry name="service-tcp-222">
+              <protocol>
+                <tcp>
+                  <port>222</port>
+                </tcp>
+              </protocol>
+              <description/>
+            </entry>
+            <entry name="service-tcp-221">
+              <protocol>
+                <tcp>
+                  <port>221</port>
+                </tcp>
+              </protocol>
+              <description/>
+            </entry>
+            <entry name="service-tcp-22">
+              <protocol>
+                <tcp>
+                  <port>22</port>
+                </tcp>
+              </protocol>
+              <description/>
+            </entry>
+            <entry name="service-http-81">
+              <protocol>
+                <tcp>
+                  <port>81</port>
+                </tcp>
+              </protocol>
+              <description/>
+            </entry>
+          </service>
           <service-group/>
           <schedule/>
           <rulebase>
             <default-security-rules>
               <rules>
-                <entry name="intrazone-default">
+                <entry name="intrazone-default" uuid="cd6cea00-34c6-481d-b776-dcb5f350a82e">
                   <action>allow</action>
                   <log-start>no</log-start>
                   <log-end>yes</log-end>
@@ -857,7 +968,7 @@
                   </profile-setting>
                   <log-setting>default</log-setting>
                 </entry>
-                <entry name="interzone-default">
+                <entry name="interzone-default" uuid="1e024719-9176-43ed-a99d-731bc698570a">
                   <action>deny</action>
                   <log-start>no</log-start>
                   <log-end>yes</log-end>
@@ -866,16 +977,276 @@
               </rules>
             </default-security-rules>
             <security>
-              <rules/>
+              <rules>
+                <entry name="SSH inbound" uuid="978864b5-6e7d-45b0-a985-0696ab3dfd68">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>TRUST</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>ping</member>
+                    <member>ssh</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                </entry>
+                <entry name="SSH 221-222 inbound" uuid="67867424-4d08-42df-92b8-28a73e9c69c5">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>TRUST</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>ping</member>
+                    <member>ssh</member>
+                  </application>
+                  <service>
+                    <member>service-tcp-221</member>
+                    <member>service-tcp-222</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                </entry>
+                <entry name="Allow all ping" uuid="b8d4a1ff-5ef1-456e-854e-7acd5744a096">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>ping</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                </entry>
+                <entry name="Permit Health Checks" uuid="efa81b93-f7f2-485e-988b-3614c90c117f">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>TRUST</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>elb-healthchecker</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                </entry>
+                <entry name="Web browsing" uuid="745d5f70-5c80-4e96-b384-91c88993c5e2">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>TRUST</member>
+                    <member>UNTRUST</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>jenkins</member>
+                    <member>ssh</member>
+                    <member>ssl</member>
+                    <member>web-browsing</member>
+                    <member>windows-azure-base</member>
+                  </application>
+                  <service>
+                    <member>service-http</member>
+                    <member>service-http-81</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                  <profile-setting>
+                    <group>
+                      <member>Inbound</member>
+                    </group>
+                  </profile-setting>
+                </entry>
+                <entry name="Allow all outbound" uuid="3ba7b859-d17e-4faf-8dce-e0045598c141">
+                  <rule-type>universal</rule-type>
+                  <from>
+                    <member>TRUST</member>
+                  </from>
+                  <to>
+                    <member>UNTRUST</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <negate-source>no</negate-source>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <negate-destination>no</negate-destination>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <action>allow</action>
+                  <log-start>no</log-start>
+                  <log-end>yes</log-end>
+                  <disabled>no</disabled>
+                  <icmp-unreachable>no</icmp-unreachable>
+                  <option>
+                    <disable-server-response-inspection>no</disable-server-response-inspection>
+                  </option>
+                  <profile-setting>
+                    <group>
+                      <member>Outbound</member>
+                    </group>
+                  </profile-setting>
+                </entry>
+              </rules>
             </security>
             <decryption>
               <rules>
-                <entry name="NO-Decrypt URL Categories">
+                <entry name="NO-Decrypt URL Categories" uuid="9a804826-fb7d-4110-b5a5-2a13c56f5d6f">
                   <category>
+                    <member>Custom-No-Decrypt</member>
                     <member>financial-services</member>
                     <member>government</member>
                     <member>health-and-medicine</member>
-                    <member>Custom-No-Decrypt</member>
                   </category>
                   <service>
                     <member>any</member>
@@ -903,7 +1274,7 @@
                   <disabled>yes</disabled>
                   <description>This rule does not do Decryption.  This rule is validating SSL Protocol Communications.</description>
                 </entry>
-                <entry name="NO-Decrypt Rule">
+                <entry name="NO-Decrypt Rule" uuid="d4877b14-71fa-4846-9344-27985719f862">
                   <category>
                     <member>any</member>
                   </category>
@@ -935,7 +1306,66 @@
               </rules>
             </decryption>
             <nat>
-              <rules/>
+              <rules>
+                <entry name="Web1 SSH" uuid="5eec267b-9b15-4ae3-8616-788efbdb2cd8">
+                  <nat-type>ipv4</nat-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>UNTRUST</member>
+                  </to>
+                  <to-interface>any</to-interface>
+                  <service>service-tcp-22</service>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>10.0.1.10</member>
+                  </destination>
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <interface-address>
+                        <interface>ethernet1/2</interface>
+                      </interface-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                  <destination-translation>
+                    <translated-address>10.0.4.50</translated-address>
+                    <translated-port>22</translated-port>
+                  </destination-translation>
+                  <disabled>no</disabled>
+                </entry>
+                <entry name="Webserver NAT" uuid="c3ea51d5-b61f-42c2-bf17-1fedf94bfeda">
+                  <nat-type>ipv4</nat-type>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <to>
+                    <member>UNTRUST</member>
+                  </to>
+                  <to-interface>any</to-interface>
+                  <service>service-http</service>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>10.0.1.10</member>
+                  </destination>
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <interface-address>
+                        <interface>ethernet1/2</interface>
+                      </interface-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                  <dynamic-destination-translation>
+                    <translated-address>10.0.4.50</translated-address>
+                    <translated-port>8080</translated-port>
+                  </dynamic-destination-translation>
+                  <disabled>no</disabled>
+                </entry>
+              </rules>
             </nat>
           </rulebase>
           <tag>
@@ -955,6 +1385,10 @@
             </entry>
             <entry name="fw-untrust">
               <ip-netmask>10.0.1.10</ip-netmask>
+            </entry>
+            <entry name="Azure-Int-LB">
+              <ip-netmask>10.0.4.10</ip-netmask>
+              <description>Azure Int LB Address</description>
             </entry>
           </address>
           <external-list>
@@ -983,9 +1417,15 @@
           </external-list>
           <profiles>
             <custom-url-category>
-              <entry name="Black-List"/>
-              <entry name="White-List"/>
-              <entry name="Custom-No-Decrypt"/>
+              <entry name="Black-List">
+                <type>URL List</type>
+              </entry>
+              <entry name="White-List">
+                <type>URL List</type>
+              </entry>
+              <entry name="Custom-No-Decrypt">
+                <type>URL List</type>
+              </entry>
             </custom-url-category>
             <decryption>
               <entry name="Recommended_Decryption_Profile">
@@ -1169,13 +1609,13 @@
                       <action>
                         <sinkhole/>
                       </action>
+                      <packet-capture>single-packet</packet-capture>
                     </entry>
                   </lists>
                   <sinkhole>
                     <ipv4-address>72.5.65.111</ipv4-address>
                     <ipv6-address>2600:5200::1</ipv6-address>
                   </sinkhole>
-                  <packet-capture>single-packet</packet-capture>
                 </botnet-domains>
                 <rules>
                   <entry name="Block-Critical-High-Medium">
@@ -1212,13 +1652,13 @@
                       <action>
                         <sinkhole/>
                       </action>
+                      <packet-capture>single-packet</packet-capture>
                     </entry>
                   </lists>
                   <sinkhole>
                     <ipv4-address>72.5.65.111</ipv4-address>
                     <ipv6-address>2600:5200::1</ipv6-address>
                   </sinkhole>
-                  <packet-capture>single-packet</packet-capture>
                 </botnet-domains>
                 <rules>
                   <entry name="Block-Critical-High-Medium">
@@ -1255,13 +1695,13 @@
                       <action>
                         <sinkhole/>
                       </action>
+                      <packet-capture>single-packet</packet-capture>
                     </entry>
                   </lists>
                   <sinkhole>
                     <ipv4-address>72.5.65.111</ipv4-address>
                     <ipv6-address>2600:5200::1</ipv6-address>
                   </sinkhole>
-                  <packet-capture>single-packet</packet-capture>
                 </botnet-domains>
                 <rules>
                   <entry name="Block-Critical-High">
@@ -1298,12 +1738,12 @@
                       <action>
                         <alert/>
                       </action>
+                      <packet-capture>disable</packet-capture>
                     </entry>
                   </lists>
                   <sinkhole>
                     <ipv6-address>2600:5200::1</ipv6-address>
                   </sinkhole>
-                  <packet-capture>disable</packet-capture>
                 </botnet-domains>
                 <rules>
                   <entry name="Alert-All">
@@ -1326,13 +1766,13 @@
                       <action>
                         <sinkhole/>
                       </action>
+                      <packet-capture>single-packet</packet-capture>
                     </entry>
                   </lists>
                   <sinkhole>
                     <ipv4-address>72.5.65.111</ipv4-address>
                     <ipv6-address>2600:5200::1</ipv6-address>
                   </sinkhole>
-                  <packet-capture>single-packet</packet-capture>
                 </botnet-domains>
               </entry>
               <entry name="Cloud-Recommended">
@@ -1342,9 +1782,9 @@
                       <action>
                         <sinkhole/>
                       </action>
+                      <packet-capture>extended-capture</packet-capture>
                     </entry>
                   </lists>
-                  <packet-capture>extended-capture</packet-capture>
                   <sinkhole>
                     <ipv4-address>pan-sinkhole-default-ip</ipv4-address>
                     <ipv6-address>::1</ipv6-address>
@@ -1453,7 +1893,6 @@
                 <log-http-hdr-user-agent>yes</log-http-hdr-user-agent>
                 <log-http-hdr-referer>yes</log-http-hdr-referer>
                 <log-http-hdr-xff>yes</log-http-hdr-xff>
-                <action>block</action>
                 <alert>
                   <member>abortion</member>
                   <member>abused-drugs</member>
@@ -1601,7 +2040,6 @@
                     <member>web-hosting</member>
                   </alert>
                 </credential-enforcement>
-                <action>block</action>
                 <alert>
                   <member>abortion</member>
                   <member>abused-drugs</member>
@@ -1749,7 +2187,6 @@
                 <log-http-hdr-user-agent>yes</log-http-hdr-user-agent>
                 <log-http-hdr-referer>yes</log-http-hdr-referer>
                 <log-http-hdr-xff>yes</log-http-hdr-xff>
-                <action>block</action>
                 <alert>
                   <member>abortion</member>
                   <member>abused-drugs</member>
@@ -1903,7 +2340,6 @@
                     <member>Custom-No-Decrypt</member>
                   </block>
                 </credential-enforcement>
-                <action>block</action>
                 <log-http-hdr-xff>yes</log-http-hdr-xff>
                 <log-http-hdr-user-agent>yes</log-http-hdr-user-agent>
                 <log-http-hdr-referer>yes</log-http-hdr-referer>
@@ -1994,7 +2430,6 @@
                     <member>White-List</member>
                   </allow>
                 </credential-enforcement>
-                <action>block</action>
                 <log-http-hdr-xff>yes</log-http-hdr-xff>
                 <log-http-hdr-user-agent>yes</log-http-hdr-user-agent>
                 <log-http-hdr-referer>yes</log-http-hdr-referer>
@@ -2609,7 +3044,10 @@
           </profile-group>
           <import>
             <network>
-              <interface/>
+              <interface>
+                <member>ethernet1/2</member>
+                <member>ethernet1/1</member>
+              </interface>
               <virtual-router/>
             </network>
           </import>
