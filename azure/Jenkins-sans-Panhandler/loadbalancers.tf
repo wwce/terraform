@@ -41,12 +41,22 @@ resource "azurerm_application_gateway" "appgw1" {
     frontend_port_name             = "http"
     protocol                       = "Http"
   }
+  probe {
+    name                = "probe"
+    protocol            = "http"
+    path                = "/login"
+    host                = "127.0.0.1"
+    interval            = "30"
+    timeout             = "30"
+    unhealthy_threshold = "3"
+  }
   backend_http_settings {
     name                  = "http"
     cookie_based_affinity = "Disabled"
     port                  = 8080
     protocol              = "Http"
     request_timeout       = 1
+    probe_name            = "probe"
   }
   request_routing_rule {
     name                       = "http"
@@ -99,12 +109,22 @@ resource "azurerm_application_gateway" "appgw2" {
     frontend_port_name             = "http"
     protocol                       = "Http"
   }
+  probe {
+    name                = "probe"
+    protocol            = "http"
+    path                = "/login"
+    host                = "127.0.0.1"
+    interval            = "30"
+    timeout             = "30"
+    unhealthy_threshold = "3"
+  }
   backend_http_settings {
     name                  = "http"
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
     request_timeout       = 1
+    probe_name            = "probe"
   }
   request_routing_rule {
     name                       = "http"
@@ -114,46 +134,4 @@ resource "azurerm_application_gateway" "appgw2" {
     backend_http_settings_name = "http"
   }
   depends_on = ["azurerm_resource_group.resourcegroup"]
-}
-
-#### INTERNAL APP FACING LOAD BALANCER ####
-
-resource "azurerm_lb" "weblb" {
-  name                = "weblb"
-  location            = "${azurerm_resource_group.resourcegroup.location}"
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
-  frontend_ip_configuration {
-    name                          = "weblbip"
-		subnet_id                     = "${azurerm_subnet.webservers.id}"
-    private_ip_address_allocation = "Static"
-    private_ip_address = "${var.WebLB_IP}"
-  }
-}
-resource "azurerm_lb_backend_address_pool" "webservers" {
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
-  loadbalancer_id     = "${azurerm_lb.weblb.id}"
-  name                = "webservers"
-}
-resource "azurerm_network_interface_backend_address_pool_association" "webservers" {
-  network_interface_id    = "${azurerm_network_interface.web1.id}"
-  ip_configuration_name   = "web1eth0"
-  backend_address_pool_id = "${azurerm_lb_backend_address_pool.webservers.id}"
-}
-resource "azurerm_lb_probe" "webservers" {
-  resource_group_name = "${azurerm_resource_group.resourcegroup.name}"
-  loadbalancer_id     = "${azurerm_lb.weblb.id}"
-  name                = "http-running-probe"
-  port                = 8080
-}
-
-resource "azurerm_lb_rule" "webservers" {
-  resource_group_name            = "${azurerm_resource_group.resourcegroup.name}"
-  loadbalancer_id                = "${azurerm_lb.weblb.id}"
-  name                           = "WebRule"
-  protocol                       = "Tcp"
-  frontend_port                  = 8080
-  backend_port                   = 8080
-  frontend_ip_configuration_name = "weblbip"
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.webservers.id}"
-  probe_id                       = "${azurerm_lb_probe.webservers.id}"
 }
