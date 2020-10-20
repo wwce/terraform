@@ -45,7 +45,7 @@ variable server2name {
 resource "aws_vpc" "vpc_spoke" {
   cidr_block = "${var.vpc_spoke_cidr}"
 
-  tags {
+  tags = {
     Name = "vpc_spoke_${var.vpc_spoke_cidr}"
   }
 }
@@ -57,7 +57,7 @@ resource "aws_subnet" "primary" {
   cidr_block        = "${var.vpc_spoke_subnet_cidr}"
   availability_zone = "${data.aws_availability_zones.available.names[0]}"
 
-  tags {
+  tags = {
     Name = "vpc_spokeA_${var.vpc_spoke_subnet_cidr}"
   }
 }
@@ -67,7 +67,7 @@ resource "aws_subnet" "secondary" {
   cidr_block        = "${var.vpc_spoke_subnet2_cidr}"
   availability_zone = "${data.aws_availability_zones.available.names[1]}"
 
-  tags {
+  tags = {
     Name = "vpc_spokeB_${var.vpc_spoke_subnet2_cidr}"
   }
 }
@@ -123,7 +123,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_spoke_attachment" {
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = false
 
-  tags {
+  tags = {
     Name = "tgw_attachment_spoke_${var.vpc_spoke_cidr}"
   }
 }
