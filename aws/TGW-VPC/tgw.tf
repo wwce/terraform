@@ -6,7 +6,7 @@ resource "aws_ec2_transit_gateway" "tgw" {
   dns_support                     = "enable"
   auto_accept_shared_attachments  = "disable"
 
-  tags {
+  tags = {
     Name = "transit_gateway"
   }
 }
@@ -14,7 +14,7 @@ resource "aws_ec2_transit_gateway" "tgw" {
 resource "aws_ec2_transit_gateway_route_table" "tgw_security" {
   transit_gateway_id = "${aws_ec2_transit_gateway.tgw.id}"
 
-  tags {
+  tags = {
     Name = "tgw-rtb-security"
   }
 }
@@ -22,7 +22,7 @@ resource "aws_ec2_transit_gateway_route_table" "tgw_security" {
 resource "aws_ec2_transit_gateway_route_table" "tgw_spokes" {
   transit_gateway_id = "${aws_ec2_transit_gateway.tgw.id}"
 
-  tags {
+  tags = {
     Name = "tgw-rtb-spokes"
   }
 }
@@ -45,7 +45,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_security" {
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = false
 
-  tags {
+  tags = {
     Name = "tgw_attachment_security"
   }
 }
