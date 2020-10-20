@@ -74,7 +74,7 @@ resource "aws_network_interface" "eni-management" {
   security_groups   = ["${var.management_security_group_id}"]
   source_dest_check = true
 
-  tags {
+  tags = {
     Name = "eni_${var.name}_management"
   }
 }
@@ -85,7 +85,7 @@ resource "aws_network_interface" "eni-trust" {
   security_groups   = ["${var.trust_security_group_id}"]
   source_dest_check = false
 
-  tags {
+  tags = {
     Name = "eni_${var.name}_trust"
   }
 }
@@ -98,7 +98,7 @@ resource "aws_eip" "eip-management" {
   vpc               = true
   network_interface = "${aws_network_interface.eni-management.id}"
 
-  tags {
+  tags = {
     Name = "eip_${var.name}_management"
   }
 }
@@ -109,7 +109,7 @@ resource "aws_network_interface" "eni-untrust" {
   security_groups   = ["${var.untrust_security_group_id}"]
   source_dest_check = false
 
-  tags {
+  tags = {
     Name = "eni_${var.name}_untrust"
   }
 }
@@ -118,7 +118,7 @@ resource "aws_eip" "eip-untrust" {
   vpc               = true
   network_interface = "${aws_network_interface.eni-untrust.id}"
 
-  tags {
+  tags = {
     Name = "eip_${var.name}_untrust"
   }
 }
@@ -151,7 +151,7 @@ resource "aws_instance" "instance-ngfw" {
     network_interface_id = "${aws_network_interface.eni-trust.id}"
   }
 
-  tags {
+  tags = {
     Name = "${var.name}"
   }
 }
