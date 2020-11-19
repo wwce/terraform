@@ -65,7 +65,8 @@ Here is a diagram of what gets deployed with this Repo:
         
         Ex. `public_key="ssh-rsa xxxxxxxxxx"`
 2. Setup 'Less' Mandatory Parameters:
-   Note: When this was created GWLB was not in all regions.  It was in US-West-2 so that is why
+
+   Note: When this was created, the GWLB was not in all regions.  It was in US-West-2 so that is why
    I left this information here.  If you change be sure to get the 10.0.2 AMI as that is the 
    version that is supporting GENEVE.
    
