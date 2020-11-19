@@ -17,7 +17,7 @@ Here is a diagram of what gets deployed with this Repo:
 <br />
 <br />
 ## Table of Contents
-```
+
 1. Prerequisites
 
 2. Deployment
@@ -25,7 +25,7 @@ Here is a diagram of what gets deployed with this Repo:
 3. Verify Traffic Inspection On VM-Series (Optional)
 
 3. Support
-```
+
 
 <br />
 <br />
