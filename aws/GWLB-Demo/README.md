@@ -98,52 +98,51 @@ Here is a diagram of what gets deployed with this Repo:
     - The output will look like:
     ```
     Outputs:
-
-app1_deployment_id = PANW-702d
-app1_fqdn = app-alb-PANW-702d-1006037643.us-west-2.elb.amazonaws.com
-app1_gwlbe_id = vpce-0b448aa66e9f4ca20
-app1_mgmt_ip = 44.237.53.17
-app2_deployment_id = PANW-2e2a
-app2_fqdn = app-alb-PANW-2e2a-403656353.us-west-2.elb.amazonaws.com
-app2_gwlbe_id = vpce-0600753874e122d2f
-app2_mgmt_ip = 52.12.114.166
-deployment_id = PANW-fc34
-firewall_ip = [
-  "44.242.120.182",
-  "100.22.9.187",
-]
-gwlb_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:loadbalancer/gwy/sec-gwlb-PANW-fc34/10a2b5c00ecf94f1
-gwlb_listener_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:listener/gwy/sec-gwlb-PANW-fc34/10a2b5c00ecf94f1/e088fa7547d85ed1
-gwlb_tg_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:targetgroup/sec-gwlb-tg-PANW-fc34/00a7d59ecd1e57c883
-gwlbe_service_id = vpce-svc-0202fc16d9fe37381
-gwlbe_service_name = com.amazonaws.vpce.us-west-2.vpce-svc-0202fc16d9fe37381
-natgw_route_table_id = [
-  "rtb-020676f22a8facbf8",
-  "rtb-0eade25ebacef532d",
-]
-sec_gwlbe_ew_id = [
-  "vpce-051b5a4278b900275",
-  "vpce-024ae5bc34b49841d",
-]
-sec_gwlbe_ew_route_table_id = [
-  "rtb-0d768330404a549e7",
-  "rtb-02d3e6a9671ef1e8b",
-]
-sec_gwlbe_ob_id = [
-  "vpce-0669561907f5c2924",
-  "vpce-021c8735b38f0c35d",
-]
-sec_gwlbe_ob_route_table_id = [
-  "rtb-03b28f6f2a0c0b9db",
-  "rtb-0e52f93fbfe1d47c5",
-]
-sec_tgwa_route_table_id = [
-  "rtb-0fdd0b5b398ab421c",
-  "rtb-032431b99b63daa51",
-]
-tgw_id = tgw-0e795726cb263fd72
-tgw_sec_attach_id = tgw-attach-0e9a741a14687f74b
-tgw_sec_route_table_id = tgw-rtb-08186b91e58b6668a
+    app1_deployment_id = PANW-702d
+    app1_fqdn = app-alb-PANW-702d-1006037643.us-west-2.elb.amazonaws.com
+    app1_gwlbe_id = vpce-0b448aa66e9f4ca20
+    app1_mgmt_ip = 44.237.53.17
+    app2_deployment_id = PANW-2e2a
+    app2_fqdn = app-alb-PANW-2e2a-403656353.us-west-2.elb.amazonaws.com
+    app2_gwlbe_id = vpce-0600753874e122d2f
+    app2_mgmt_ip = 52.12.114.166
+    deployment_id = PANW-fc34
+    firewall_ip = [
+    "44.242.120.182",
+    "100.22.9.187",
+    ]
+    gwlb_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:loadbalancer/gwy/sec-gwlb-PANW-fc34/10a2b5c00ecf94f1
+    gwlb_listener_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:listener/gwy/sec-gwlb-PANW-fc34/10a2b5c00ecf94f1/e088fa7547d85ed1
+    gwlb_tg_arn = arn:aws:elasticloadbalancing:us-west-2:777704464536:targetgroup/sec-gwlb-tg-PANW-fc34/00a7d59ecd1e57c883
+    gwlbe_service_id = vpce-svc-0202fc16d9fe37381
+    gwlbe_service_name = com.amazonaws.vpce.us-west-2.vpce-svc-0202fc16d9fe37381
+    natgw_route_table_id = [
+    "rtb-020676f22a8facbf8",
+    "rtb-0eade25ebacef532d",
+    ]
+    sec_gwlbe_ew_id = [
+    "vpce-051b5a4278b900275",
+    "vpce-024ae5bc34b49841d",
+    ]
+    sec_gwlbe_ew_route_table_id = [
+    "rtb-0d768330404a549e7",
+    "rtb-02d3e6a9671ef1e8b",
+    ]
+    sec_gwlbe_ob_id = [
+    "vpce-0669561907f5c2924",
+    "vpce-021c8735b38f0c35d",
+    ]
+    sec_gwlbe_ob_route_table_id = [
+    "rtb-03b28f6f2a0c0b9db",
+    "rtb-0e52f93fbfe1d47c5",
+    ]
+    sec_tgwa_route_table_id = [
+    "rtb-0fdd0b5b398ab421c",
+    "rtb-032431b99b63daa51",
+    ]
+    tgw_id = tgw-0e795726cb263fd72
+    tgw_sec_attach_id = tgw-attach-0e9a741a14687f74b
+    tgw_sec_route_table_id = tgw-rtb-08186b91e58b6668a
    ```
 
 5. Wait for VM Series Firewall to boot up. It can take a few minutes based on the `user_data` passed to the terraform.
