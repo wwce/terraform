@@ -64,9 +64,13 @@ Here is a diagram of what gets deployed with this Repo:
         - Use the contents of public key created in Prerequisites Step 4 as parameter value.
         
         Ex. `public_key="ssh-rsa xxxxxxxxxx"`
-    4. 
-    
-    Parameter(Optional) `user_data`:
+2. Setup 'Less' Mandatory Parameters:
+   # Note: When this was created GWLB was not in all regions.  It was in US-West-2 so that is why
+   # I left this information here.  If you change be sure to get the 10.0.2 AMI as that is the 
+   # version that is supporting GENEVE.
+   
+3. Setup Optional Parameters: 
+   1. Parameter(Optional) `user_data`:
         - Option 1: Enter a Basic Configuration as User Data.
         
         Ex. `user_data="type=dhcp-client\nhostname=PANW\nauthcodes=<Vm-Series Licensing Authcode>"`.
@@ -79,13 +83,13 @@ Here is a diagram of what gets deployed with this Repo:
         `plugin-op-commands=aws-gwlb-inspect:enable`
 
         A sample init.cfg that is used to connect to Panorama is in the repo
-    5. Parameter(Optional) `prefix`:
+    2. Parameter(Optional) `prefix`:
         - Use this parameter to prefix every resource with this string.
-    6. Parameter(Optional) `fw_mgmt_sg_list` and `app_mgmt_sg_list`:
+    3. Parameter(Optional) `fw_mgmt_sg_list` and `app_mgmt_sg_list`:
         - Use this parameter to input a list of IP addresses with CIDR from which you want Firewall/App Management to be accessible.
-    7. Check out all optional terraform parameters for more functionality. The parameter definitions lie in the file `variables.tf`
+    4. Check out all optional terraform parameters for more functionality. The parameter definitions lie in the file `variables.tf`
 
-2. Deploy Security Stack using Terraform
+4. Deploy Security Stack using Terraform
     - Go to the security stack terraform directory `cd /path/to/GWLB-Demo/`
     - Initialize terraform `terraform init`
     - Apply the template `terraform apply`
@@ -142,9 +146,9 @@ tgw_sec_attach_id = tgw-attach-0e9a741a14687f74b
 tgw_sec_route_table_id = tgw-rtb-08186b91e58b6668a
    ```
 
-3. Wait for VM Series Firewall to boot up. It can take a few minutes based on the `user_data` passed to the terraform.
+5. Wait for VM Series Firewall to boot up. It can take a few minutes based on the `user_data` passed to the terraform.
 
-4. Once ready, login to your firewall:
+6. Once ready, login to your firewall:
     - `ssh -i private_key.pem admin@<Firewall IP>`
     - `firewall_ip` can be found in Security Stack deployment output
     - Once you have logged in, you will need to configure your firewall to allow traffic:
