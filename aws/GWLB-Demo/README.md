@@ -53,7 +53,7 @@ Here is a diagram of what gets deployed with this Repo:
 	- Private Key: `openssl genrsa -out private_key.pem 2048`
 	- Change Permissions: `chmod 400 private_key.pem`
 	- Public Key: `ssh-keygen -y -f private_key.pem > public_key.pub`
-5. In my personal deployment of this I am using a S3 bucket to bootstrap the NGFWs and using a Device Group and Template in Panorama to provide all the firewall configuration.  I included in the repo a santized copy of my init.cfg and sample NGFW configuration in the bootstrap.xml.  You could use the bootstrap.xml to get a config on the NGFW and import into Panorama for future deployments.
+5. In my personal deployment of this I am using a S3 bucket to bootstrap the NGFWs and using a Device Group and Template in Panorama to provide all the firewall configuration.  I included in the repo a santized copy of my init.cfg and sample NGFW configuration in the bootstrap.xml.  The bootstrap.xml is from version 10.0.0.2. The admin username and password is pandemo/Pal0Alt0@123.  You could use the bootstrap.xml to get a config on the NGFW and import into Panorama for future deployments.
 
 **With this, your environment is now ready to deploy VM-Series in integration with AWS Gateway Load Balancer.** 
 
