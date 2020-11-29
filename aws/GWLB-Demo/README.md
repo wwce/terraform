@@ -2,7 +2,7 @@
 
 This package will help you deploy a full AWS Gateway Load Balancer demonstration environment that leverages the Palo Alto Networks VM-Series NGFWs to show how this solutions secures your Inbound, Outbound and East-West traffic.  This demo will also create a Transit Gateway that is used for E/W and outbound traffic.
 
-This deployment is meant to delploy a complete GWLB environment integrated with a TGW and 2 spoke Application VNETS.  This repo is based on the following PANW repo that provides the ability to deploy just the GWLB independantly: 
+This deployment is meant to delploy a complete GWLB environment integrated with a TGW and 2 spoke Application VPCS.  This repo is based on the following PANW repo that provides the ability to deploy just the GWLB independantly: 
 
 https://github.com/PaloAltoNetworks/AWS-GWLB-VMSeries
 
