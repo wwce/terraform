@@ -1,8 +1,7 @@
 #!/bin/bash
 apt-get update
 apt-get update
-apt install docker.io python3-pip build-essential libssl-dev libffi-dev -y --force-yes
-pip3 install docker-compose
+apt install docker.io python3-pip build-essential libssl-dev libffi-dev docker-compose -y --force-yes
 cd /var/tmp
 echo "version: '3'" > docker-compose.yml
 echo "services:" >> docker-compose.yml
