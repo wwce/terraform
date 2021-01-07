@@ -3,7 +3,7 @@ apt-get update
 apt-get update
 apt install docker.io python3-pip build-essential libssl-dev libffi-dev docker-compose -y --force-yes
 cd /var/tmp
-echo "version: '3'" > docker-compose.yml
+echo "version: '2'" > docker-compose.yml
 echo "services:" >> docker-compose.yml
 echo "  attacker:" >> docker-compose.yml
 echo "    image: pglynn/kali:latest" >> docker-compose.yml
