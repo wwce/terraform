@@ -12,9 +12,9 @@ blue_team_az2_mgmt = "10.0.10.0/24"
 
 blue_team_server_ip = "10.0.2.50"
 
-server_initscript_path = "/scripts/initialize_jenkins.sh"
+server_initscript_path = "/scripts/initialize_struts.sh"
 
-attacker_initscript_path = "/scripts/initialize_attacker.sh"
+attacker_initscript_path = "/scripts/initialize_kali.sh"
 
 fw1_untrust_ip = "10.0.1.10"
 
