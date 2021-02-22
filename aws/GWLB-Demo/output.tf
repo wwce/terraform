@@ -11,8 +11,7 @@ output "sec_gwlbe_ob_route_table_id" {
   value = aws_route_table.agwe-rt[*].id
 }
 
-output "sec_gwlbe_ew_route_table_id" {
-  value = aws_route_table.agwe-ew-rt[*].id
+output "sec_gwlbe_ew_route_table_id" {value = aws_route_table.agwe-ew-rt[*].id
 }
 
 output "natgw_route_table_id" {
