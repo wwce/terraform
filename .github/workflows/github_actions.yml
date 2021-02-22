@@ -1,0 +1,29 @@
+name: 'Terraform github actions'
+
+on:
+  - pull_request
+
+jobs:
+  format:
+    name: 'Terraform Format'
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with: 
+        terraform_version: 0.14.6
+        
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -recursive -write=true -list=true
+    
+    - name: Add and Commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: '*.tf'
+        commit_message: 'format .tf files'
