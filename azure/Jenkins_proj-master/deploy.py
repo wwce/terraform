@@ -648,7 +648,7 @@ def main(username, password, rg_name, azure_region):
     status_counter = 0
     while True:
         err = getFirewallStatus(fwMgtIP, api_key)
-        status_couter = status_couter + 1
+        status_counter = status_counter + 1
         if status_counter > 15:
             print('Taking too long to get firewall status!')
             exit(1)
