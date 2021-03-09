@@ -58,6 +58,6 @@ variable "HC_Request_Path" {
 variable "Content_Bucket" {
 }
 
-variable "Public_Key_File" {
+variable "Public_Key" {
   description = "Entire path to public SSH key file.  If you do not have a public key, run >> ssh-keygen -f ~/.ssh/demo-key -t rsa -C admin"
 }

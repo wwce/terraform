@@ -6,16 +6,16 @@
 #Attacker_Initscript_Path = "scripts/initialize_attacker.sh"
 
 # Uncomment the following three lines for the struts2 demo
-#HC_Request_Path = "/showcase.action"
-#Server_Initscript_Path = "scripts/initialize_struts.sh"
-#Attacker_Initscript_Path = "scripts/initialize_kali.sh"
+HC_Request_Path = "/showcase.action"
+Server_Initscript_Path = "scripts/initialize_struts.sh"
+Attacker_Initscript_Path = "scripts/initialize_kali.sh"
 
 # Uncomment the following three lines to use dvwa
 #HC_Request_Path = "/login.php"
 #Server_Initscript_Path = "scripts/initialize_dvwa.sh"
 #Attacker_Initscript_Path = "scripts/initialize_kali.sh"
 
-Public_Key_File = "~/.ssh/id_rsa.pub"
+Public_Key = "ssh-rsa <key material> <user-name>"
 
 # No changes should be required below this point
 
