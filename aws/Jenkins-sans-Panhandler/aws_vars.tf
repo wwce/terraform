@@ -29,13 +29,11 @@ variable "PANFWRegionMap" {
 
   default = {
     "ap-northeast-1"  = "ami-0c2df2ad98fa740f2"
-    "ap-northeast-2"  = "ami-0644fb0e02257e3e0"
     "ap-south-1"      = "ami-0f03c2e41c35f4155"
     "ap-southeast-1"  = "ami-0c18d932bcd6eb39f"
     "ap-southeast-2"  = "ami-0b6f63cee6e82b6b1"
     "ca-central-1"    = "ami-09ccdba2948398b45"
     "eu-central-1"    = "ami-0cf748c2bf505e674"
-    "eu-north-1"      = "ami-0b5ba14c2b9ccb9b6"
     "eu-west-1"       = "ami-02eec133b97eaa1e1"
     "eu-west-2"       = "ami-0c06868bcef1d35ba"
     "sa-east-1"       = "ami-08a812daea4ede4a2"
@@ -51,20 +49,19 @@ variable "UbuntuRegionMap" {
 
   #Ubuntu Server 16.04 LTS (HVM)
   default = {
-    "us-west-1"      = "ami-0a3a5bb61a81e3135"
-    "us-west-2"      = "ami-000de76905d16b042"
-    "us-east-1"      = "ami-021d9d94f93a07a43"
-    "us-east-2"      = "ami-04239d579c52de263"
-    "ca-central-1"   = "ami-00ecb370195d6a225"
-    "eu-west-1"      = "ami-09e0dc5839aa7eca9"
-    "eu-west-2"      = "ami-0629d16d9e818369f"
-    "eu-central-1"   = "ami-0d30b058bf84b0a0c"
-    "ap-east-1"      = "ami-72661d03"
-    "ap-northeast-1" = "ami-0910fb379f9c0dda9"
-    "ap-southeast-1" = "ami-0dff5e99784353c4a"
-    "ap-southeast-2" = "ami-042ed6b729919aa24"
-    "ap-south-1"     = "ami-0f382fa26248923ea"
-    "sa-east-1"      = "ami-027c2142d479531cb"
+    "ap-northeast-1" = "ami-0ad8925cfae263816"
+    "ap-south-1" = "ami-033405fef856aa050"
+    "ap-southeast-1" = "ami-090c5f444ba17b5e6"
+    "ap-southeast-2" = "ami-009dabce373407f47"
+    "ca-central-1" = "ami-0dba2e6f05a90be45"
+    "eu-central-1" = "ami-057320c356ed8a39a"
+    "eu-west-1" = "ami-00126411777531ca6"
+    "eu-west-2" = "ami-0d013c5896434b38a"
+    "sa-east-1" = "ami-0786f8c2dfa7e3230"
+    "us-east-1" = "ami-0857b0ef93a75300f"
+    "us-east-2" = "ami-0b6b93913be33d8f6"
+    "us-west-1" = "ami-0a1a02c21dbaf286d"
+    "us-west-2" = "ami-0db01fabda16f6445"
   }
 }
 
