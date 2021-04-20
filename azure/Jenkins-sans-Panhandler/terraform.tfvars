@@ -20,9 +20,9 @@ Storage_Account_Fileshare = "<Fileshare Containing Bootstrap Folders>"
 
 Storage_Account_Fileshare_Directory = "None" 
 
-Web_Initscript_Path = "/scripts/initialize_webserver.sh"
+Web_Initscript_Path = "/scripts/initialize_struts.sh"
 
-Attack_Initscript_Path = "/scripts/initialize_attacker.sh"
+Attack_Initscript_Path = "/scripts/initialize_kali.sh"
 
 Victim_CIDR = "10.0.0.0/16"
 
