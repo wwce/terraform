@@ -6,14 +6,14 @@ output "FW1-Untrust-IP" {
   value = aws_eip.blue_team_ngfw_untrust0.public_ip
 }
 
-output "Server1-IP" {
+output "Server1-External-IP" {
   value = aws_eip.blue_team_ngfw_untrust1.public_ip
 }
 
-output "Server2-IP" {
+output "Server2-External-IP" {
   value = aws_eip.blue_team_ngfw_untrust2.public_ip
 }
 
-output "Server3-IP" {
+output "Server3-External-IP" {
   value = aws_eip.blue_team_ngfw_untrust3.public_ip
 }

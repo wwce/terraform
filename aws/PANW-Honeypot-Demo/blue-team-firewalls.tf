@@ -50,7 +50,7 @@ resource "aws_iam_instance_profile" "blue-team-bootstrapinstanceprofile" {
 
 resource "aws_network_interface" "blue_team_ngfw_mgmt" {
   subnet_id         = aws_subnet.blue_team_mgmt.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_mgmt.id]
   source_dest_check = false
   private_ips       = [var.fw_mgmt_ip]
   tags = {

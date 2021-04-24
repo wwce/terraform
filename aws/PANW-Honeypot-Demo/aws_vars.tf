@@ -13,6 +13,9 @@ variable "aws_secret_key" {
 variable "aws_key_pair" {
 }
 
+variable "mgmt_ip" {
+}
+
 variable "blue_team_cidr" {
 }
 
