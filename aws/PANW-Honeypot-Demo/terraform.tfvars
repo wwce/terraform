@@ -36,8 +36,8 @@ aws_region = "us-west-2"
 
 aws_key_pair = "<AWS SSH Key Name>"
 
-aws_access_key = "<AWS API Key>"
+aws_access_key = "<AWS Access Key>"
 
-aws_secret_key = "<AWS API Secret Key>"
+aws_secret_key = "<AWS Secret Key>"
 
 mgmt_ip = "0.0.0.0/0"
