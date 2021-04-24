@@ -34,10 +34,10 @@ blue_team_cidr = "10.0.0.0/16"
 
 aws_region = "us-west-2"
 
-aws_key_pair = "AWS-Lab-Pair"
+aws_key_pair = "<AWS SSH Key Name>"
 
-aws_access_key = "AWS API Key"
+aws_access_key = "<AWS API Key>"
 
-aws_secret_key = "AWS API Secret Key"
+aws_secret_key = "<AWS API Secret Key>"
 
-mgmt_ip = "104.219.136.0/21"
+mgmt_ip = "0.0.0.0/0"
