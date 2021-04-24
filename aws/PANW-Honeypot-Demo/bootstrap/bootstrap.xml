@@ -3,7 +3,7 @@
   <mgt-config>
     <users>
       <entry name="admin">
-        <phash>$1$jojiwhhl$GKnN837mmDV/TfcZBOsJC1</phash>
+        <phash>$1$omxjhhts$9FGTKN6YRE10XI093W.MD1</phash>
         <permissions>
           <role-based>
             <superuser>yes</superuser>
@@ -767,11 +767,11 @@
           <update-schedule>
             <threats>
               <recurring>
-                <daily>
-                  <at>00:00</at>
-                  <action>download-and-install</action>
-                </daily>
                 <threshold>48</threshold>
+                <every-30-mins>
+                  <at>15</at>
+                  <action>download-and-install</action>
+                </every-30-mins>
               </recurring>
             </threats>
             <statistics-service>
@@ -787,11 +787,18 @@
             <anti-virus>
               <recurring>
                 <hourly>
-                  <at>3</at>
+                  <at>0</at>
                   <action>download-and-install</action>
                 </hourly>
               </recurring>
             </anti-virus>
+            <wildfire>
+              <recurring>
+                <every-30-mins>
+                  <at>5</at>
+                </every-30-mins>
+              </recurring>
+            </wildfire>
           </update-schedule>
         </system>
         <setting>
