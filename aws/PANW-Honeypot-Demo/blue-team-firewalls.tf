@@ -60,7 +60,7 @@ resource "aws_network_interface" "blue_team_ngfw_mgmt" {
 
 resource "aws_network_interface" "blue_team_ngfw_untrust" {
   subnet_id         = aws_subnet.blue_team_untrust.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_untrust.id]
   source_dest_check = false
   private_ips       = [var.fw_untrust_ip0, var.fw_untrust_ip1, var.fw_untrust_ip2, var.fw_untrust_ip3]
   tags = {
@@ -70,7 +70,7 @@ resource "aws_network_interface" "blue_team_ngfw_untrust" {
 
 resource "aws_network_interface" "blue_team_ngfw_trust" {
   subnet_id         = aws_subnet.blue_team_trust.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_trust.id]
   source_dest_check = false
   private_ips       = [var.fw_trust_ip]
   tags = {

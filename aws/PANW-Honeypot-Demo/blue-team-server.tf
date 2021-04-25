@@ -4,7 +4,7 @@ data "template_file" "server1" {
 
 resource "aws_network_interface" "blue_team_server1" {
   subnet_id         = aws_subnet.blue_team_trust.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_trust.id]
   source_dest_check = false
   private_ips       = [var.blue_team_server1_ip]
   tags = {
@@ -37,7 +37,7 @@ data "template_file" "server2" {
 
 resource "aws_network_interface" "blue_team_server2" {
   subnet_id         = aws_subnet.blue_team_trust.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_trust.id]
   source_dest_check = false
   private_ips       = [var.blue_team_server2_ip]
   tags = {
@@ -70,7 +70,7 @@ data "template_file" "server3" {
 
 resource "aws_network_interface" "blue_team_server3" {
   subnet_id         = aws_subnet.blue_team_trust.id
-  security_groups   = [aws_security_group.blue_team_open.id]
+  security_groups   = [aws_security_group.blue_team_trust.id]
   source_dest_check = false
   private_ips       = [var.blue_team_server3_ip]
   tags = {
