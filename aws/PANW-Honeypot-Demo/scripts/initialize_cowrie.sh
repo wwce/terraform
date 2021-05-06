@@ -21,7 +21,7 @@ echo "    image: cowrie/cowrie" >> docker-compose.yml
 echo "    environment:" >> docker-compose.yml
 echo "      - COWRIE_TELNET_ENABLED=yes" >> docker-compose.yml
 echo "    ports:" >> docker-compose.yml
-echo "      - \"2222:2222\"" >> docker-compose.yml
+echo "      - \"2222:22\"" >> docker-compose.yml
 echo "      - \"2223:2223\"" >> docker-compose.yml
 echo "    volumes:" >> docker-compose.yml
 echo "      - /home/cowrie/cowrie/etc:/cowrie/cowrie-git/etc" >> docker-compose.yml
