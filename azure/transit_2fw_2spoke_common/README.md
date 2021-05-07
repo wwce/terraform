@@ -21,7 +21,7 @@ Please see the [**Deployment Guide**](https://github.com/wwce/terraform/blob/mas
 In the Azure Portal, open Azure Cloud Shell and run the following **BASH ONLY!**.
 ```
 # Accept VM-Series EULA for desired license type (BYOL, Bundle1, or Bundle2)
-$ az vm image terms accept --urn paloaltonetworks:vmseries1:<byol><bundle1><bundle2>:9.0.1
+$ az vm image terms accept --urn paloaltonetworks:vmseries-flex:<byol><bundle1><bundle2>:10.0.4
 
 # Download repo & change directories to the Terraform build
 $ git clone https://github.com/wwce/terraform; cd terraform/azure/transit_2fw_2spoke_common
