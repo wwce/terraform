@@ -204,7 +204,7 @@ pytest-django==3.4.8
 python-dateutil==2.8.0
 python-terraform==0.10.0
 pytz==2019.1
-PyYAML==5.1
+PyYAML==5.4
 requests==2.21.0
 requests-oauthlib==1.2.0
 scp==0.13.2
