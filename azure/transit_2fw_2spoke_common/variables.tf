@@ -37,7 +37,7 @@ variable transit_subnet_cidrs {
 #-----------------------------------------------------------------------------------------------------------------
 # VM-Series variables
 
-variable fw_count {
+variable fw_vm_count {
 }
 
 variable fw_nsg_prefix {
@@ -62,9 +62,6 @@ variable spoke_username {
 }
 
 variable spoke_password {
-}
-
-variable spoke_udrs {
 }
 
 variable spoke1_prefix {
@@ -102,7 +99,10 @@ variable tags {
   description = "The tags to associate with newly created resources"
   type        = map(string)
 
-  default = {}
+  default = {
+    trusted-resource = "yes"
+    allow-internet   = "yes"
+  }
 }
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -110,20 +110,16 @@ variable tags {
 
 variable client_id {
   description = "Azure client ID"
-  default = ""
 }
 
 variable client_secret {
   description = "Azure client secret"
-  default = ""
 }
 
 variable subscription_id {
   description = "Azure subscription ID"
-  default = ""
 }
 
 variable tenant_id {
   description = "Azure tenant ID"
-  default = ""
 }

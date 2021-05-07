@@ -20,7 +20,6 @@ variable avset_fault_domain_count {
   default = 2
 }
 
-
 variable panos {
 }
 
@@ -87,17 +86,12 @@ variable nic2_public_ip {
   default = null
 }
 
-variable nic1_backend_pool_ids {
-  type = list(string)
-  default = null
+variable nic1_backend_pool_id {
+  type    = list(string)
+  default = []
 }
 
-variable nic2_backend_pool_ids {
-  type = list(string)
-  default = null
-}
-
-variable dependencies {
+variable nic2_backend_pool_id {
   type    = list(string)
   default = []
 }

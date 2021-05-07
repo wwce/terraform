@@ -7,3 +7,7 @@ ipv6-default-gateway=
 dhcp-accept-server-hostname=yes
 dns-primary=8.8.8.8
 dns-secondary=4.2.2.2
+panorama-server=
+vm-auth-key=
+dgname=
+tplname=

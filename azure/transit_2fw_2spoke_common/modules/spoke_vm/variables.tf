@@ -44,9 +44,9 @@ variable sku {
   default = "16.04-LTS"
 }
 
-variable backend_pool_ids {
+variable backend_pool_id {
   type = list(string)
-  default = null
+  default = []
 }
 
 variable tags {
