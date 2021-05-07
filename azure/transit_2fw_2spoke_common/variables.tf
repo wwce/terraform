@@ -107,7 +107,7 @@ variable tags {
 
 #-----------------------------------------------------------------------------------------------------------------
 # Azure environment variables
-
+/*
 variable client_id {
   description = "Azure client ID"
 }
@@ -123,3 +123,4 @@ variable subscription_id {
 variable tenant_id {
   description = "Azure tenant ID"
 }
+*/
