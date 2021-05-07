@@ -36,8 +36,3 @@ spoke2_vm_count         = 1
 
 spoke_username          = "paloalto"
 spoke_password          = "Pal0Alt0@123"
-
-client_id               = "7358aa6b-e2f5-4d5e-90fe-c352aaa73d9b"
-client_secret           = "N3s7LanR5AM5nj0P~8.XHQ9-2yPI4_DjYJ"
-subscription_id         = "36a6952c-125c-4b32-943e-27e85b91d591"
-tenant_id               = "66b66353-3b76-4e41-9dc3-fee328bd400e"
