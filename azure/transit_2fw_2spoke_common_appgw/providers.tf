@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "azurerm" {
-  version         = "= 1.41"
+ # version         = "= 1.41"
   #subscription_id = var.subscription_id
   #client_id       = var.client_id
   #client_secret   = var.client_secret
