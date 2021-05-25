@@ -767,7 +767,6 @@
           <update-schedule>
             <threats>
               <recurring>
-                <threshold>48</threshold>
                 <every-30-mins>
                   <at>15</at>
                   <action>download-and-install</action>
@@ -967,6 +966,16 @@
                 </tcp>
               </protocol>
             </entry>
+            <entry name="service-tcp-224">
+              <protocol>
+                <tcp>
+                  <port>224</port>
+                  <override>
+                    <no/>
+                  </override>
+                </tcp>
+              </protocol>
+            </entry>
           </service>
           <service-group/>
           <schedule/>
@@ -989,7 +998,7 @@
             </default-security-rules>
             <security>
               <rules>
-                <entry name="SSH 221-223 inbound" uuid="d4cd77d8-48c4-443c-a78f-e68570d03c9c">
+                <entry name="SSH 221-224 inbound" uuid="d4cd77d8-48c4-443c-a78f-e68570d03c9c">
                   <rule-type>universal</rule-type>
                   <from>
                     <member>UNTRUST</member>
@@ -1017,6 +1026,7 @@
                     <member>service-tcp-221</member>
                     <member>service-tcp-222</member>
                     <member>service-tcp-223</member>
+                    <member>service-tcp-224</member>
                   </service>
                   <category>
                     <member>any</member>
@@ -1064,7 +1074,7 @@
                     <member>any</member>
                   </application>
                   <service>
-                    <member>application-default</member>
+                    <member>any</member>
                   </service>
                   <category>
                     <member>any</member>
@@ -1181,7 +1191,7 @@
                   </source-translation>
                   <disabled>no</disabled>
                 </entry>
-                <entry name="server1-221" uuid="f1ddae57-86a5-4d84-8061-4a36c8f15887">
+                <entry name="server1-admin-ssh" uuid="f1ddae57-86a5-4d84-8061-4a36c8f15887">
                   <destination-translation>
                     <translated-port>22</translated-port>
                     <translated-address>10.0.2.11</translated-address>
@@ -1201,7 +1211,7 @@
                   <service>service-tcp-221</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server1-2222" uuid="a36a0622-58e9-4463-8520-14914780f222">
+                <entry name="server1-public-ssh" uuid="a36a0622-58e9-4463-8520-14914780f222">
                   <destination-translation>
                     <translated-port>2222</translated-port>
                     <translated-address>10.0.2.11</translated-address>
@@ -1221,7 +1231,7 @@
                   <service>service-tcp-22</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server1-2223" uuid="500c7dbf-6098-44f1-bfa9-6583a6842d13">
+                <entry name="server1-public-telnet" uuid="500c7dbf-6098-44f1-bfa9-6583a6842d13">
                   <destination-translation>
                     <translated-port>2223</translated-port>
                     <translated-address>10.0.2.11</translated-address>
@@ -1241,7 +1251,7 @@
                   <service>service-tcp-23</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server2-221" uuid="34303cfa-f286-4d9b-8efa-24a21c96f49a">
+                <entry name="server2-admin-ssh" uuid="34303cfa-f286-4d9b-8efa-24a21c96f49a">
                   <destination-translation>
                     <translated-port>22</translated-port>
                     <translated-address>10.0.2.12</translated-address>
@@ -1261,7 +1271,7 @@
                   <service>service-tcp-222</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server2-2222" uuid="7a0ba229-db5c-4103-a20d-fe1ef2f38007">
+                <entry name="server2-public-ssh" uuid="7a0ba229-db5c-4103-a20d-fe1ef2f38007">
                   <destination-translation>
                     <translated-port>2222</translated-port>
                     <translated-address>10.0.2.12</translated-address>
@@ -1281,7 +1291,7 @@
                   <service>service-tcp-22</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server2-2223" uuid="7207442d-5f43-46bf-a1f4-1457ce33a485">
+                <entry name="server2-public-telnet" uuid="7207442d-5f43-46bf-a1f4-1457ce33a485">
                   <destination-translation>
                     <translated-port>2223</translated-port>
                     <translated-address>10.0.2.12</translated-address>
@@ -1301,7 +1311,7 @@
                   <service>service-tcp-23</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server3-221" uuid="c6079c5e-ff77-4e75-a884-30f2d4214d59">
+                <entry name="server3-admin-ssh" uuid="c6079c5e-ff77-4e75-a884-30f2d4214d59">
                   <destination-translation>
                     <translated-port>22</translated-port>
                     <translated-address>10.0.2.13</translated-address>
@@ -1321,7 +1331,7 @@
                   <service>service-tcp-223</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server3-2222" uuid="3a1259e8-244c-4cc4-b90c-d64d6286b035">
+                <entry name="server3-public-ssh" uuid="3a1259e8-244c-4cc4-b90c-d64d6286b035">
                   <destination-translation>
                     <translated-port>2222</translated-port>
                     <translated-address>10.0.2.13</translated-address>
@@ -1341,7 +1351,7 @@
                   <service>service-tcp-22</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
-                <entry name="server3-2223" uuid="899da739-24b4-4821-9400-4c2c112d89ea">
+                <entry name="server3-public-telnet" uuid="899da739-24b4-4821-9400-4c2c112d89ea">
                   <destination-translation>
                     <translated-port>2223</translated-port>
                     <translated-address>10.0.2.13</translated-address>
@@ -1359,6 +1369,26 @@
                     <member>10.0.1.13</member>
                   </destination>
                   <service>service-tcp-23</service>
+                  <to-interface>ethernet1/1</to-interface>
+                </entry>
+                <entry name="server4-admin-ssh" uuid="40d2b93b-ed76-4e13-965c-6fbf0f84d487">
+                  <destination-translation>
+                    <translated-port>22</translated-port>
+                    <translated-address>10.0.2.14</translated-address>
+                  </destination-translation>
+                  <to>
+                    <member>UNTRUST</member>
+                  </to>
+                  <from>
+                    <member>UNTRUST</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>10.0.1.10</member>
+                  </destination>
+                  <service>service-tcp-224</service>
                   <to-interface>ethernet1/1</to-interface>
                 </entry>
               </rules>
