@@ -36,7 +36,7 @@ resource "aws_security_group" "blue_team_untrust" {
 
   ingress {
     from_port   = "221"
-    to_port     = "223"
+    to_port     = "224"
     protocol    = "TCP"
     cidr_blocks = ["${var.mgmt_ip}"]
   }
@@ -76,6 +76,36 @@ resource "aws_security_group" "blue_team_trust" {
     to_port     = "0"
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  egress {
+    from_port   = "0"
+    to_port     = "0"
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "blue_team_trust"
+  }
+}
+
+resource "aws_security_group" "blue_team_mysql" {
+  name        = "blue_team_mysql"
+  description = "SQL open security group"
+  vpc_id      = aws_vpc.main.id
+
+ ingress {
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "TCP"
+    cidr_blocks = ["${var.mgmt_ip}"]
+  }
+
+  ingress {
+    from_port   = "3306"
+    to_port     = "3306"
+    protocol    = "TCP"
+    cidr_blocks = ["${var.blue_team_cidr}"]
   }
   
   egress {

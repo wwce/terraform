@@ -97,3 +97,38 @@ resource "aws_instance" "server3" {
   user_data = data.template_file.server3.template
 }
 
+data "template_file" "server4" {
+  template = file("${path.root}${var.mysql_initscript_path}")
+}
+
+resource "aws_network_interface" "blue_team_server4" {
+  subnet_id         = aws_subnet.blue_team_trust.id
+  security_groups   = [aws_security_group.blue_team_mysql.id]
+  source_dest_check = false
+  private_ips       = [var.blue_team_mysql_ip]
+  tags = {
+    Name = "blue_team_server4"
+  }
+}
+
+resource "aws_instance" "server4" {
+  # instance_initiated_shutdown_behavior = "stop"
+  ami           = var.UbuntuRegionMap[var.aws_region]
+  instance_type = "t2.large"
+  key_name      = var.aws_key_pair
+  monitoring    = false
+  root_block_device {
+    volume_size = 1024
+  }
+
+  tags = {
+    Name = "blue_team_server4"
+  }
+
+  network_interface {
+    device_index         = 0
+    network_interface_id = aws_network_interface.blue_team_server4.id
+  }
+
+  user_data = data.template_file.server4.template
+}

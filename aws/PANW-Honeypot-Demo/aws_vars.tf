@@ -37,6 +37,9 @@ variable "blue_team_server2_ip" {
 variable "blue_team_server3_ip" {
 }
 
+variable "blue_team_mysql_ip" {
+}
+
 variable "server1_initscript_path" {
 }
 
@@ -44,6 +47,9 @@ variable "server2_initscript_path" {
 }
 
 variable "server3_initscript_path" {
+}
+
+variable "mysql_initscript_path" {
 }
 
 variable "fw_mgmt_ip" {
