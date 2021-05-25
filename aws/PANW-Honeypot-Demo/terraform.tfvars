@@ -10,11 +10,15 @@ blue_team_server2_ip = "10.0.2.12"
 
 blue_team_server3_ip = "10.0.2.13"
 
+blue_team_mysql_ip = "10.0.2.14"
+
 server1_initscript_path = "/scripts/initialize_cowrie.sh"
 
 server2_initscript_path = "/scripts/initialize_cowrie.sh"
 
 server3_initscript_path = "/scripts/initialize_cowrie.sh"
+
+mysql_initscript_path = "/scripts/initialize_mysql.sh"
 
 fw_untrust_ip0 = "10.0.1.10"
 
