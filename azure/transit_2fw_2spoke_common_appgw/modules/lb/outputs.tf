@@ -5,7 +5,3 @@ output public_ip {
 output backend_pool_id {
   value = azurerm_lb_backend_address_pool.main.id
 }
-
-output backend_pool_name {
-  value = azurerm_lb_backend_address_pool.main.name
-}

@@ -2,7 +2,7 @@
 # Create resource group for FWs, FW NICs, and FW LBs
 
 resource "azurerm_resource_group" "common_fw" {
-  name     = "${var.global_prefix}-${var.fw_prefix}-rg"
+  name     = "${var.global_prefix}${var.fw_prefix}-rg"
   location = var.location
 }
 
@@ -17,11 +17,12 @@ resource "random_string" "main" {
 }
 
 resource "azurerm_storage_account" "main" {
-  name                     = random_string.main.result
+  name                     = "${var.fw_prefix}${random_string.main.result}"
+  resource_group_name      = azurerm_resource_group.common_fw.name
+  location                 = azurerm_resource_group.common_fw.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  location                 = azurerm_resource_group.common_fw.location
-  resource_group_name      = azurerm_resource_group.common_fw.name
+
 }
 
 module "common_fileshare" {
@@ -40,31 +41,33 @@ module "common_fileshare" {
 module "common_fw" {
   source                    = "./modules/vmseries/"
   name                      = "${var.fw_prefix}-vm"
-  vm_count                  = var.fw_count
+  resource_group_name      = azurerm_resource_group.common_fw.name
+  location                 = azurerm_resource_group.common_fw.location
+  vm_count                  = 2
   username                  = var.fw_username
   password                  = var.fw_password
   panos                     = var.fw_panos
   license                   = var.fw_license
   nsg_prefix                = var.fw_nsg_prefix
   avset_name                = "${var.fw_prefix}-avset"
-  subnet_mgmt               = module.vnet.vnet_subnets[0]
-  subnet_untrust            = module.vnet.vnet_subnets[1]
-  subnet_trust              = module.vnet.vnet_subnets[2]
+  subnet_mgmt               = module.transit_vnet.subnet_ids[0]
+  subnet_untrust            = module.transit_vnet.subnet_ids[1]
+  subnet_trust              = module.transit_vnet.subnet_ids[2]
   nic0_public_ip            = true
   nic1_public_ip            = true
   nic2_public_ip            = false
-  nic1_backend_pool_ids     = [module.common_extlb.backend_pool_id]
-  nic2_backend_pool_ids     = [module.common_intlb.backend_pool_id]
+  nic1_backend_pool_id     = [module.common_extlb.backend_pool_id]
+  nic2_backend_pool_id     = [module.common_intlb.backend_pool_id]
   bootstrap_storage_account = azurerm_storage_account.main.name
   bootstrap_access_key      = azurerm_storage_account.main.primary_access_key
   bootstrap_file_share      = module.common_fileshare.file_share_name
   bootstrap_share_directory = "None"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.common_fw.name
-  dependencies = [
-    module.common_fileshare.completion
+
+  depends_on = [
+    module.common_fileshare
   ]
 }
+
 
 #-----------------------------------------------------------------------------------------------------------------
 # Create public load balancer.  Load balancer uses firewall's untrust interfaces as its backend pool.
@@ -80,6 +83,15 @@ module "common_extlb" {
   protocol                = "Tcp"
   location                = var.location
   resource_group_name     = azurerm_resource_group.common_fw.name
+  network_interface_ids   = module.common_fw.nic1_id
+}
+
+module "common_appgw" {
+  source                  = "./modules/appgw/"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.common_fw.name
+  subnet_appgw            = module.transit_vnet.subnet_ids[3]
+  fw_private_ips          = module.common_fw.nic1_private_ip
 }
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -88,32 +100,23 @@ module "common_extlb" {
 module "common_intlb" {
   source                  = "./modules/lb/"
   name                    = "${var.fw_prefix}-internal-lb"
+  resource_group_name      = azurerm_resource_group.common_fw.name
+  location                 = azurerm_resource_group.common_fw.location
   type                    = "private"
   sku                     = "Standard"
   probe_ports             = [22]
   frontend_ports          = [0]
   backend_ports           = [0]
   protocol                = "All"
-  subnet_id               = module.vnet.vnet_subnets[2]
+  subnet_id               = module.transit_vnet.subnet_ids[2]
   private_ip_address      = var.fw_internal_lb_ip
-  location                = var.location
-  resource_group_name     = azurerm_resource_group.common_fw.name
-}
-
-# Create Application Gateway. Load balancer uses firewall's untrust interface IPs as its backend pool
-
-module "common_appgw" {
-  source                  = "./modules/appgw/"
-  location                = var.location
-  resource_group_name     = azurerm_resource_group.common_fw.name
-  subnet_appgw            = module.vnet.vnet_subnets[3]
-  fw_private_ips          = module.common_fw.nic1_private_ip
+  network_interface_ids   = module.common_fw.nic2_id
 }
 
 #-----------------------------------------------------------------------------------------------------------------
 # Outputs to terminal
 
-output AppGW {
+output APP-GW {
   value = "http://${module.common_appgw.appgw_fqdn}"
 }
 
@@ -129,6 +132,6 @@ output MGMT-FW2 {
   value = "https://${module.common_fw.nic0_public_ip[1]}"
 }
 
-output SSH-TO-SPOKE2 {
+output SPOKE2-SSH {
   value = "ssh ${var.spoke_username}@${module.common_extlb.public_ip[0]}"
 }

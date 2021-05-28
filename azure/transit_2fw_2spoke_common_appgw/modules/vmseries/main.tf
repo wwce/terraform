@@ -1,9 +1,3 @@
-resource "null_resource" "dependency_getter" {
-  provisioner "local-exec" {
-    command = "echo ${length(var.dependencies)}"
-  }
-}
-
 #-----------------------------------------------------------------------------------------------------------------
 # Create NSGs for firewall dataplane interfaces (required for Standard SKU LB)
 resource "azurerm_network_security_group" "mgmt" {
@@ -91,7 +85,6 @@ resource "azurerm_network_interface" "nic0" {
   name                      = "${var.name}${count.index + 1}-nic0"
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.mgmt.id
 
   ip_configuration {
     name                          = "ipconfig1"
@@ -107,15 +100,13 @@ resource "azurerm_network_interface" "nic1" {
   name                      = "${var.name}${count.index + 1}-nic1"
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.data.id
   enable_ip_forwarding      = true
-  
+
   ip_configuration {
-    name                          = "ipconfig1"
-    subnet_id                     = var.subnet_untrust
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = var.nic1_public_ip ? element(concat(azurerm_public_ip.nic1.*.id, [""]), count.index) : ""
-    load_balancer_backend_address_pools_ids = var.nic1_backend_pool_ids
+    name                                    = "ipconfig1"
+    subnet_id                               = var.subnet_untrust
+    private_ip_address_allocation           = "Dynamic"
+    public_ip_address_id                    = var.nic1_public_ip ? element(concat(azurerm_public_ip.nic1.*.id, [""]), count.index) : ""
   }
 }
 
@@ -124,17 +115,34 @@ resource "azurerm_network_interface" "nic2" {
   name                      = "${var.name}${count.index + 1}-nic2"
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.data.id
   enable_ip_forwarding      = true
 
   ip_configuration {
-    name                          = "ipconfig1"
-    subnet_id                     = var.subnet_trust
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = var.nic2_public_ip ? element(concat(azurerm_public_ip.nic2.*.id, [""]), count.index) : ""
-    load_balancer_backend_address_pools_ids = var.nic2_backend_pool_ids
+    name                                    = "ipconfig1"
+    subnet_id                               = var.subnet_trust
+    private_ip_address_allocation           = "Dynamic"
+    public_ip_address_id                    = var.nic2_public_ip ? element(concat(azurerm_public_ip.nic2.*.id, [""]), count.index) : ""
   }
 }
+
+resource "azurerm_network_interface_security_group_association" "nic0" {
+  count                     = var.vm_count
+  network_interface_id      = element(azurerm_network_interface.nic0.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.mgmt.id
+}
+
+resource "azurerm_network_interface_security_group_association" "nic1" {
+  count                     = var.vm_count
+  network_interface_id      = element(azurerm_network_interface.nic1.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.data.id
+}
+
+resource "azurerm_network_interface_security_group_association" "nic2" {
+  count                     = var.vm_count
+  network_interface_id      = element(azurerm_network_interface.nic2.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.data.id
+}
+
 
 #-----------------------------------------------------------------------------------------------------------------
 # Create VM-Series NGFWs
@@ -169,12 +177,12 @@ resource "azurerm_virtual_machine" "vmseries" {
   plan {
     name      = var.license
     publisher = "paloaltonetworks"
-    product   = "vmseries1"
+    product   = "vmseries-flex"
   }
 
   storage_image_reference {
     publisher = "paloaltonetworks"
-    offer     = "vmseries1"
+    offer     = "vmseries-flex"
     sku       = var.license
     version   = var.panos
   }
@@ -200,8 +208,4 @@ resource "azurerm_virtual_machine" "vmseries" {
       ],
     )
   }
-  depends_on = [
-    null_resource.dependency_getter
-  ]
 }
-

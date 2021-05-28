@@ -61,3 +61,12 @@ variable type {
 variable rule_name {
   default = "HA-Ports"
 }
+
+variable network_interface_ids {
+  type = list(string)
+}
+
+variable ip_configuration_name {
+  type = list(string)
+  default = ["ipconfig1"]
+}

@@ -9,15 +9,26 @@ resource "azurerm_network_interface" "main" {
   name                      ="${var.name}${count.index + 1}-nic0"
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.main.id
+  #network_security_group_id = azurerm_network_security_group.main.id
 
   ip_configuration {
     name                          = "ipconfig1"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "dynamic"
-    load_balancer_backend_address_pools_ids = var.backend_pool_ids
+    #load_balancer_backend_address_pools_ids = var.backend_pool_ids
   }
 }
+
+resource "azurerm_network_interface_security_group_association" "main" {
+  count                     = var.vm_count
+  network_interface_id      = element(azurerm_network_interface.main.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.main.id
+  depends_on = [
+    azurerm_virtual_machine.main
+  ]
+}
+
+
 
 resource "azurerm_virtual_machine" "main" {
   count                            = var.vm_count
@@ -59,3 +70,14 @@ resource "azurerm_virtual_machine" "main" {
     azurerm_network_interface.main
   ]
 }
+
+# resource "azurerm_network_interface_backend_address_pool_association" "main" {
+#   count                   = length(var.backend_pool_id) != 0 ? var.vm_count : 0
+#   network_interface_id    = element(azurerm_network_interface.main.*.id, count.index)
+#   ip_configuration_name   = "ipconfig1"
+#   backend_address_pool_id = element(var.backend_pool_id, 0)
+
+#   depends_on = [
+#     azurerm_virtual_machine.main
+#   ]
+# }

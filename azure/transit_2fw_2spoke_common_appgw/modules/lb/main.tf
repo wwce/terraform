@@ -24,7 +24,6 @@ resource "azurerm_lb" "main" {
 
 resource "azurerm_lb_backend_address_pool" "main" {
   name                = var.backend_name
-  resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.main.id
 }
 
@@ -49,3 +48,22 @@ resource "azurerm_lb_rule" "main" {
   probe_id                       = element(azurerm_lb_probe.main.*.id, count.index)
   enable_floating_ip             = var.enable_floating_ip
 }
+
+
+resource "azurerm_network_interface_backend_address_pool_association" "main" {
+  count                   = length(var.network_interface_ids)
+  network_interface_id    = element(var.network_interface_ids, count.index)
+  ip_configuration_name   = element(var.ip_configuration_name, count.index)
+  backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
+}
+
+# resource "azurerm_network_interface_backend_address_pool_association" "main" {
+#   count                   = length(var.backend_pool_id) != 0 ? var.vm_count : 0
+#   network_interface_id    = element(azurerm_network_interface.main.*.id, count.index)
+#   ip_configuration_name   = "ipconfig1"
+#   backend_address_pool_id = element(var.backend_pool_id, 0)
+
+#   depends_on = [
+#     azurerm_virtual_machine.main
+#   ]
+# }

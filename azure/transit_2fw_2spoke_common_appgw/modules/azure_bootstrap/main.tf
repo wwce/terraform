@@ -31,10 +31,3 @@ az storage file upload-batch --account-name ${var.storage_account_name} --accoun
 EOT
 }
 }
-
-resource "null_resource" "dependency_setter" {
-  depends_on = [
-    azurerm_storage_share.main,
-    null_resource.upload
-  ]
-}

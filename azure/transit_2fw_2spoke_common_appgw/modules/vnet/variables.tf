@@ -13,7 +13,7 @@ variable location {
   default     = "westus"
 }
 
-variable address_space {
+variable vnet_cidr {
   description = "The address space that is used by the virtual network."
   default     = "10.0.0.0/16"
 }
@@ -24,7 +24,7 @@ variable dns_servers {
   default     = []
 }
 
-variable subnet_prefixes {
+variable subnet_cidrs {
   description = "The address prefix to use for the subnet."
   default     = ["10.0.1.0/24"]
   type        = list(string)
@@ -33,7 +33,7 @@ variable subnet_prefixes {
 variable subnet_names {
   description = "A list of public subnets inside the vNet."
   type        = list(string)
-  default     = ["subnet1", "subnet2", "subnet3"]
+  default     = null
 }
 
 variable nsg_ids {
@@ -44,6 +44,12 @@ variable nsg_ids {
     subnet1 = "nsgid1"
     subnet3 = "nsgid3"
   }
+}
+
+
+variable route_table_ids {
+  type = list(string)
+  default = null
 }
 
 variable tags {
