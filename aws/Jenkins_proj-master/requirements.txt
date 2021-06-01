@@ -6,5 +6,5 @@ pan-python==0.14.0
 pandevice==0.6.6
 python-terraform==0.10.0
 requests==2.21.0
-urllib3==1.24.2
+urllib3==1.26.5
 xmltodict==0.12.0
