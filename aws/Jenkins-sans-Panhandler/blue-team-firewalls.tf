@@ -1,43 +1,14 @@
 resource "aws_iam_role" "blue-team-bootstraprole" {
   name = "blue-team-bootstraprole-${random_pet.blue_team.id}"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-      "Service": "ec2.amazonaws.com"
-    },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
+  assume_role_policy = "${file(bule-team-bootstraprole)}"
 
 resource "aws_iam_role_policy" "blue-team-bootstrappolicy" {
   name = "blue-team-bootstrappolicy-${random_pet.blue_team.id}"
   role = "${aws_iam_role.blue-team-bootstraprole.id}"
 
-  policy = <<EOF
-{
-  "Version" : "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::${aws_s3_bucket.bootstrap_bucket.bucket}"
-    },
-    {
-    "Effect": "Allow",
-    "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:::${aws_s3_bucket.bootstrap_bucket.bucket}/*"
-    }
-  ]
-}
-EOF
+  policy = "${file("blue-team-bootstrappolicy.json")}"
+
 }
 
 resource "aws_iam_instance_profile" "blue-team-bootstrapinstanceprofile" {
