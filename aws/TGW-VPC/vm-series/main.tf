@@ -41,8 +41,8 @@ variable "license_type_map" {
 
   default = {
     "byol"  = "6njl1pau431dv1qxipg63mvah"
-    "payg1" = "6kxdw3bbmdeda3o6i1ggqt4km"
-    "payg2" = "806j2of0qy5osgjjixq9gqc6g"
+    "payg1" = "e9yfvyj3uag5uo5j2hjikv74n"
+    "payg2" = "hd44w1chf26uv4p52cdynb2o"
   }
 }
 
