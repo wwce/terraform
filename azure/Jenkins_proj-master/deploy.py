@@ -303,18 +303,23 @@ def getApiKey(hostname, username, password):
     """
 
 
+    print("getting api key")
     call = "https://%s/api/?type=keygen&user=%s&password=%s" % (hostname, username, password)
 
     api_key = ""
+    counter = 0
     while True:
         try:
             # response = urllib.request.urlopen(url, data=encoded_data, context=ctx).read()
             response = send_request(call)
 
-
         except DeployRequestException as updateerr:
             logger.info("No response from FW. Wait 20 secs before retry")
             time.sleep(10)
+            counter = counter + 1
+            if counter >= 30:
+                raise Exception('Could not contact the firewall with the ip and credentials given')
+
             continue
 
         else:
@@ -640,8 +645,14 @@ def main(username, password, rg_name, azure_region):
 
     api_key = getApiKey(fwMgtIP, username, password)
 
+    status_counter = 0
     while True:
         err = getFirewallStatus(fwMgtIP, api_key)
+        status_counter = status_counter + 1
+        if status_counter > 15:
+            print('Taking too long to get firewall status!')
+            exit(1)
+
         if err == 'cmd_error':
             logger.info("Command error from fw ")
 

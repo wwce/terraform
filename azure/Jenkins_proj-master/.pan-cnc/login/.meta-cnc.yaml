@@ -1,4 +1,4 @@
-name: azure_login
+name: azure_login_csf
 label: Azure Login (Pre-Deployment Step)
 
 description: |
