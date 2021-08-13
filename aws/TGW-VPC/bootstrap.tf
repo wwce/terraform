@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "bootstrap_bucket" {
   acl           = "private"
   force_destroy = true
 
-  tags {
+  tags = {
     Name = "bootstrap_bucket"
   }
 }

@@ -3,7 +3,7 @@ data "aws_availability_zones" "available" {}
 resource "aws_vpc" "vpc_security" {
   cidr_block = "${var.vpc_security_cidr}"
 
-  tags {
+  tags = {
     Name = "vpc_security"
   }
 }
@@ -13,7 +13,7 @@ resource "aws_subnet" "vpc_security_public_1" {
   cidr_block        = "${var.vpc_security_subnet_public_1}"
   availability_zone = "${data.aws_availability_zones.available.names[0]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_public_1"
   }
 }
@@ -23,7 +23,7 @@ resource "aws_subnet" "vpc_security_public_2" {
   cidr_block        = "${var.vpc_security_subnet_public_2}"
   availability_zone = "${data.aws_availability_zones.available.names[1]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_public_2"
   }
 }
@@ -33,7 +33,7 @@ resource "aws_subnet" "vpc_security_private_1" {
   cidr_block        = "${var.vpc_security_subnet_private_1}"
   availability_zone = "${data.aws_availability_zones.available.names[0]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_private_1"
   }
 }
@@ -43,7 +43,7 @@ resource "aws_subnet" "vpc_security_private_2" {
   cidr_block        = "${var.vpc_security_subnet_private_2}"
   availability_zone = "${data.aws_availability_zones.available.names[1]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_private_2"
   }
 }
@@ -53,7 +53,7 @@ resource "aws_subnet" "vpc_security_tgw_1" {
   cidr_block        = "${var.vpc_security_subnet_tgw_1}"
   availability_zone = "${data.aws_availability_zones.available.names[0]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_tgw_1"
   }
 }
@@ -63,7 +63,7 @@ resource "aws_subnet" "vpc_security_tgw_2" {
   cidr_block        = "${var.vpc_security_subnet_tgw_2}"
   availability_zone = "${data.aws_availability_zones.available.names[1]}"
 
-  tags {
+  tags = {
     Name = "vpc_security_tgw_2"
   }
 }
@@ -71,7 +71,7 @@ resource "aws_subnet" "vpc_security_tgw_2" {
 resource "aws_route_table" "vpc_security_tgw_1" {
   vpc_id = "${aws_vpc.vpc_security.id}"
 
-  tags {
+  tags = {
     Name = "tgw_1"
   }
 }
@@ -79,7 +79,7 @@ resource "aws_route_table" "vpc_security_tgw_1" {
 resource "aws_route_table" "vpc_security_tgw_2" {
   vpc_id = "${aws_vpc.vpc_security.id}"
 
-  tags {
+  tags = {
     Name = "tgw_2"
   }
 }
@@ -87,7 +87,7 @@ resource "aws_route_table" "vpc_security_tgw_2" {
 resource "aws_route_table" "vpc_security_private_1" {
   vpc_id = "${aws_vpc.vpc_security.id}"
 
-  tags {
+  tags = {
     Name = "private_1"
   }
 }
@@ -95,7 +95,7 @@ resource "aws_route_table" "vpc_security_private_1" {
 resource "aws_route_table" "vpc_security_private_2" {
   vpc_id = "${aws_vpc.vpc_security.id}"
 
-  tags {
+  tags = {
     Name = "private_2"
   }
 }
@@ -159,7 +159,7 @@ resource "aws_route" "vpc_security_trust_2_0" {
 resource "aws_internet_gateway" "vpc_security_igw" {
   vpc_id = "${aws_vpc.vpc_security.id}"
 
-  tags {
+  tags = {
     Name = "vpc_securty_igw"
   }
 }
