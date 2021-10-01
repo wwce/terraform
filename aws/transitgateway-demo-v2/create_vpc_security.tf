@@ -1,4 +1,9 @@
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"] // Do not use local zones in us-west2 or us-east1
+  }
+}
 
 
 
