@@ -6,7 +6,7 @@ module "bootstrap_common" {
   file_location = "bootstrap_files/"
   config        = ["init-cfg.txt", "bootstrap.xml"]
   license       = ["authcodes"]
-  location      = var.region
+  location      = var.regions[0]
 }
 
 #-----------------------------------------------------------------------------------------------
