@@ -11,7 +11,7 @@ resource "random_string" "randomstring" {
 resource "google_storage_bucket" "bootstrap" {
   name          = local.bucket_name
   force_destroy = true
-  location      = var.region
+  location      = var.location
 }
 
 resource "google_storage_bucket_object" "config_full" {
