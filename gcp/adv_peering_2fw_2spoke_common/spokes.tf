@@ -19,7 +19,7 @@ module "vm_spoke1" {
   ]
   subnetworks           = [module.vpc_spoke1.subnetwork_self_link[0]]
   machine_type          = "f1-micro"
-  image                 = "ubuntu-os-cloud/ubuntu-1604-lts"
+  image                 = "ubuntu-os-cloud/ubuntu-1804-lts"
   create_instance_group = true
   ssh_key               = fileexists(var.public_key_path) ? "${var.spoke_user}:${file(var.public_key_path)}" : ""
   startup_script        = file("${path.module}/scripts/webserver-startup.sh")
@@ -81,7 +81,7 @@ module "vm_spoke2" {
   names        = var.spoke2_vms
   zones        = [data.google_compute_zones.available.names[0]]
   machine_type = "f1-micro"
-  image        = "ubuntu-os-cloud/ubuntu-1604-lts"
+  image        = "ubuntu-os-cloud/ubuntu-1804-lts"
   subnetworks  = [module.vpc_spoke2.subnetwork_self_link[0]]
   ssh_key      = fileexists(var.public_key_path) ? "${var.spoke_user}:${file(var.public_key_path)}" : ""
 }
