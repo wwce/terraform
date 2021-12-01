@@ -24,4 +24,5 @@ variable software {
 }
 
 variable location {
+  default = "US"
 }
