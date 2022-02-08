@@ -1,0 +1,274 @@
+---
+type: cloudgenix template
+sdk_version: 5.6.1b2
+config_version: 1.6.0b2
+# Created at 2022-02-08T22:27:43.151536Z
+# by mkorenbaum@paloaltonetworks.com
+# Note: For ION 9000 interface configuration, if the source_interface or parent_interface is a bypasspair port, add the attribute 'parent_type': bypasspair_<name> where name is the interface name. 
+# If this field is not specified, the cloudgenix_config utility will assume the parent interface is of type 'port'.
+sites v4.6:
+  SE-Summit-Branch:
+    address:
+      city: Hilliard
+      country: United States
+      post_code: '43026'
+      state: OH
+      street: 5109 Hayden Run Road
+      street2:
+    admin_state: active
+    description:
+    element_cluster_role: SPOKE
+    elements v2.5:
+      se-summit-ion:
+        admin_action:
+        admin_renew_state:
+        admin_suspend_state: active_suspend_init
+        allowed_roles:
+        - HUB
+        - SPOKE
+        application_probe v2.0:
+          description:
+          enable_probe: true
+          name: default-probe-configuration-16442902662850209
+          source_interface_id:
+          tags:
+        cellular_modules_sim_security v2.0: {}
+        cluster_insertion_mode:
+        cluster_member_id:
+        connected: true
+        deployment_op:
+        description:
+        element_security_zones v2.0: []
+        fips_mode: non_fips
+        fips_mode_change_start_time: 0
+        interfaces v4.11:
+          '1':
+            admin_up: true
+            attached_lan_networks:
+            bound_interfaces:
+            bypass_pair:
+            cellular_config:
+            description: ''
+            devicemgmt_policysetstack_id:
+            dhcp_relay:
+            directed_broadcast: false
+            ethernet_port:
+              full_duplex: false
+              speed: 0
+            ipfixcollectorcontext_id:
+            ipfixfiltercontext_id:
+            ipv4_config:
+              dhcp_config:
+              dns_v4_config:
+              routes:
+              static_config:
+              type: dhcp
+            mac_address:
+            mtu: 1500
+            multicast_config:
+              igmp_version: IGMPV3
+              multicast_enabled: false
+            nat_address:
+            nat_pools:
+            nat_port: 0
+            nat_zone_id:
+            network_context_id:
+            parent:
+            pppoe_config:
+            scope: global
+            secondary_ip_configs:
+            service_link_config:
+            site_wan_interface_ids:
+            static_arp_configs:
+            sub_interface:
+            tags:
+            type: port
+            used_for: lan
+          '2':
+            admin_up: true
+            attached_lan_networks:
+            bound_interfaces:
+            bypass_pair:
+            cellular_config:
+            description: ''
+            devicemgmt_policysetstack_id:
+            dhcp_relay:
+            directed_broadcast: false
+            ethernet_port:
+              full_duplex: false
+              speed: 0
+            ipfixcollectorcontext_id:
+            ipfixfiltercontext_id:
+            ipv4_config:
+              dhcp_config:
+              dns_v4_config:
+              routes:
+              static_config:
+              type: dhcp
+            mac_address:
+            mtu: 1500
+            multicast_config:
+              igmp_version: IGMPV3
+              multicast_enabled: false
+            nat_address:
+            nat_pools:
+            nat_port: 0
+            nat_zone_id: internet
+            network_context_id:
+            parent:
+            pppoe_config:
+            scope: global
+            secondary_ip_configs:
+            service_link_config:
+            site_wan_interface_ids:
+            - 'Amazon Internet '
+            static_arp_configs:
+            sub_interface:
+            tags:
+            type: port
+            used_for: public
+          controller 1:
+            admin_up: true
+            attached_lan_networks:
+            bound_interfaces:
+            bypass_pair:
+            cellular_config:
+            description: ''
+            devicemgmt_policysetstack_id:
+            dhcp_relay:
+            directed_broadcast: false
+            ethernet_port:
+              full_duplex: false
+              speed: 0
+            ipfixcollectorcontext_id:
+            ipfixfiltercontext_id:
+            ipv4_config:
+              dhcp_config:
+              dns_v4_config:
+              routes:
+              static_config:
+              type: dhcp
+            mac_address:
+            mtu: 1500
+            multicast_config:
+            nat_address:
+            nat_pools:
+            nat_port: 0
+            nat_zone_id:
+            network_context_id:
+            parent:
+            pppoe_config:
+            scope: local
+            secondary_ip_configs:
+            service_link_config:
+            site_wan_interface_ids:
+            static_arp_configs:
+            sub_interface:
+            tags:
+            type: port
+            used_for: none
+        l3_direct_private_wan_forwarding: true
+        l3_lan_forwarding: true
+        model_name: ion 3104v
+        multicastglobalconfigs v2.0:
+        - spt_switchover_enabled: true
+        nat_policysetstack_id:
+        network_policysetstack_id:
+        ntp v2.0:
+        - description: Default NTP template created by super user.
+          name: default
+          ntp_servers:
+          - host: 0.cloudgenix.pool.ntp.org
+            max_poll: 10
+            min_poll: 9
+            version: 4
+          - host: 1.cloudgenix.pool.ntp.org
+            max_poll: 10
+            min_poll: 9
+            version: 4
+          - host: 2.cloudgenix.pool.ntp.org
+            max_poll: 10
+            min_poll: 9
+            version: 4
+          - host: 3.cloudgenix.pool.ntp.org
+            max_poll: 10
+            min_poll: 9
+            version: 4
+          - host: time.nist.gov
+            max_poll: 15
+            min_poll: 13
+            version: 4
+          source_interface_ids:
+          tags:
+        priority_policysetstack_id:
+        role: SPOKE
+        routing:
+          bgp:
+            global_config v2.2:
+              admin_distance: 20
+              adv_interval: 1
+              graceful_restart: false
+              hold_time: 90
+              keepalive_time: 30
+              local_as_num: '65333'
+              maximum_paths: 1
+              md5_secret:
+              multi_hop_limit: 1
+              peer_auth_type: none
+              peer_retry_time: 120
+              prefix_adv_type: aggregate-auto
+              prefix_adv_type_to_lan: default
+              prefixes_to_adv_to_wan:
+              router_id:
+              stalepath_time: 120
+          static v2.1: {}
+        serial_number: ec237c18-4971-c333-b96f-da0ed6f3bea3
+        software_version: 5.6.1-b18
+        spoke_ha_config:
+        state: bound
+        tags:
+        tenant_id: '21643230920'
+        toolkit v2.2:
+          account_disable_interval: 5
+          inactive_interval: 15
+          otpkey_version: 1
+          retry_login_count: 5
+          ssh_enabled: true
+          ssh_outbound_enabled: true
+        vpn_to_vpn_forwarding: false
+    extended_tags:
+    location:
+      description:
+      latitude: 40.061474
+      longitude: -83.13512
+    nat_policysetstack_id: Default-NATPolicySetStack
+    network_policysetstack_id: Default Path Simple Stack (Simple)
+    policy_set_id:
+    priority_policysetstack_id: Default QoS Simple Stack (Simple)
+    security_policyset_id:
+    security_policysetstack_id:
+    service_binding: Preset Domain
+    tags:
+    waninterfaces v2.7:
+      'Amazon Internet ':
+        bfd_mode: aggressive
+        bw_config_mode: manual
+        bwc_enabled: true
+        cost: 128
+        description:
+        label_id: Ethernet Internet
+        link_bw_down: 100.0
+        link_bw_up: 100.0
+        lqm_config:
+          hub_site_ids:
+          inter_packet_gap: 100
+          statistic: min
+        lqm_enabled: true
+        network_id: Amazon Internet
+        network_type: publicwan
+        tags:
+        type: publicwan
+        use_for_application_reachability_probes:
+        use_for_controller_connections:
+        use_lqm_for_non_hub_paths:
+        vpnlink_configuration:
