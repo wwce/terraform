@@ -12,7 +12,7 @@ resource "aws_vpc" "sdwan-lab-vpc" {
 resource "aws_subnet" "sdwan-lab-public1" {
     vpc_id = aws_vpc.sdwan-lab-vpc.id
     cidr_block = cidrsubnet(var.VPC_CIDR, 4, 0) // /20 subnet, block #0 of the CIDR divied into /20s
-    map_public_ip_on_launch = "true" //it makes this a public subnet
+    map_public_ip_on_launch = "false" //it makes this a public subnet
     availability_zone = data.aws_availability_zones.available.names[0]
     tags = {
         Name = "Public Subnet 1"
@@ -22,7 +22,7 @@ resource "aws_subnet" "sdwan-lab-public1" {
 resource "aws_subnet" "sdwan-lab-mgmt" {
     vpc_id = aws_vpc.sdwan-lab-vpc.id
     cidr_block = cidrsubnet(var.VPC_CIDR, 4, 1) // /20 subnet, block #1 of the CIDR divied into /20s
-    map_public_ip_on_launch = "true" //it makes this a public subnet
+    map_public_ip_on_launch = "false" //it makes this a public subnet
     availability_zone = data.aws_availability_zones.available.names[0]
     tags = {
         Name = "Mgmt Subnet"
