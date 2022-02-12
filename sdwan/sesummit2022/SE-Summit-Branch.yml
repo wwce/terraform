@@ -4,7 +4,7 @@ sdk_version: 5.6.1b2
 config_version: 1.6.0b2
 # Created at 2022-02-08T22:27:43.151536Z
 # by mkorenbaum@paloaltonetworks.com
-# Note: For ION 9000 interface configuration, if the source_interface or parent_interface is a bypasspair port, add the attribute 'parent_type': bypasspair_<name> where name is the interface name. 
+# Note: For ION 9000 interface configuration, if the source_interface or parent_interface is a bypasspair port, add the attribute 'parent_type': bypasspair_<name> where name is the interface name.
 # If this field is not specified, the cloudgenix_config utility will assume the parent interface is of type 'port'.
 sites v4.6:
   SE-Summit-Branch:
@@ -222,8 +222,8 @@ sites v4.6:
               router_id:
               stalepath_time: 120
           static v2.1: {}
-        serial_number: ec237c18-4971-c333-b96f-da0ed6f3bea3
-        software_version: 5.6.1-b18
+        serial_number: <Your Serial Number Here>
+        software_version: 5.6.3-b11
         spoke_ha_config:
         state: bound
         tags:
