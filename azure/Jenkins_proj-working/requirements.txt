@@ -166,7 +166,7 @@ incremental==17.5.0
 invoke==1.2.0
 ipaddress==1.0.22
 isodate==0.6.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 jmespath==0.9.4
 jsonpath-ng==1.4.3
 knack==0.5.4
