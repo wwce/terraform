@@ -176,7 +176,7 @@ msrestazure==0.6.0
 oauthlib==3.0.1
 oyaml==0.9
 pan-python==0.14.0
-paramiko==2.4.2
+paramiko==2.10.1
 passlib==1.7.1
 pbr==5.2.0
 pluggy==0.9.0
