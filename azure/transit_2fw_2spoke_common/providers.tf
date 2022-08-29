@@ -8,5 +8,9 @@ provider "azurerm" {
 #  client_id       = var.client_id
 #  client_secret   = var.client_secret
 #  tenant_id       = var.tenant_id
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
