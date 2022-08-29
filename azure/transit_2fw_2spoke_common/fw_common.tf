@@ -39,29 +39,30 @@ module "common_fileshare" {
 # Create VM-Series.  For every fw_name entered, an additional VM-Series instance will be deployed.
 
 module "common_fw" {
-  source                    = "./modules/vmseries/"
-  name                      = "${var.fw_prefix}-vm"
-  resource_group_name      = azurerm_resource_group.common_fw.name
-  location                 = azurerm_resource_group.common_fw.location
-  vm_count                  = 2
-  username                  = var.fw_username
-  password                  = var.fw_password
-  panos                     = var.fw_panos
-  license                   = var.fw_license
-  nsg_prefix                = var.fw_nsg_prefix
-  avset_name                = "${var.fw_prefix}-avset"
-  subnet_mgmt               = module.transit_vnet.subnet_ids[0]
-  subnet_untrust            = module.transit_vnet.subnet_ids[1]
-  subnet_trust              = module.transit_vnet.subnet_ids[2]
-  nic0_public_ip            = true
-  nic1_public_ip            = true
-  nic2_public_ip            = false
-  nic1_backend_pool_id     = [module.common_extlb.backend_pool_id]
-  nic2_backend_pool_id     = [module.common_intlb.backend_pool_id]
-  bootstrap_storage_account = azurerm_storage_account.main.name
-  bootstrap_access_key      = azurerm_storage_account.main.primary_access_key
-  bootstrap_file_share      = module.common_fileshare.file_share_name
-  bootstrap_share_directory = "None"
+  source                     = "./modules/vmseries/"
+  name                       = "${var.fw_prefix}-vm"
+  resource_group_name        = azurerm_resource_group.common_fw.name
+  location                   = azurerm_resource_group.common_fw.location
+  vm_count                   = 2
+  username                   = var.fw_username
+  password                   = var.fw_password
+  panos                      = var.fw_panos
+  license                    = var.fw_license
+  nsg_prefix                 = var.fw_nsg_prefix
+  avset_name                 = "${var.fw_prefix}-avset"
+  subnet_mgmt                = module.transit_vnet.subnet_ids[0]
+  subnet_untrust             = module.transit_vnet.subnet_ids[1]
+  subnet_trust               = module.transit_vnet.subnet_ids[2]
+  nic0_public_ip             = true
+  nic1_public_ip             = true
+  nic2_public_ip             = false
+  nic1_backend_pool_id       = [module.common_extlb.backend_pool_id]
+  nic2_backend_pool_id       = [module.common_intlb.backend_pool_id]
+  delete_disk_on_termination = true
+  bootstrap_storage_account  = azurerm_storage_account.main.name
+  bootstrap_access_key       = azurerm_storage_account.main.primary_access_key
+  bootstrap_file_share       = module.common_fileshare.file_share_name
+  bootstrap_share_directory  = "None"
 
   depends_on = [
     module.common_fileshare
