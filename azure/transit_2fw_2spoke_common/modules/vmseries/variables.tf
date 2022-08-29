@@ -73,12 +73,12 @@ variable bootstrap_share_directory {
 }
 
 variable nic0_public_ip {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable nic1_public_ip {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -94,4 +94,9 @@ variable nic1_backend_pool_id {
 variable nic2_backend_pool_id {
   type    = list(string)
   default = []
+}
+
+variable delete_disk_on_termination {
+  type    = bool
+  default = false
 }
