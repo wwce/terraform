@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "main" {
   ip_configuration {
     name                          = "ipconfig1"
     subnet_id                     = var.subnet_id
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
     #load_balancer_backend_address_pools_ids = var.backend_pool_ids
   }
 }
