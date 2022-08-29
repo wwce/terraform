@@ -30,7 +30,7 @@ resource "azurerm_lb_backend_address_pool" "main" {
 resource "azurerm_lb_probe" "main" {
   count               = length(var.probe_ports)
   name                = "${var.probe_name}-${element(var.probe_ports, count.index)}"
-  resource_group_name = var.resource_group_name
+  #resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.main.id
   port                = element(var.probe_ports, count.index)
 }
@@ -38,13 +38,13 @@ resource "azurerm_lb_probe" "main" {
 resource "azurerm_lb_rule" "main" {
   count                          = length(var.frontend_ports)
   name                           = "rule-${count.index}"
-  resource_group_name            = var.resource_group_name
+  #resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.main.id
   protocol                       = var.protocol
   frontend_port                  = element(var.frontend_ports, count.index)
   backend_port                   = element(var.backend_ports, count.index)
   frontend_ip_configuration_name = var.frontend_name
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.main.id
+  backend_address_pool_ids        = [azurerm_lb_backend_address_pool.main.id]
   probe_id                       = element(azurerm_lb_probe.main.*.id, count.index)
   enable_floating_ip             = var.enable_floating_ip
 }
