@@ -155,12 +155,13 @@ resource "azurerm_availability_set" "default" {
 }
 
 resource "azurerm_virtual_machine" "vmseries" {
-  count                        = var.vm_count
-  name                         = "${var.name}${count.index + 1}"
-  location                     = var.location
-  resource_group_name          = var.resource_group_name
-  vm_size                      = var.size
-  primary_network_interface_id = element(azurerm_network_interface.nic0.*.id, count.index)
+  count                         = var.vm_count
+  name                          = "${var.name}${count.index + 1}"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  vm_size                       = var.size
+  primary_network_interface_id  = element(azurerm_network_interface.nic0.*.id, count.index)
+  delete_os_disk_on_termination = var.delete_disk_on_termination
 
   network_interface_ids = [
     element(azurerm_network_interface.nic0.*.id, count.index),
