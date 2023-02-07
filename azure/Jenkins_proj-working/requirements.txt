@@ -149,7 +149,7 @@ chardet==3.0.4
 collections2==0.3.0
 colorama==0.4.1
 constantly==15.1.0
-cryptography==2.4.2
+cryptography==39.0.1
 decorator==4.4.0
 Django==2.2.4
 django-widget-tweaks==1.4.3
